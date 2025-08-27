@@ -1,6 +1,11 @@
-<div id="timerScreen" class="fixed inset-0 z-40 hidden bg-black">
+---
+import { getButtonClasses } from '../../src/ui/button';
+const iconBtn = getButtonClasses({ variant: 'icon', size: 'sm', extraClassName: 'text-white' });
+import Button from './Button.astro';
+---
+<div id="timerScreen" class="fixed inset-0 z-40 hidden" style="background: var(--md-sys-color-surface);">
   <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" id="timerBackground">
-    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="absolute inset-0" style="background: rgba(0,0,0,0.4);"></div>
   </div>
   
   <div class="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
@@ -26,15 +31,15 @@
     </div>
   </div>
   <div class="absolute top-8 right-8 flex gap-2">
-    <button id="closeBtn" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Schließen">
+    <Button id="closeBtn" variant="icon" size="sm" title="Close" className="text-white">
       <i class="ti ti-x text-xl"></i>
-    </button>
-    <button id="fullscreenBtn" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Vollbild">
+    </Button>
+    <Button id="fullscreenBtn" variant="icon" size="sm" title="Fullscreen" className="text-white">
       <i class="ti ti-maximize text-xl"></i>
-    </button>
-    <button id="shareBtnTimer" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="QR Code">
+    </Button>
+    <Button id="shareBtnTimer" variant="icon" size="sm" title="QR Code" className="text-white">
       <i class="ti ti-qrcode text-xl"></i>
-    </button>
+    </Button>
   </div>
   <div class="absolute bottom-8 left-8 opacity-0 hover:opacity-100 transition-opacity duration-300">
     <button id="backBtn" class="text-white text-lg font-semibold hover:text-gray-300 transition-colors">← Zurück</button>

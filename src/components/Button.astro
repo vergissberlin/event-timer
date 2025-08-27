@@ -1,0 +1,32 @@
+---
+import { getButtonClasses } from '../ui/button';
+
+interface Props {
+  id?: string;
+  title?: string;
+  ariaLabel?: string;
+  variant?: 'icon' | 'contained' | 'outlined' | 'text';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+const {
+  id,
+  title,
+  ariaLabel,
+  variant = 'icon',
+  size = 'md',
+  className = '',
+  type = 'button',
+} = Astro.props as Props;
+
+const classes = `${getButtonClasses({ variant, size })} ${className}`.trim();
+---
+
+<button id={id} class={classes} title={title} aria-label={ariaLabel} type={type}>
+  <slot />
+  
+</button>
+
+

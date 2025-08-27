@@ -87,3 +87,16 @@ export interface TimerCallbacks {
 }
 
 export type TimerStatus = 'ready' | 'running' | 'paused' | 'finished' | 'warning';
+
+// Event lifecycle status used in UI
+export type EventPhase = 'upcoming' | 'running' | 'finished';
+
+// UI Button types (Material 2)
+export type ButtonVariant = 'icon' | 'contained' | 'outlined' | 'text';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+export interface ButtonProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  extraClassName?: string;
+}

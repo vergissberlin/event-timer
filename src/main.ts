@@ -22,7 +22,7 @@ class EventTimerApp {
   private autoSwitchInterval: NodeJS.Timeout | null = null;
 
   // DOM Elements
-  private loadingElement!: HTMLElement;
+  private loadingElement: HTMLElement | null = null;
   private appElement!: HTMLElement;
   private eventSelectionElement!: HTMLElement;
   private timerScreenElement!: HTMLElement;
@@ -71,7 +71,7 @@ class EventTimerApp {
   }
 
   private initializeDOMElements(): void {
-    this.loadingElement = document.getElementById('loading')!;
+    this.loadingElement = document.getElementById('loading');
     this.appElement = document.getElementById('app')!;
     this.eventSelectionElement = document.getElementById('eventSelection')!;
     this.timerScreenElement = document.getElementById('timerScreen')!;
@@ -202,8 +202,10 @@ class EventTimerApp {
       // Start auto-switch timer
       this.startAutoSwitchTimer();
       
-      // Show app (no overlay)
-      this.loadingElement.remove();
+      // Show app (no loading overlay required)
+      if (this.loadingElement) {
+        this.loadingElement.remove();
+      }
       this.appElement.classList.remove('hidden');
       this.appElement.style.display = 'block';
       
@@ -308,6 +310,16 @@ class EventTimerApp {
     let rowBackgroundClass = '';
     let buttonDisabled = false;
     let buttonClass = 'px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors';
+    const chipClassMap: Record<'upcoming' | 'running' | 'finished', string> = {
+      upcoming: 'md2-chip md2-chip--upcoming',
+      running: 'md2-chip md2-chip--running',
+      finished: 'md2-chip md2-chip--finished'
+    };
+    const chipIconMap: Record<'upcoming' | 'running' | 'finished', string> = {
+      upcoming: 'ti ti-calendar',
+      running: 'ti ti-player-play',
+      finished: 'ti ti-check'
+    };
     
     switch (status) {
       case 'upcoming':
@@ -344,8 +356,9 @@ class EventTimerApp {
       <td class="px-4 py-3 text-gray-700 dark:text-gray-300">${dateTime}</td>
       <td class="px-4 py-3 text-gray-700 dark:text-gray-300">${duration}</td>
       <td class="px-4 py-3">
-        <span class="px-2 py-1 text-xs font-semibold rounded-full ${statusClass} bg-opacity-20">
-          ${statusText}
+        <span class="${chipClassMap[status]}">
+          <i class="${chipIconMap[status]} text-sm"></i>
+          <span>${statusText}</span>
         </span>
       </td>
       <td class="px-4 py-3">
@@ -1232,15 +1245,27 @@ class EventTimerApp {
   }
 
   private showError(message: string): void {
-    this.loadingElement.innerHTML = `
-      <div class="text-center">
-        <div class="text-red-500 text-6xl mb-4">⚠️</div>
-        <p class="text-xl text-red-400">${message}</p>
-        <button onclick="location.reload()" class="mt-4 px-6 py-3 bg-red-600 rounded-xl hover:bg-red-700 transition-colors">
-          Erneut versuchen
-        </button>
+    // Create a lightweight overlay even without a loading element
+    const existing = document.getElementById('errorOverlay');
+    if (existing) existing.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'errorOverlay';
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '9999';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.background = 'rgba(0,0,0,0.6)';
+    overlay.innerHTML = `
+      <div style="color: #fff; text-align:center;">
+        <div style="font-size: 56px; margin-bottom: 16px;">⚠️</div>
+        <p style="font-size: 20px; opacity: .9; margin-bottom: 16px;">${message}</p>
+        <button id="errReload" style="padding: 12px 20px; background:#ef4444; border-radius:12px;">Reload</button>
       </div>
     `;
+    document.body.appendChild(overlay);
+    overlay.querySelector('#errReload')?.addEventListener('click', () => location.reload());
   }
 
   private toggleBreakTimes(): void {

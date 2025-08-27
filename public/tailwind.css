@@ -306,3 +306,52 @@ body {
 .flash {
   animation: flash 0.3s ease-in-out !important;
 }
+
+/* Material Design 2 tokens */
+:root {
+  --md2-primary: #6200EE;
+  --md2-on-primary: #FFFFFF;
+  --md2-surface: #FFFFFF;
+  --md2-on-surface: #1D1D1D;
+  --md2-outline: #E0E0E0;
+}
+.dark:root {
+  --md2-primary: #BB86FC;
+  --md2-on-primary: #381E72;
+  --md2-surface: #121212;
+  --md2-on-surface: #E6E1E5;
+  --md2-outline: #3A3A3A;
+}
+
+/* MD2 App Bar */
+.md2-appbar {
+  background: var(--md2-surface) !important;
+  color: var(--md2-on-surface) !important;
+  border-bottom: 1px solid var(--md2-outline) !important;
+}
+
+/* MD2 Buttons */
+.md2-btn-base { display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; cursor: pointer; user-select: none; }
+.md2-btn-icon { display:inline-flex; align-items:center; justify-content:center; border-radius: 24px; background: transparent; color: var(--md2-on-surface); }
+.md2-btn-text { background: transparent; color: var(--md2-primary); padding: 8px 16px; }
+.md2-btn-contained { background: var(--md2-primary); color: var(--md2-on-primary); padding: 8px 16px; box-shadow: 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px rgba(0,0,0,.12); }
+.md2-btn-outlined { background: transparent; color: var(--md2-primary); border: 1px solid var(--md2-primary); padding: 8px 16px; }
+.md2-btn-icon:hover, .md2-btn-text:hover, .md2-btn-contained:hover, .md2-btn-outlined:hover { filter: brightness(1.05); background-color: rgba(0,0,0,0.04); }
+
+/* MD2 Icon sizes */
+.md2-size-sm { width: 40px; height: 40px; }
+.md2-size-md { width: 48px; height: 48px; }
+.md2-size-lg { width: 56px; height: 56px; }
+
+/* MD2 Surfaces (cards) */
+.md-surface { background: var(--md2-surface) !important; color: var(--md2-on-surface) !important; border: 1px solid var(--md2-outline) !important; border-radius: 4px !important; }
+
+/* MD2 Chips (status badges) */
+.md2-chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 4px; font-size: 12px; line-height: 1.2; border: 1px solid var(--md2-outline); }
+.md2-chip--upcoming { background: #E8F0FE; color: #1967D2; border-color: #C6DAFE; }
+.md2-chip--running { background: #E6F4EA; color: #188038; border-color: #CEEAD6; }
+.md2-chip--finished { background: #F1F3F4; color: #5F6368; border-color: #E0E3E7; }
+
+.elevation-1 { box-shadow: 0 1px 2px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12) !important; }
+.elevation-2 { box-shadow: 0 2px 4px rgba(0,0,0,0.14), 0 3px 6px rgba(0,0,0,0.12) !important; }
+.elevation-3 { box-shadow: 0 4px 8px rgba(0,0,0,0.14), 0 6px 12px rgba(0,0,0,0.12) !important; }

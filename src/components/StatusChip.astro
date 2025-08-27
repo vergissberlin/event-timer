@@ -1,0 +1,19 @@
+---
+interface Props {
+  status: 'upcoming' | 'running' | 'finished';
+}
+const { status } = Astro.props as Props;
+const map: Record<Props['status'], { label: string; className: string; icon: string }> = {
+  upcoming: { label: 'Upcoming', className: 'md2-chip md2-chip--upcoming', icon: 'ti ti-calendar' },
+  running: { label: 'Running', className: 'md2-chip md2-chip--running', icon: 'ti ti-player-play' },
+  finished: { label: 'Finished', className: 'md2-chip md2-chip--finished', icon: 'ti ti-check' }
+};
+const cfg = map[status];
+---
+
+<span class={cfg.className}>
+  <i class={`${cfg.icon} text-sm`}></i>
+  <span>{cfg.label}</span>
+</span>
+
+
