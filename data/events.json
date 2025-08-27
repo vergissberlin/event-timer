@@ -1,0 +1,99 @@
+{
+  "events": [
+    {
+      "id": "morning-meeting",
+      "title": "Morgen-Meeting",
+      "startTime": "2025-08-29T15:00:00",
+      "duration": 1800,
+      "theme": {
+        "primary": "#3b82f6",
+        "secondary": "#1e40af",
+        "accent": "#60a5fa"
+      },
+      "icon": "ti ti-users",
+      "background": "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1920&h=1080&fit=crop",
+      "description": "Tägliches Morgen-Meeting"
+    },
+    {
+      "id": "presentation",
+      "title": "Produkt-Präsentation",
+      "startTime": "2025-08-27T16:30:00",
+      "duration": 2700,
+      "theme": {
+        "primary": "#10b981",
+        "secondary": "#059669",
+        "accent": "#34d399"
+      },
+      "icon": "ti ti-presentation",
+      "background": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=1080&fit=crop",
+      "description": "Neue Produktfeatures vorstellen"
+    },
+    {
+      "id": "lunch-break",
+      "title": "Mittagspause",
+      "startTime": "2025-08-27T17:00:00",
+      "duration": 3600,
+      "theme": {
+        "primary": "#f59e0b",
+        "secondary": "#d97706",
+        "accent": "#fbbf24"
+      },
+      "icon": "ti ti-coffee",
+      "background": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&h=1080&fit=crop",
+      "description": "Mittagspause"
+    },
+    {
+      "id": "workshop",
+      "title": "Workshop Session",
+      "startTime": "2025-08-27T18:00:00",
+      "duration": 3600,
+      "theme": {
+        "primary": "#8b5cf6",
+        "secondary": "#7c3aed",
+        "accent": "#a78bfa"
+      },
+      "icon": "ti ti-tools",
+      "background": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop",
+      "description": "Hands-on Workshop"
+    },
+    {
+      "id": "team-review",
+      "title": "Team Review",
+      "startTime": "2025-08-27T19:30:00",
+      "duration": 1800,
+      "theme": {
+        "primary": "#ef4444",
+        "secondary": "#dc2626",
+        "accent": "#f87171"
+      },
+      "icon": "ti ti-chart-line",
+      "background": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920&h=1080&fit=crop",
+      "description": "Wöchentliches Team Review"
+    },
+    {
+      "id": "planning",
+      "title": "Sprint Planning",
+      "startTime": "2025-08-27T21:30:00",
+      "duration": 2400,
+      "theme": {
+        "primary": "#06b6d4",
+        "secondary": "#0891b2",
+        "accent": "#22d3ee"
+      },
+      "icon": "ti ti-calendar",
+      "background": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop",
+      "description": "Nächster Sprint Planung"
+    }
+  ],
+  "settings": {
+    "defaultTheme": {
+      "primary": "#1e293b",
+      "secondary": "#334155",
+      "accent": "#64748b"
+    },
+    "audioEnabled": true,
+    "speechEnabled": true,
+    "fullscreenByDefault": false,
+    "autoStart": true
+  }
+}

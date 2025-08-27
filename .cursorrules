@@ -1,0 +1,74 @@
+# Cursor Rules für Event Timer PWA
+
+## Projekt-Übersicht
+Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwind CSS und automatischem GitHub Pages Deployment.
+
+## Code-Stil & Konventionen
+
+### Package Manager
+- Verwende **pnpm** als Package Manager
+- Alle npm-Befehle durch pnpm ersetzen
+- pnpm-lock.yaml committen
+
+### Schriftart
+- Verwende **Montserrat** als primäre Schriftart
+- Fallback: Sans-serif
+- Google Fonts CDN für Montserrat einbinden
+
+### TypeScript
+- Strikte Typisierung verwenden
+- Interface-basierte Entwicklung
+- Keine any-Typen ohne explizite Begründung
+
+### CSS/Tailwind
+- Tailwind CSS für Styling
+- Custom CSS nur wenn nötig
+- Responsive Design priorisieren
+- Montserrat als Standard-Schriftart
+
+## GitHub Actions
+
+### Deployment
+- Automatisches Deployment auf GitHub Pages
+- Build bei Push auf main Branch
+- PWA-Manifest und Service Worker korrekt konfiguriert
+- HTTPS für PWA-Features erforderlich
+
+### Workflow-Regeln
+- Node.js 18+ verwenden
+- pnpm install und build
+- gh-pages Branch für Deployment
+- Cache für pnpm Dependencies
+
+## PWA-spezifisch
+
+### Manifest
+- Korrekte Icons in verschiedenen Größen
+- Theme-Farben konfiguriert
+- Display: standalone
+
+### Service Worker
+- Offline-Funktionalität
+- Cache-Strategien definiert
+- Update-Handling
+
+## Commit Messages
+- Englische Commit Messages
+- Conventional Commits Format
+- Klare, beschreibende Nachrichten
+
+## Datei-Struktur
+```
+event-timer/
+├── .github/workflows/     # GitHub Actions
+├── src/                   # TypeScript Source
+├── public/               # Static Assets
+├── data/                 # Event Configuration
+└── dist/                 # Build Output
+```
+
+## Performance
+- Lazy Loading für Bilder
+- Minifizierung für Produktion
+- Service Worker Caching
+- Optimierte Bundle-Größe
