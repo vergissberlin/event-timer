@@ -182,7 +182,7 @@ class EventTimerApp {
       
       // Only update manifest in production
       if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        this.updateManifest(settings.app);
+        this.updateDocumentTitle(settings.app);
       }
       
       // Load events
@@ -1226,55 +1226,13 @@ class EventTimerApp {
     document.title = title;
   }
 
-  private updateManifest(appConfig: { name: string; shortName: string; description: string }): void {
+  private updateDocumentTitle(appConfig: { name: string; shortName: string; description: string }): void {
     // Update document title and meta description
     document.title = appConfig.name;
     
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', appConfig.description);
-    }
-    
-          // Update manifest dynamically only in production
-    const isProduction = window.location.hostname === 'vergissberlin.github.io';
-    if (isProduction) {
-      const manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement;
-      if (manifestLink) {
-        // Create a new manifest with updated values
-        const manifest = {
-          name: appConfig.name,
-          short_name: appConfig.shortName,
-          description: appConfig.description,
-          start_url: "./",
-          display: "standalone",
-          background_color: "#1e293b",
-          theme_color: "#1e293b",
-          orientation: "portrait-primary",
-          scope: "./",
-          lang: "de",
-          icons: [
-            {
-              src: "./icons/icon-16x16.svg",
-              sizes: "16x16",
-              type: "image/svg+xml"
-            },
-            {
-              src: "./icons/icon-32x32.svg",
-              sizes: "32x32",
-              type: "image/svg+xml"
-            }
-          ],
-          categories: ["productivity", "utilities"]
-        };
-        
-        // Create blob and update manifest link
-        const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        manifestLink.href = url;
-        
-        // Clean up URL after a delay
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }
     }
   }
 

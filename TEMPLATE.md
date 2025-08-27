@@ -1,13 +1,13 @@
-# 🚀 Event Timer PWA Template
+# 🚀 Event Timer Template
 
-This template creates a **Progressive Web App** for event timers that automatically deploys to GitHub Pages.
+This template creates a **web application** for event timers that automatically deploys to GitHub Pages.
 
 ## 🎯 What You Get
 
 A fully functional event timer website with:
 - ⏰ **Automatic Event Switching** - Shows current event automatically
 - 🔊 **Audio Feedback** - Sounds and speech synthesis
-- 📱 **PWA Features** - Installable on mobile/desktop
+- 🌐 **Web Application** - Works in any modern browser
 - 🎨 **Responsive Design** - Works on all devices
 - 🌙 **Dark/Light Mode** - Automatic theme detection
 - 📊 **Timeline View** - Visual event scheduling
@@ -113,17 +113,17 @@ Edit `data/settings.json`:
 - Or upload images to your repository
 - Or use any public image URL
 
-## 📱 PWA Features
+## 🌐 Web Application Features
 
-### Installation
-- **Mobile**: Add to home screen from browser menu
-- **Desktop**: Install prompt or browser menu
-- **Chrome**: "Install" button in address bar
+### Browser Support
+- **Modern Browsers**: Chrome, Firefox, Safari, Edge
+- **Mobile Browsers**: iOS Safari, Chrome Mobile
+- **Desktop**: All major browsers
 
-### Offline Support
-- Works without internet after first load
-- Caches all resources automatically
-- Updates when new version is deployed
+### Cross-Platform
+- Works on any device with a modern browser
+- No installation required
+- Instant access via URL
 
 ## 🔧 Advanced Configuration
 

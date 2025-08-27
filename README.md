@@ -1,6 +1,6 @@
-# Event Timer PWA
+# Event Timer
 
-A Progressive Web App for event timers with automatic switching and audio feedback.
+A web application for event timers with automatic switching and audio feedback.
 
 ## 🎯 Use This Template
 
@@ -85,7 +85,7 @@ After deployment, you can:
 
 ### 📱 Features You Get
 
-- ✅ **Progressive Web App** - Installable on mobile/desktop
+- ✅ **Web Application** - Works in any modern browser
 - ✅ **Automatic Deployment** - Updates on every push to main
 - ✅ **Responsive Design** - Works on all devices
 - ✅ **Audio Feedback** - Sounds and speech synthesis
@@ -205,10 +205,9 @@ The app automatically switches to event detail page:
 - **Configurable**: `autoSwitchSeconds` in settings.json
 - **Smart**: Only for upcoming events
 
-## 📱 PWA Features
+## 📱 Web Application Features
 
-- **Installable**: Install as native app
-- **Offline**: Works without internet
+- **Cross-Platform**: Works on any device with a modern browser
 - **Fullscreen**: Optimized for presentations
 - **Responsive**: Desktop, tablet, mobile
 
@@ -289,6 +288,7 @@ To make this repository available as a GitHub Template:
 - ✅ **Customizable**: Easy to modify for different use cases
 - ✅ **Well Documented**: Comprehensive setup instructions
 - ✅ **Production Ready**: Optimized for real-world usage
+- ✅ **No PWA Dependencies**: Simple web application
 
 ## 📄 License
 
