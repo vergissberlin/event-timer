@@ -69,34 +69,69 @@ This document describes the GitHub Actions workflows used in the Event Timer PWA
 
 ### Problem Solved
 
-The original configuration had a deadlock issue where both workflows were competing for the same concurrency group, causing deployments to fail.
+The original configuration had multiple deadlock issues:
+
+1. **Workflow vs Workflow**: Both workflows were competing for the same concurrency group
+2. **Workflow vs Job**: The deploy workflow had concurrency defined at both workflow and job level
+3. **Branch Conflicts**: Test workflow ran on both `main` and `develop`, conflicting with deploy workflow
 
 ### Solution
 
 1. **Separate Concurrency Groups**: Each workflow now has its own concurrency group
-2. **Branch-Specific Groups**: Concurrency groups include the branch reference to prevent conflicts
-3. **Different Triggers**: Test workflow only runs on `develop` pushes, deploy workflow on `main` pushes
+2. **Single Concurrency Definition**: Concurrency is defined only at workflow level, not at job level
+3. **Branch-Specific Groups**: Concurrency groups include the branch reference to prevent conflicts
+4. **Different Triggers**: Test workflow only runs on `develop` pushes, deploy workflow on `main` pushes
 
 ### Concurrency Rules
 
-#### Deploy Workflow
+#### Correct Configuration (Current)
 ```yaml
+# Deploy Workflow - Only at workflow level
 concurrency:
   group: "pages-deploy-${{ github.ref }}"
   cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    # No concurrency at job level
+    runs-on: ubuntu-latest
 ```
 
+#### Test Workflow
+```yaml
+# Test Workflow - Only at workflow level
+concurrency:
+  group: "tests-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  test:
+    # No concurrency at job level
+    runs-on: ubuntu-latest
+```
+
+#### ❌ Incorrect Configuration (Causes Deadlock)
+```yaml
+# DON'T DO THIS - Concurrency at both levels
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    concurrency:  # This causes deadlock!
+      group: "pages-deploy"
+      cancel-in-progress: false
+```
+
+#### Concurrency Behavior
+
+##### Deploy Workflow
 - **Group**: Unique per branch (`pages-deploy-refs/heads/main`)
 - **Behavior**: Queues new deployments, doesn't cancel running ones
 - **Reason**: Production deployments should complete even if new commits arrive
 
-#### Test Workflow
-```yaml
-concurrency:
-  group: "tests-${{ github.ref }}"
-  cancel-in-progress: true
-```
-
+##### Test Workflow
 - **Group**: Unique per branch (`tests-refs/heads/develop`)
 - **Behavior**: Cancels in-progress tests when new commits arrive
 - **Reason**: Tests should always run on the latest code
@@ -162,7 +197,15 @@ concurrency:
 
 #### 1. Concurrency Deadlock
 **Symptoms**: "Canceling since a deadlock was detected for concurrency group"
-**Solution**: Ensure concurrency groups are unique per workflow and branch
+**Causes**:
+- Multiple workflows using the same concurrency group
+- Concurrency defined at both workflow and job level
+- Branch conflicts between workflows
+
+**Solutions**:
+- Use unique concurrency groups per workflow: `pages-deploy-${{ github.ref }}` vs `tests-${{ github.ref }}`
+- Define concurrency only at workflow level, not at job level
+- Separate workflow triggers to avoid conflicts
 
 #### 2. Build Failures
 **Symptoms**: TypeScript compilation errors

@@ -357,10 +357,11 @@ class EventTimerApp {
       this.timerBackgroundElement.style.backgroundImage = 'none';
     }
     
-    // Update event title
+    // Update event title with icon
     const titleElement = this.eventTitleElement.querySelector('h2');
     if (titleElement) {
-      titleElement.textContent = this.currentEvent.title;
+      const icon = this.currentEvent.icon || 'ti ti-calendar';
+      titleElement.innerHTML = `<i class="${icon} mr-4 text-4xl md:text-6xl"></i>${this.currentEvent.title}`;
     }
     
     // Update event status info
