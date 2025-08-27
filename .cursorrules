@@ -96,10 +96,63 @@ tests/
 - Speech API for countdown
 - AudioContext management
 
-## Commit Messages
-- English commit messages
-- Conventional Commits format
-- Clear, descriptive messages
+## Versioning & Commits
+
+### Semantic Versioning
+- Follow **Semantic Versioning (SemVer)** format: `MAJOR.MINOR.PATCH`
+- **MAJOR**: Breaking changes, incompatible API changes
+- **MINOR**: New features, backward compatible
+- **PATCH**: Bug fixes, backward compatible
+- Update version in `package.json` before release
+- Use `pnpm version` commands for versioning
+
+### Conventional Commits
+- Use **Conventional Commits** format: `<type>[optional scope]: <description>`
+- **Types**:
+  - `feat`: New features
+  - `fix`: Bug fixes
+  - `docs`: Documentation changes
+  - `style`: Code style changes (formatting, etc.)
+  - `refactor`: Code refactoring
+  - `test`: Test additions or changes
+  - `chore`: Build process, tooling changes
+  - `perf`: Performance improvements
+  - `ci`: CI/CD changes
+  - `build`: Build system changes
+  - `revert`: Revert previous commits
+
+- **Scope** (optional): Component or feature affected
+- **Description**: Clear, concise description in present tense
+- **Body** (optional): Detailed explanation
+- **Footer** (optional): Breaking changes, issue references
+
+### Commit Examples
+```
+feat: add auto-switch feature for events
+feat(audio): implement Web Audio API for dynamic sounds
+fix(timer): resolve off-by-one error in countdown
+fix: correct GitHub Actions concurrency issue
+docs: update README with new features
+test: add unit tests for EventsManager
+chore: update dependencies to latest versions
+ci: fix deprecated GitHub Actions versions
+build: optimize bundle size with tree shaking
+revert: revert breaking change in timer logic
+```
+
+### Version Management
+- Use `pnpm version patch` for bug fixes
+- Use `pnpm version minor` for new features
+- Use `pnpm version major` for breaking changes
+- Tag releases with `git tag v1.0.0`
+- Push tags with `git push --tags`
+
+### Migration to New Standards
+- **Current Version**: 1.0.0 (Semantic Versioning compliant)
+- **Next Commits**: Use Conventional Commits format
+- **Breaking Changes**: Document in commit body with `BREAKING CHANGE:`
+- **Issue References**: Use `Closes #123` or `Fixes #123` in commit footer
+- **Release Notes**: Generate from Conventional Commits for GitHub releases
 
 ## File Structure
 ```
