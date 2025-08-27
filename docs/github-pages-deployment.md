@@ -244,6 +244,7 @@ Failed to load resource: /data/events.json (404)
 - Production paths: `/event-timer/data/settings.json`, `/event-timer/data/events.json`
 - Development paths: `/data/settings.json`, `/data/events.json`
 - Hostname-based detection: `vergissberlin.github.io` = production
+- **Important**: Data files must be in `public/data/` for Vite to copy them to `dist/`
 
 **Implementation:**
 ```javascript
@@ -270,8 +271,7 @@ Failed to load resource: manifest.json (404)
 public/
 ├── icons/
 │   ├── icon-16x16.svg
-│   ├── icon-32x32.svg
-│   └── icon-192x192.png
+│   └── icon-32x32.svg
 ├── images/
 ├── data/
 │   ├── events.json
@@ -359,6 +359,7 @@ The build script performs post-processing after Vite build:
 - [ ] Local Tailwind CSS is used (not CDN)
 - [ ] All paths use absolute URLs for subdirectory deployment (`/event-timer/` prefix)
 - [ ] Vite base path is configured (`base: '/event-timer/'`)
+- [ ] Data files are copied to `public/data/` (for production deployment)
 - [ ] Build completes without errors
 
 ### After Deployment

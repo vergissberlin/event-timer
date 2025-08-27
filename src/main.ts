@@ -1258,11 +1258,7 @@ class EventTimerApp {
               sizes: "32x32",
               type: "image/svg+xml"
             },
-            {
-              src: "/event-timer/icons/icon-192x192.png",
-              sizes: "192x192",
-              type: "image/png"
-            }
+
           ],
           categories: ["productivity", "utilities"],
           screenshots: []

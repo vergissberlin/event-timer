@@ -1,0 +1,26 @@
+{
+  "theme": {
+    "primary": "#3b82f6",
+    "secondary": "#1e40af",
+    "accent": "#60a5fa",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444",
+    "info": "#06b6d4"
+  },
+  "app": {
+    "name": "Event Timer",
+    "shortName": "Timer",
+    "description": "Progressive Web App für Event-Timer",
+    "favicon": {
+      "primary": "#3b82f6",
+      "secondary": "#1e40af",
+      "accent": "#60a5fa"
+    }
+  },
+  "audioEnabled": true,
+  "speechEnabled": true,
+  "fullscreenByDefault": false,
+  "autoStart": true,
+  "autoSwitchSeconds": 30
+}
