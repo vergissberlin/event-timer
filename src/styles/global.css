@@ -1,0 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Projektweite Ergänzungen */
+html, body { height: 100%; }

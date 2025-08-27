@@ -305,7 +305,6 @@ class EventTimerApp {
     const nextEvent = this.eventsManager.getNextEvent(events);
     const isNextEvent = nextEvent && nextEvent.id === event.id;
     
-    let statusClass = '';
     let statusText = '';
     let rowBackgroundClass = '';
     let buttonDisabled = false;
@@ -323,18 +322,15 @@ class EventTimerApp {
     
     switch (status) {
       case 'upcoming':
-        statusClass = 'text-blue-400';
         statusText = 'Geplant';
         if (isNextEvent) {
           rowBackgroundClass = 'bg-blue-50 dark:bg-blue-900/20';
         }
         break;
       case 'running':
-        statusClass = 'text-green-400';
         statusText = 'Läuft';
         break;
       case 'finished':
-        statusClass = 'text-gray-500';
         statusText = 'Beendet';
         buttonDisabled = true;
         buttonClass = 'px-3 py-1 text-sm bg-gray-400 text-gray-200 rounded cursor-not-allowed';
