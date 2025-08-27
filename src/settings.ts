@@ -4,8 +4,15 @@ export class SettingsManager {
   private settings: AppSettings;
   private settingsUrl: string;
 
-  constructor(settingsUrl: string = '/data/settings.json') {
-    this.settingsUrl = settingsUrl;
+  constructor(settingsUrl?: string) {
+    // Auto-detect environment and set correct path
+    if (settingsUrl) {
+      this.settingsUrl = settingsUrl;
+    } else {
+      // Check if we're in production (GitHub Pages)
+      const isProduction = window.location.hostname === 'vergissberlin.github.io';
+      this.settingsUrl = isProduction ? '/event-timer/data/settings.json' : '/data/settings.json';
+    }
     this.settings = this.getDefaultSettings();
   }
 

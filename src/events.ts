@@ -4,8 +4,15 @@ export class EventsManager {
   private events: Event[] = [];
   private dataUrl: string;
 
-  constructor(dataUrl: string = '/data/events.json') {
-    this.dataUrl = dataUrl;
+  constructor(dataUrl?: string) {
+    // Auto-detect environment and set correct path
+    if (dataUrl) {
+      this.dataUrl = dataUrl;
+    } else {
+      // Check if we're in production (GitHub Pages)
+      const isProduction = window.location.hostname === 'vergissberlin.github.io';
+      this.dataUrl = isProduction ? '/event-timer/data/events.json' : '/data/events.json';
+    }
   }
 
   public async loadEvents(): Promise<Event[]> {

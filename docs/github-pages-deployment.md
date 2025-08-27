@@ -231,7 +231,28 @@ html = html.replace(
 );
 ```
 
-### 9. Missing PWA Manifest
+### 9. Data Loading Issues
+
+**Problem:**
+```
+Failed to load resource: /data/settings.json (404)
+Failed to load resource: /data/events.json (404)
+```
+
+**Solution:**
+- Automatic environment detection in SettingsManager and EventsManager
+- Production paths: `/event-timer/data/settings.json`, `/event-timer/data/events.json`
+- Development paths: `/data/settings.json`, `/data/events.json`
+- Hostname-based detection: `vergissberlin.github.io` = production
+
+**Implementation:**
+```javascript
+// Auto-detect environment and set correct path
+const isProduction = window.location.hostname === 'vergissberlin.github.io';
+this.settingsUrl = isProduction ? '/event-timer/data/settings.json' : '/data/settings.json';
+```
+
+### 10. Missing PWA Manifest
 
 **Problem:**
 ```
@@ -303,6 +324,7 @@ export default defineConfig(({ command }) => {
 - Data files: `/event-timer/data/events.json`, `/event-timer/data/settings.json`
 - Full PWA features (manifest, service worker, icons)
 - Build script replaces CDN with local CSS
+- Automatic path detection in SettingsManager and EventsManager
 
 ### Package.json Scripts
 ```json

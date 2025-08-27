@@ -7,7 +7,6 @@ const urlsToCache = [
   '/event-timer/tailwind.css',
   '/event-timer/icons/icon-16x16.svg',
   '/event-timer/icons/icon-32x32.svg',
-  '/event-timer/icons/icon-192x192.png',
   '/event-timer/data/events.json',
   '/event-timer/data/settings.json'
 ];
@@ -18,7 +17,15 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache);
+        // Use addAll with error handling for individual files
+        return Promise.allSettled(
+          urlsToCache.map(url => 
+            cache.add(url).catch(error => {
+              console.warn(`Failed to cache ${url}:`, error);
+              return null; // Continue with other files
+            })
+          )
+        );
       })
   );
 });
