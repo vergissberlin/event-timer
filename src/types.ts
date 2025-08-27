@@ -32,13 +32,16 @@ export interface Event {
 }
 
 export interface AppSettings {
-  theme: AppTheme;
-  app: AppConfig;
+  app: {
+    name: string;
+    shortName: string;
+    description: string;
+  };
   audioEnabled: boolean;
   speechEnabled: boolean;
-  fullscreenByDefault: boolean;
   autoStart: boolean;
   autoSwitchSeconds: number;
+  showBreakTimes: boolean;
 }
 
 export interface EventsData {

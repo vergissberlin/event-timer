@@ -177,7 +177,32 @@ private handleRouteChange(): void {
 }
 ```
 
-### 7. Missing PWA Manifest
+### 7. Development Mode Issues
+
+**Problem:**
+```
+Manifest: property 'start_url' ignored, URL is invalid
+SW registration failed: SecurityError
+Failed to load settings: SyntaxError: Unexpected token '<'
+```
+
+**Solution:**
+- PWA features are automatically disabled in development
+- Data files use relative paths in development
+- Manifest and service worker only load in production
+
+**Implementation:**
+```html
+<!-- Automatic detection in index.html -->
+<script>
+  // Only load manifest in production
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    // Load PWA features
+  }
+</script>
+```
+
+### 8. Missing PWA Manifest
 
 **Problem:**
 ```
@@ -211,22 +236,44 @@ public/
 ### Vite Configuration
 ```typescript
 // vite.config.ts
-export default defineConfig({
-  base: '/event-timer/', // Required for subdirectory deployment
-  build: {
-    copyPublicDir: true, // Ensures public files are copied to dist
-    outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js'
+export default defineConfig(({ command }) => {
+  const isProduction = command === 'build';
+  
+  return {
+    base: isProduction ? '/event-timer/' : '/',
+    build: {
+      copyPublicDir: true, // Ensures public files are copied to dist
+      outDir: 'dist',
+      assetsDir: 'assets',
+      rollupOptions: {
+        output: {
+          assetFileNames: 'assets/[name]-[hash][extname]',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js'
+        }
       }
     }
-  }
+  };
 });
 ```
+
+### Development vs Production
+
+**Development Mode:**
+- Uses Tailwind CSS CDN (warning suppressed)
+- Base path: `/`
+- URLs: `/event/default-presentation`
+- Data files: `/data/events.json`, `/data/settings.json`
+- No PWA features (manifest, service worker, icons)
+- No PostCSS processing
+
+**Production Mode:**
+- Uses local Tailwind CSS file
+- Base path: `/event-timer/`
+- URLs: `/event-timer/event/default-presentation`
+- Data files: `/event-timer/data/events.json`, `/event-timer/data/settings.json`
+- Full PWA features (manifest, service worker, icons)
+- Build script replaces CDN with local CSS
 
 ### Package.json Scripts
 ```json

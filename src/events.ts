@@ -4,7 +4,7 @@ export class EventsManager {
   private events: Event[] = [];
   private dataUrl: string;
 
-  constructor(dataUrl: string = '/event-timer/data/events.json') {
+  constructor(dataUrl: string = '/data/events.json') {
     this.dataUrl = dataUrl;
   }
 
@@ -23,15 +23,20 @@ export class EventsManager {
         throw new Error('Invalid events data structure');
       }
       
-      this.events = data.events.map(event => this.validateEvent(event));
+      // Filter out invalid events, validate the rest, and sort chronologically
+      this.events = data.events
+        .filter(event => event && typeof event === 'object')
+        .map(event => this.validateEvent(event))
+        .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
       
       console.log(`Loaded ${this.events.length} events`);
       return this.events;
       
     } catch (error) {
       console.error('Failed to load events:', error);
-      // Return default events if loading fails
-      return this.getDefaultEvents();
+      // Return empty array if loading fails - no default events
+      this.events = [];
+      return this.events;
     }
   }
 
@@ -59,24 +64,7 @@ export class EventsManager {
 
 
 
-  private getDefaultEvents(): Event[] {
-    return [
-      {
-        id: 'default-presentation',
-        title: 'Standard Präsentation',
-        startTime: new Date().toISOString(),
-        duration: 1800,
-        description: '30-minütige Standard-Präsentation'
-      },
-      {
-        id: 'default-break',
-        title: 'Pause',
-        startTime: new Date().toISOString(),
-        duration: 900,
-        description: '15-minütige Pause'
-      }
-    ];
-  }
+
 
 
 
@@ -96,18 +84,21 @@ export class EventsManager {
     });
 
     try {
-      await Promise.all(imagePromises);
-      console.log('All images preloaded successfully');
+      await Promise.allSettled(imagePromises);
+      console.log('Image preloading completed');
     } catch (error) {
       console.warn('Some images failed to preload:', error);
     }
   }
 
   private preloadImage(src: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => resolve();
-      img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+      img.onerror = () => {
+        console.warn(`Failed to preload image: ${src}`);
+        resolve(); // Don't reject, just resolve to continue
+      };
       img.src = src;
     });
   }
@@ -175,7 +166,8 @@ export class EventsManager {
   public getTimeUntilStart(event: Event): number {
     const now = new Date();
     const startTime = new Date(event.startTime);
-    return Math.max(0, Math.floor((startTime.getTime() - now.getTime()) / 1000));
+    const timeDiff = startTime.getTime() - now.getTime();
+    return Math.max(0, Math.floor(timeDiff / 1000));
   }
 
   public getTimeRemaining(event: Event): number {
@@ -183,6 +175,29 @@ export class EventsManager {
     const startTime = new Date(event.startTime);
     const endTime = new Date(startTime.getTime() + event.duration * 1000);
     return Math.max(0, Math.floor((endTime.getTime() - now.getTime()) / 1000));
+  }
+
+  public getBreakTimeBetweenEvents(event1: Event, event2: Event): number {
+    const endTime1 = new Date(event1.startTime);
+    endTime1.setSeconds(endTime1.getSeconds() + event1.duration);
+    
+    const startTime2 = new Date(event2.startTime);
+    const timeDiff = startTime2.getTime() - endTime1.getTime();
+    
+    return Math.max(0, Math.floor(timeDiff / 1000));
+  }
+
+  public formatBreakTime(seconds: number): string {
+    if (seconds === 0) return 'Keine Pause';
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}min Pause`;
+    } else {
+      return `${minutes}min Pause`;
+    }
   }
 
   public formatDateTime(dateTime: string): string {

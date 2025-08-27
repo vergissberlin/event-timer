@@ -44,8 +44,8 @@ describe('SettingsManager', () => {
 
       const settings = await settingsManager.loadSettings();
 
-      expect(settings.app.name).toBe('Event Timer'); // Default value from validation
-      expect(settings.app.shortName).toBe('Timer'); // Default value from validation
+      expect(settings.app.name).toBe('Test Event Timer'); // Value from mock data
+      expect(settings.app.shortName).toBe('Test Timer'); // Value from mock data
       expect(settings.audioEnabled).toBe(true);
       expect(settings.speechEnabled).toBe(true);
     });
@@ -89,13 +89,13 @@ describe('SettingsManager', () => {
     });
 
     it('should handle null settings', () => {
-      const validated = settingsManager.validateSettings(null as any);
+      const validated = settingsManager.validateSettings(null);
       expect(validated.app.name).toBe('Event Timer');
       expect(validated.audioEnabled).toBe(true);
     });
 
     it('should handle undefined settings', () => {
-      const validated = settingsManager.validateSettings(undefined as any);
+      const validated = settingsManager.validateSettings(undefined);
       expect(validated.app.name).toBe('Event Timer');
       expect(validated.audioEnabled).toBe(true);
     });
@@ -123,33 +123,13 @@ describe('SettingsManager', () => {
       await settingsManager.loadSettings();
       const settings = settingsManager.getSettings();
 
-      expect(settings.app.name).toBe('Event Timer'); // Default value from validation
+      expect(settings.app.name).toBe('Test Event Timer'); // Value from mock data
       expect(settings.audioEnabled).toBe(true);
     });
 
     it('should return default settings when not loaded', () => {
       const settings = settingsManager.getSettings();
       expect(settings.app.name).toBe('Event Timer');
-    });
-  });
-
-  describe('getTheme', () => {
-    it('should return current theme', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockSettings
-      });
-
-      await settingsManager.loadSettings();
-      const theme = settingsManager.getTheme();
-
-      expect(theme.primary).toBe('#3b82f6');
-      expect(theme.secondary).toBe('#1e40af');
-    });
-
-    it('should return default theme when not loaded', () => {
-      const theme = settingsManager.getTheme();
-      expect(theme.primary).toBe('#3b82f6');
     });
   });
 
@@ -163,8 +143,8 @@ describe('SettingsManager', () => {
       await settingsManager.loadSettings();
       const appConfig = settingsManager.getAppConfig();
 
-      expect(appConfig.name).toBe('Event Timer'); // Default value from validation
-      expect(appConfig.shortName).toBe('Timer'); // Default value from validation
+      expect(appConfig.name).toBe('Test Event Timer'); // Value from mock data
+      expect(appConfig.shortName).toBe('Test Timer'); // Value from mock data
     });
 
     it('should return default app config when not loaded', () => {

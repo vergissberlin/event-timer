@@ -27,6 +27,32 @@ describe('EventsManager', () => {
     ]
   };
 
+  const mockUnsortedEventsData = {
+    events: [
+      {
+        id: 'event-3',
+        title: 'Test Event 3',
+        startTime: '2025-08-27T14:00:00',
+        duration: 1800,
+        description: 'Test description 3'
+      },
+      {
+        id: 'event-1',
+        title: 'Test Event 1',
+        startTime: '2025-08-27T10:00:00',
+        duration: 3600,
+        description: 'Test description 1'
+      },
+      {
+        id: 'event-2',
+        title: 'Test Event 2',
+        startTime: '2025-08-27T12:00:00',
+        duration: 1800,
+        description: 'Test description 2'
+      }
+    ]
+  };
+
   describe('loadEvents', () => {
     it('should load events successfully', async () => {
       (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -50,6 +76,20 @@ describe('EventsManager', () => {
       const events = await eventsManager.loadEvents();
 
       expect(events).toEqual([]);
+    });
+
+    it('should sort events chronologically', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockUnsortedEventsData
+      });
+
+      const events = await eventsManager.loadEvents();
+
+      expect(events).toHaveLength(3);
+      expect(events[0].id).toBe('event-1'); // 10:00
+      expect(events[1].id).toBe('event-2'); // 12:00
+      expect(events[2].id).toBe('event-3'); // 14:00
     });
   });
 

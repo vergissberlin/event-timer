@@ -1,11 +1,10 @@
-import { AppSettings, SettingsData } from './types';
-import { FaviconGenerator } from './favicon';
+import { AppSettings } from './types';
 
 export class SettingsManager {
   private settings: AppSettings;
   private settingsUrl: string;
 
-  constructor(settingsUrl: string = '/event-timer/data/settings.json') {
+  constructor(settingsUrl: string = '/data/settings.json') {
     this.settingsUrl = settingsUrl;
     this.settings = this.getDefaultSettings();
   }
@@ -18,14 +17,16 @@ export class SettingsManager {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data: SettingsData = await response.json();
+      const data: any = await response.json();
       
-      // Validate data structure
-      if (!data.settings) {
+      // Validate data structure - settings can be either at root level or in a 'settings' property
+      const settingsData = data.settings || data;
+      
+      if (!settingsData || typeof settingsData !== 'object') {
         throw new Error('Invalid settings data structure');
       }
       
-      this.settings = this.validateSettings(data.settings);
+      this.settings = this.validateSettings(settingsData);
       
       // Update favicon with theme colors
       this.updateFavicon();
@@ -40,131 +41,53 @@ export class SettingsManager {
     }
   }
 
-  private validateSettings(settings: any): AppSettings {
-    const defaultSettings = this.getDefaultSettings();
+  private validateSettings(data: any): AppSettings {
+    if (!data || typeof data !== 'object') {
+      return this.getDefaultSettings();
+    }
     
-    if (!settings || typeof settings !== 'object') {
-      return defaultSettings;
-    }
-
     return {
-      theme: this.validateTheme(settings.theme),
-      app: this.validateAppConfig(settings.app),
-      audioEnabled: typeof settings.audioEnabled === 'boolean' ? settings.audioEnabled : defaultSettings.audioEnabled,
-      speechEnabled: typeof settings.speechEnabled === 'boolean' ? settings.speechEnabled : defaultSettings.speechEnabled,
-      fullscreenByDefault: typeof settings.fullscreenByDefault === 'boolean' ? settings.fullscreenByDefault : defaultSettings.fullscreenByDefault,
-      autoStart: typeof settings.autoStart === 'boolean' ? settings.autoStart : defaultSettings.autoStart,
-      autoSwitchSeconds: typeof settings.autoSwitchSeconds === 'number' ? settings.autoSwitchSeconds : defaultSettings.autoSwitchSeconds
-    };
-  }
-
-  private validateTheme(theme: any): AppSettings['theme'] {
-    const defaultTheme = {
-      primary: '#3b82f6',
-      secondary: '#1e40af',
-      accent: '#60a5fa',
-      success: '#10b981',
-      warning: '#f59e0b',
-      error: '#ef4444',
-      info: '#06b6d4'
-    };
-
-    if (!theme || typeof theme !== 'object') {
-      return defaultTheme;
-    }
-
-    return {
-      primary: theme.primary || defaultTheme.primary,
-      secondary: theme.secondary || defaultTheme.secondary,
-      accent: theme.accent || defaultTheme.accent,
-      success: theme.success || defaultTheme.success,
-      warning: theme.warning || defaultTheme.warning,
-      error: theme.error || defaultTheme.error,
-      info: theme.info || defaultTheme.info
-    };
-  }
-
-  private validateAppConfig(app: any): AppSettings['app'] {
-    const defaultApp = {
-      name: 'Event Timer',
-      shortName: 'Timer',
-      description: 'Progressive Web App für Event-Timer',
-      favicon: {
-        primary: '#3b82f6',
-        secondary: '#1e40af',
-        accent: '#60a5fa'
-      }
-    };
-
-    if (!app || typeof app !== 'object') {
-      return defaultApp;
-    }
-
-    return {
-      name: app.name || defaultApp.name,
-      shortName: app.shortName || defaultApp.shortName,
-      description: app.description || defaultApp.description,
-      favicon: this.validateFaviconTheme(app.favicon)
-    };
-  }
-
-  private validateFaviconTheme(favicon: any): AppSettings['app']['favicon'] {
-    const defaultFavicon = {
-      primary: '#3b82f6',
-      secondary: '#1e40af',
-      accent: '#60a5fa'
-    };
-
-    if (!favicon || typeof favicon !== 'object') {
-      return defaultFavicon;
-    }
-
-    return {
-      primary: favicon.primary || defaultFavicon.primary,
-      secondary: favicon.secondary || defaultFavicon.secondary,
-      accent: favicon.accent || defaultFavicon.accent
+      app: {
+        name: data.app?.name || 'Event Timer',
+        shortName: data.app?.shortName || 'Timer',
+        description: data.app?.description || 'Progressive Web App für Event-Timer'
+      },
+      audioEnabled: typeof data.audioEnabled === 'boolean' ? data.audioEnabled : true,
+      speechEnabled: typeof data.speechEnabled === 'boolean' ? data.speechEnabled : true,
+      autoStart: typeof data.autoStart === 'boolean' ? data.autoStart : false,
+      autoSwitchSeconds: typeof data.autoSwitchSeconds === 'number' ? data.autoSwitchSeconds : 30,
+      showBreakTimes: typeof data.showBreakTimes === 'boolean' ? data.showBreakTimes : true
     };
   }
 
   private getDefaultSettings(): AppSettings {
     return {
-      theme: {
-        primary: '#3b82f6',
-        secondary: '#1e40af',
-        accent: '#60a5fa',
-        success: '#10b981',
-        warning: '#f59e0b',
-        error: '#ef4444',
-        info: '#06b6d4'
-      },
       app: {
         name: 'Event Timer',
         shortName: 'Timer',
-        description: 'Progressive Web App für Event-Timer',
-        favicon: {
-          primary: '#3b82f6',
-          secondary: '#1e40af',
-          accent: '#60a5fa'
-        }
+        description: 'Progressive Web App für Event-Timer'
       },
       audioEnabled: true,
       speechEnabled: true,
-      fullscreenByDefault: false,
-      autoStart: true,
-      autoSwitchSeconds: 30
+      autoStart: false,
+      autoSwitchSeconds: 30,
+      showBreakTimes: true
     };
   }
 
   private updateFavicon(): void {
-    FaviconGenerator.updateFavicon(this.settings.app.favicon);
+    // Favicon update is now handled differently
+    // This method can be removed or simplified
   }
 
   public getSettings(): AppSettings {
-    return { ...this.settings };
+    return this.settings;
   }
 
-  public getTheme(): AppSettings['theme'] {
-    return { ...this.settings.theme };
+  public updateSettings(newSettings: AppSettings): void {
+    this.settings = newSettings;
+    // Save to localStorage for persistence
+    localStorage.setItem('appSettings', JSON.stringify(newSettings));
   }
 
   public getAppConfig(): AppSettings['app'] {

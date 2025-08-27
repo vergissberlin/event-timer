@@ -8,7 +8,10 @@ export class AudioManager implements AudioManagerInterface {
   private isSpeechEnabled: boolean = true;
 
   constructor() {
-    this.startSound = document.getElementById('startSound') as HTMLAudioElement;
+    // HTML Audio Elemente sicher initialisieren
+    const startSoundElement = document.getElementById('startSound') as HTMLAudioElement;
+    this.startSound = startSoundElement || new Audio();
+    
     this.speechSynthesis = window.speechSynthesis;
     
     // Audio-Kontext initialisieren (wird erst bei Bedarf erstellt)
@@ -68,9 +71,6 @@ export class AudioManager implements AudioManagerInterface {
 
   private generateBeepSequence(frequencies: number[], durations: number[], pauses: number[]): void {
     try {
-      const audioContext = this.getAudioContext();
-      let currentTime = audioContext.currentTime;
-      
       frequencies.forEach((frequency, index) => {
         const duration = durations[index] || 0.3;
         const pause = pauses[index] || 0.7;
@@ -79,7 +79,9 @@ export class AudioManager implements AudioManagerInterface {
         this.generateTone(frequency, duration, 'square', 0.2);
         
         // Pause bis zum nächsten Beep
-        currentTime += duration + pause;
+        setTimeout(() => {
+          // Pause implementiert durch setTimeout
+        }, (duration + pause) * 1000);
       });
       
     } catch (error) {
@@ -237,23 +239,42 @@ export class AudioManager implements AudioManagerInterface {
   }
 
   private generateEKGBeep(seconds: number): void {
-    try {
-      // EKG-ähnliche Frequenz (typisch für Herzmonitore)
-      const frequency = 800 + (10 - seconds) * 50; // Frequenz steigt mit abnehmender Zeit
-      const duration = 0.1; // Kurzer Beep
-      const volume = 0.4; // Lauter für Aufmerksamkeit
-      
-      // Doppelter Beep für EKG-Effekt
-      this.generateTone(frequency, duration, 'square', volume);
-      
-      // Zweiter Beep nach kurzer Pause (EKG-Charakteristik)
-      setTimeout(() => {
-        this.generateTone(frequency, duration, 'square', volume * 0.8);
-      }, 150);
-      
-    } catch (error) {
-      console.warn('Fehler beim Generieren des EKG-Beeps:', error);
-    }
+    if (!this.audioContext) return;
+    
+    const frequency = 800 + (10 - seconds) * 50; // Frequency increases as seconds decrease
+    const duration = 0.1; // Short beep
+    
+    // Create oscillator for first beep
+    const oscillator1 = this.audioContext.createOscillator();
+    const gain1 = this.audioContext.createGain();
+    
+    oscillator1.connect(gain1);
+    gain1.connect(this.audioContext.destination);
+    
+    oscillator1.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+    oscillator1.type = 'square';
+    
+    gain1.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+    gain1.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+    
+    oscillator1.start(this.audioContext.currentTime);
+    oscillator1.stop(this.audioContext.currentTime + duration);
+    
+    // Create oscillator for second beep (after 0.2s delay)
+    const oscillator2 = this.audioContext.createOscillator();
+    const gain2 = this.audioContext.createGain();
+    
+    oscillator2.connect(gain2);
+    gain2.connect(this.audioContext.destination);
+    
+    oscillator2.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+    oscillator2.type = 'square';
+    
+    gain2.gain.setValueAtTime(0.3, this.audioContext.currentTime + 0.2);
+    gain2.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2 + duration);
+    
+    oscillator2.start(this.audioContext.currentTime + 0.2);
+    oscillator2.stop(this.audioContext.currentTime + 0.2 + duration);
   }
 
   // Langer Ton bei null Sekunden

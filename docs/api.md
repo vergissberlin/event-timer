@@ -152,6 +152,8 @@ document.addEventListener('click', () => {
 
 ### EventsManager-Klasse
 
+**Important**: No default events are provided. All events must be configured in the JSON file. Events are automatically sorted chronologically by start time.
+
 ```typescript
 class EventsManager {
   constructor();

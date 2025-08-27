@@ -10,6 +10,8 @@ A Progressive Web App for event timers with automatic switching and audio feedba
 
 ## 📝 Event Configuration
 
+**Important**: The app only displays events from `data/events.json`. No default events are provided - you must configure your own events. Events are automatically sorted chronologically by start time. If no events are configured, a helpful message will be displayed with instructions on how to add events.
+
 Events are configured in `data/events.json`:
 
 ```json
@@ -168,3 +170,23 @@ For developers and contributors see:
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file.
+
+## Features
+
+### 🎨 **Theme Management**
+- **Automatisches Dark/Light Mode**: Erkennt das Betriebssystem-Theme automatisch
+- **Persistierung**: Speichert Theme-Auswahl im localStorage
+- **Manueller Toggle**: Button zum Umschalten zwischen Light und Dark Mode
+- **System-Integration**: Reagiert auf Änderungen des Betriebssystem-Themes (wenn kein Theme gespeichert ist)
+
+### ⏰ **Timer-Funktionalität**
+- **Vollbild-Timer**: Sekundengenaue Anzeige im Format HH:MM:SS
+- **Automatische Events**: Events starten automatisch basierend auf ihrer Startzeit
+- **Countdown-Modus**: Zeigt Countdown bis zum Event-Start an
+- **Auto-Switch**: Automatisches Wechseln zur Detailseite 30 Sekunden vor Event-Start (konfigurierbar)
+
+### 📊 **Pausenzeiten-Anzeige**
+- **Automatische Berechnung**: Zeigt Pausenzeiten zwischen Events an
+- **Ein-/Ausblenden**: Toggle-Button zum Verstecken der Pausenzeiten
+- **Visuelle Darstellung**: Blaue Hintergrundfarbe für Pausenzeiten-Zeilen
+- **Benutzerfreundlich**: Format wie "1h 30min Pause" mit Zeitraum

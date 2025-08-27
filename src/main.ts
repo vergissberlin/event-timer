@@ -30,12 +30,14 @@ class EventTimerApp {
   private timerElement!: HTMLElement;
   private timerBackgroundElement!: HTMLElement;
   private eventTitleElement!: HTMLElement;
+  private eventDescriptionElement!: HTMLElement;
   private countdownTimerElement!: HTMLElement;
   private timelineBarElement!: HTMLElement;
   private currentTimeMarkerElement!: HTMLElement;
   private currentTimeDisplayElement!: HTMLElement;
   private hourMarkersElement!: HTMLElement;
   private themeToggleBtn!: HTMLButtonElement;
+  private breakTimesToggleBtn!: HTMLButtonElement;
   private fullscreenBtnOverview!: HTMLButtonElement;
   private shareBtn!: HTMLButtonElement;
   private shareBtnTimer!: HTMLButtonElement;
@@ -77,12 +79,14 @@ class EventTimerApp {
     this.timerElement = document.getElementById('timer')!;
     this.timerBackgroundElement = document.getElementById('timerBackground')!;
     this.eventTitleElement = document.getElementById('eventTitle')!;
+    this.eventDescriptionElement = document.getElementById('eventDescription')!;
     this.countdownTimerElement = document.getElementById('countdownTimer')!;
     this.timelineBarElement = document.getElementById('timelineBar')!;
     this.currentTimeMarkerElement = document.getElementById('currentTimeMarker')!;
     this.currentTimeDisplayElement = document.getElementById('currentTimeDisplay')!;
     this.hourMarkersElement = document.getElementById('hourMarkers')!;
     this.themeToggleBtn = document.getElementById('themeToggle') as HTMLButtonElement;
+    this.breakTimesToggleBtn = document.getElementById('breakTimesToggle') as HTMLButtonElement;
     this.fullscreenBtnOverview = document.getElementById('fullscreenBtnOverview') as HTMLButtonElement;
     this.shareBtn = document.getElementById('shareBtn') as HTMLButtonElement;
     this.shareBtnTimer = document.getElementById('shareBtnTimer') as HTMLButtonElement;
@@ -115,6 +119,7 @@ class EventTimerApp {
     this.closeBtn.addEventListener('click', () => this.showEventSelection());
     this.goToNextEventBtn.addEventListener('click', () => this.goToNextEvent());
     this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+    this.breakTimesToggleBtn.addEventListener('click', () => this.toggleBreakTimes());
     this.fullscreenBtnOverview.addEventListener('click', () => this.toggleFullscreen());
     this.shareBtn.addEventListener('click', () => this.showQrModal());
     this.shareBtnTimer.addEventListener('click', () => this.showQrModal());
@@ -168,10 +173,17 @@ class EventTimerApp {
       // Initialize theme
       this.initializeTheme();
       
+      // Initialize break times button state
+      this.updateBreakTimesButtonState();
+      
       // Load settings and update app title
       const settings = await this.settingsManager.loadSettings();
       this.updateAppTitle(settings.app.name);
-      this.updateManifest(settings.app);
+      
+      // Only update manifest in production
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        this.updateManifest(settings.app);
+      }
       
       // Load events
       const events = await this.eventsManager.loadEvents();
@@ -203,9 +215,23 @@ class EventTimerApp {
   private renderEventGrid(events: Event[]): void {
     this.eventTableBody.innerHTML = '';
     
-    events.forEach(event => {
+    if (events.length === 0) {
+      // Show helpful message when no events are configured
+      this.showNoEventsMessage();
+      return;
+    }
+    
+    const settings = this.settingsManager.getSettings();
+    
+    events.forEach((event, index) => {
       const eventRow = this.createEventRow(event);
       this.eventTableBody.appendChild(eventRow);
+      
+      // Add break time row after each event (except the last one)
+      if (settings.showBreakTimes && index < events.length - 1) {
+        const breakTimeRow = this.createBreakTimeRow(event, events[index + 1]);
+        this.eventTableBody.appendChild(breakTimeRow);
+      }
     });
     
     // Render timeline
@@ -221,6 +247,40 @@ class EventTimerApp {
     setInterval(() => {
       this.updateCurrentTimeMarker();
     }, 60000);
+  }
+
+  private showNoEventsMessage(): void {
+    const noEventsRow = document.createElement('tr');
+    noEventsRow.innerHTML = `
+      <td colspan="6" class="px-4 py-8 text-center">
+        <div class="flex flex-col items-center space-y-4">
+          <i class="ti ti-calendar-off text-4xl text-gray-400"></i>
+          <div class="text-gray-600 dark:text-gray-400">
+            <h3 class="text-lg font-semibold mb-2">Keine Events konfiguriert</h3>
+            <p class="text-sm mb-4">Füge Events in der Datei <code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">data/events.json</code> hinzu:</p>
+            <div class="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg text-left max-w-md">
+              <pre class="text-xs text-gray-700 dark:text-gray-300 overflow-x-auto"><code>{
+  "events": [
+    {
+      "id": "meeting",
+      "title": "Team Meeting",
+      "startTime": "2025-08-27T10:00:00",
+      "duration": 1800,
+      "icon": "ti ti-users",
+      "description": "Tägliches Team Meeting"
+    }
+  ]
+}</code></pre>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">
+              <i class="ti ti-info-circle mr-1"></i>
+              Nach dem Speichern der Datei wird die Seite automatisch neu geladen.
+            </p>
+          </div>
+        </div>
+      </td>
+    `;
+    this.eventTableBody.appendChild(noEventsRow);
   }
 
   private createEventRow(event: Event): HTMLElement {
@@ -301,6 +361,35 @@ class EventTimerApp {
     return row;
   }
 
+  private createBreakTimeRow(currentEvent: Event, nextEvent: Event): HTMLElement {
+    const row = document.createElement('tr');
+    row.className = 'border-b border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20';
+    row.setAttribute('data-break-time', 'true');
+    
+    const breakTimeSeconds = this.eventsManager.getBreakTimeBetweenEvents(currentEvent, nextEvent);
+    const breakTimeText = this.eventsManager.formatBreakTime(breakTimeSeconds);
+    
+    // Calculate break time period
+    const currentEventEnd = new Date(currentEvent.startTime);
+    currentEventEnd.setSeconds(currentEventEnd.getSeconds() + currentEvent.duration);
+    const nextEventStart = new Date(nextEvent.startTime);
+    
+    const breakStartTime = this.eventsManager.formatDateTime(currentEventEnd.toISOString());
+    const breakEndTime = this.eventsManager.formatDateTime(nextEventStart.toISOString());
+    
+    row.innerHTML = `
+      <td class="px-4 py-2 text-center" colspan="6">
+        <div class="flex items-center justify-center space-x-2 text-blue-700 dark:text-blue-300">
+          <i class="ti ti-clock-pause text-lg"></i>
+          <span class="font-medium">${breakTimeText}</span>
+          <span class="text-sm opacity-75">(${breakStartTime} - ${breakEndTime})</span>
+        </div>
+      </td>
+    `;
+    
+    return row;
+  }
+
   private selectEvent(event: Event): void {
     this.currentEvent = event;
     
@@ -311,7 +400,9 @@ class EventTimerApp {
   }
 
   private navigateToEvent(eventId: string): void {
-    const url = `/event-timer/event/${eventId}`;
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const basePath = isDevelopment ? '' : '/event-timer';
+    const url = `${basePath}/event/${eventId}`;
     window.history.pushState({ eventId }, '', url);
     this.showTimerScreen();
     this.initializeTimer();
@@ -343,8 +434,10 @@ class EventTimerApp {
     // Restart auto-switch timer for overview
     this.startAutoSwitchTimer();
     
-    // Update URL to root (with subdirectory)
-    window.history.pushState({}, '', '/event-timer/');
+    // Update URL to root (with subdirectory for production)
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const basePath = isDevelopment ? '/' : '/event-timer/';
+    window.history.pushState({}, '', basePath);
   }
 
   private updateTimerScreen(): void {
@@ -362,6 +455,19 @@ class EventTimerApp {
     if (titleElement) {
       const icon = this.currentEvent.icon || 'ti ti-calendar';
       titleElement.innerHTML = `<i class="${icon} mr-4 text-4xl md:text-6xl"></i>${this.currentEvent.title}`;
+    }
+    
+    // Update event description
+    if (this.eventDescriptionElement) {
+      const descriptionText = this.currentEvent.description || '';
+      const descriptionParagraph = this.eventDescriptionElement.querySelector('p');
+      
+      if (descriptionText && descriptionParagraph) {
+        descriptionParagraph.textContent = descriptionText;
+        this.eventDescriptionElement.classList.remove('hidden');
+      } else {
+        this.eventDescriptionElement.classList.add('hidden');
+      }
     }
     
     // Update event status info
@@ -523,12 +629,8 @@ class EventTimerApp {
   private renderTimeline(events: Event[]): void {
     this.timelineBarElement.innerHTML = '';
     
-    // Sort events by start time
-    const sortedEvents = events.sort((a, b) => 
-      new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-    );
-    
-    sortedEvents.forEach(event => {
+    // Events are already sorted chronologically
+    events.forEach(event => {
       const eventSlot = this.createEventSlot(event);
       this.timelineBarElement.appendChild(eventSlot);
     });
@@ -621,6 +723,24 @@ class EventTimerApp {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    
+    // Update button state after theme initialization
+    this.updateThemeButtonState();
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      // Only apply system preference if no theme is saved in localStorage
+      const currentSavedTheme = localStorage.getItem('theme');
+      if (!currentSavedTheme) {
+        if (e.matches) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        // Update button state when system theme changes
+        this.updateThemeButtonState();
+      }
+    });
   }
 
   private toggleTheme(): void {
@@ -632,6 +752,25 @@ class EventTimerApp {
     } else {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
+    }
+    
+    // Update button state
+    this.updateThemeButtonState();
+  }
+
+  private updateThemeButtonState(): void {
+    const isDark = document.documentElement.classList.contains('dark');
+    const sunIcon = this.themeToggleBtn.querySelector('.ti-sun');
+    const moonIcon = this.themeToggleBtn.querySelector('.ti-moon');
+    
+    if (sunIcon && moonIcon) {
+      if (isDark) {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      } else {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      }
     }
   }
 
@@ -769,7 +908,9 @@ class EventTimerApp {
 
   private handleRouteChange(): void {
     const path = window.location.pathname;
-    const eventMatch = path.match(/^\/event-timer\/event\/(.+)$/);
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const eventPattern = isDevelopment ? /^\/event\/(.+)$/ : /^\/event-timer\/event\/(.+)$/;
+    const eventMatch = path.match(eventPattern);
     
     if (eventMatch) {
       const eventId = eventMatch[1];
@@ -1108,69 +1249,23 @@ class EventTimerApp {
           lang: "de",
           icons: [
             {
-              src: "/event-timer/icons/icon-72x72.png",
-              sizes: "72x72",
-              type: "image/png",
-              purpose: "maskable any"
+              src: "/event-timer/icons/icon-16x16.svg",
+              sizes: "16x16",
+              type: "image/svg+xml"
             },
             {
-              src: "/event-timer/icons/icon-96x96.png",
-              sizes: "96x96",
-              type: "image/png",
-              purpose: "maskable any"
-            },
-            {
-              src: "/event-timer/icons/icon-128x128.png",
-              sizes: "128x128",
-              type: "image/png",
-              purpose: "maskable any"
-            },
-            {
-              src: "/event-timer/icons/icon-144x144.png",
-              sizes: "144x144",
-              type: "image/png",
-              purpose: "maskable any"
-            },
-            {
-              src: "/event-timer/icons/icon-152x152.png",
-              sizes: "152x152",
-              type: "image/png",
-              purpose: "maskable any"
+              src: "/event-timer/icons/icon-32x32.svg",
+              sizes: "32x32",
+              type: "image/svg+xml"
             },
             {
               src: "/event-timer/icons/icon-192x192.png",
               sizes: "192x192",
-              type: "image/png",
-              purpose: "maskable any"
-            },
-            {
-              src: "/event-timer/icons/icon-384x384.png",
-              sizes: "384x384",
-              type: "image/png",
-              purpose: "maskable any"
-            },
-            {
-              src: "/event-timer/icons/icon-512x512.png",
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "maskable any"
+              type: "image/png"
             }
           ],
           categories: ["productivity", "utilities"],
-          screenshots: [
-            {
-              src: "/event-timer/screenshots/desktop.png",
-              sizes: "1280x720",
-            type: "image/png",
-            form_factor: "wide"
-          },
-          {
-            src: "/screenshots/mobile.png",
-            sizes: "390x844",
-            type: "image/png",
-            form_factor: "narrow"
-          }
-        ]
+          screenshots: []
       };
       
       // Create blob and update manifest link
@@ -1194,12 +1289,45 @@ class EventTimerApp {
       </div>
     `;
   }
+
+  private toggleBreakTimes(): void {
+    const settings = this.settingsManager.getSettings();
+    const newShowBreakTimes = !settings.showBreakTimes;
+    
+    // Update settings
+    this.settingsManager.updateSettings({ ...settings, showBreakTimes: newShowBreakTimes });
+    
+    // Update button state
+    this.updateBreakTimesButtonState();
+    
+    // Re-render event grid to show/hide break times
+    const events = this.eventsManager.getEvents();
+    this.renderEventGrid(events);
+  }
+
+  private updateBreakTimesButtonState(): void {
+    const settings = this.settingsManager.getSettings();
+    const icon = this.breakTimesToggleBtn.querySelector('i');
+    
+    if (icon) {
+      if (settings.showBreakTimes) {
+        icon.className = 'ti ti-clock-pause text-xl';
+        this.breakTimesToggleBtn.title = 'Pausenzeiten verstecken';
+      } else {
+        icon.className = 'ti ti-clock-off text-xl';
+        this.breakTimesToggleBtn.title = 'Pausenzeiten anzeigen';
+      }
+    }
+  }
 }
 
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.eventTimerApp = new EventTimerApp();
 });
+
+// Export for testing
+export { EventTimerApp };
 
 // AudioContext bei Benutzerinteraktion aktivieren
 document.addEventListener('click', () => {
