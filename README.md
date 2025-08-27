@@ -1,130 +1,15 @@
 # Event Timer PWA
 
-Eine moderne Progressive Web App (PWA) für Event-Timer mit Glassmorphism Design, entwickelt in TypeScript und Tailwind CSS.
+Eine Progressive Web App für Event-Timer mit automatischem Wechsel und Audio-Feedback.
 
-## 🚀 Features
+## 🚀 Schnellstart
 
-### Timer-Funktionalität
-- **Präzise Zeitmessung**: Sekundengenaue Timer-Updates mit `requestAnimationFrame`
-- **HH:MM:SS Format**: Vollständiges Zeitformat mit Stunden, Minuten und Sekunden
-- **Countdown-Darstellung**: Haupt-Timer zeigt Event-Dauer, kleiner Timer zeigt Countdown
-- **JSON-Konfiguration**: Events werden über `data/events.json` verwaltet
-- **Automatischer Start**: Events starten automatisch basierend auf konfigurierten Startzeiten
-- **Datum/Uhrzeit**: Jedes Event hat eine konkrete Startzeit
-- **Vollbild-Modus**: Timer können auf den gesamten Bildschirm gebracht werden
-- **Dark Mode**: Automatische und manuelle Dark Mode Unterstützung
+1. **Events konfigurieren**: Bearbeite `data/events.json`
+2. **Einstellungen anpassen**: Bearbeite `data/settings.json`
+3. **App starten**: `pnpm dev` oder direkt im Browser öffnen
 
-### Audio & Benachrichtigungen
-- **Warnung bei 1 Minute**: Timer blinkt und spielt Warnungston ab
-- **Blinken bei letzten 10 Sekunden**: Zusätzliche visuelle Warnung
-- **Event-Start Hinweis**: Blitz-Effekt und lauter Audio bei Event-Start
-- **Speech API**: Letzte 10 Sekunden werden runtergezählt
-- **3-Sekunden Piepton**: Bei Timer-Ende
-- **Push-Benachrichtigungen**: Desktop-Benachrichtigungen bei Timer-Ende
-- **Auto-Switch**: Automatischer Wechsel zu Events (konfigurierbar, Standard: 30s)
-- **🧪 Unit Tests**: Umfassende Test-Suite mit Jest
-- **📊 Test Coverage**: Automatische Coverage-Reports
-- **🔄 CI/CD**: GitHub Actions für Tests und Deployment
+## 📝 Event-Konfiguration
 
-### Design & UX
-- **Timeline-Visualisierung**: Horizontale Zeitslot-Anzeige von 0-24 Uhr
-- **Aktuelle Zeit-Marker**: Rote Markierung der aktuellen Uhrzeit
-- **Event-Farbkodierung**: Blau (geplant), Grün (läuft), Grau (beendet)
-- **Tabellen-Übersicht**: Übersichtliche Darstellung aller Events in Tabellenform
-- **Tabler Icons**: Moderne Icons für verschiedene Event-Typen
-- **Unsplash Hintergrundbilder**: Hochwertige Hintergrundbilder von [Unsplash](https://unsplash.com/)
-- **Starke Abdunklung**: 70% schwarzer Overlay für maximale Lesbarkeit
-- **Fullscreen-Button**: Vollbild-Modus für Präsentationen
-- **Countdown-Timer**: Kleiner Timer unter dem Event-Titel
-- **Solide Farben**: Keine Transparenzen oder Farbverläufe
-- **Montserrat Schriftart**: Moderne, lesbare Typografie
-- **Responsive Design**: Optimiert für Desktop, Tablet und Mobile
-- **Konfigurierbare Themes**: Jedes Event hat eigene Farben
-- **Status-Anzeige**: Geplant, Läuft, Beendet
-
-### PWA-Features
-- **Offline-Funktionalität**: Service Worker für Caching
-- **Installierbar**: Kann als native App installiert werden
-- **Push-Benachrichtigungen**: Desktop-Benachrichtigungen
-- **Background Sync**: Synchronisation im Hintergrund
-
-## 📦 Installation
-
-### Voraussetzungen
-- Node.js 18+ 
-- pnpm 8+
-
-### Setup
-```bash
-# Repository klonen
-git clone https://github.com/vergissberlin/event-timer.git
-cd event-timer
-
-# Abhängigkeiten installieren
-pnpm install
-
-# Entwicklungsserver starten
-pnpm dev
-
-# Build für Produktion
-pnpm build
-
-# Preview des Builds
-pnpm preview
-
-# Tests ausführen
-pnpm test              # Alle Tests
-pnpm test:watch        # Tests im Watch-Modus
-pnpm test:coverage     # Tests mit Coverage-Report
-
-# Code-Qualität
-pnpm type-check        # TypeScript Type Check
-pnpm lint              # ESLint
-pnpm format            # Prettier Formatierung
-```
-
-## 🎵 Audio-Sounds
-
-Die App verwendet **Web Audio API** für dynamische Sound-Generierung und bietet Fallback zu WAV-Dateien:
-
-### 🌐 Web Audio API (Standard)
-- **Warning Sound**: 800Hz Sine-Wave, 0.5s Dauer
-- **End Sound**: 3x 600Hz Square-Wave Pieptöne mit Pausen
-- **Start Sound**: Aufsteigender Ton 400Hz-800Hz, 1s Dauer
-
-**Vorteile:**
-- ✅ Keine externen Dateien erforderlich
-- ✅ Dynamisch generiert
-- ✅ Optimierte Qualität
-- ✅ Sofort einsatzbereit
-
-### 📁 Fallback-System
-Falls Web Audio API nicht unterstützt wird, wird eine Warnung in der Konsole ausgegeben.
-
-**Browser-Unterstützung:**
-- ✅ Chrome/Chromium (Web Audio API)
-- ✅ Firefox (Web Audio API)  
-- ✅ Safari (WebkitAudioContext)
-- ✅ Edge (Web Audio API)
-- ✅ Mobile Browser (iOS Safari, Chrome Mobile)
-
-### 🎵 Sound-Design
-
-**Technische Spezifikationen:**
-- **Warning Sound**: 800Hz Sine-Wave, 0.5s Dauer mit Fade in/out
-- **End Sound**: 3x 600Hz Square-Wave Pieptöne mit 0.7s Pausen
-- **Start Sound**: Dramatische Sequenz (200Hz-800Hz Sweep + 400/600/800Hz Akkord)
-
-**Audio-Qualität:**
-- 🎵 **44.1kHz Sample Rate**: CD-Qualität
-- 🎵 **16-bit Auflösung**: Klare, rauschfreie Töne
-- 🎵 **Fade in/out**: Weiche Übergänge ohne Klicks
-- 🎵 **Optimierte Lautstärke**: 30% für angenehme Wiedergabe
-- 🎵 **Event-Start**: Lauter, eindrucksvoller Sound für Aufmerksamkeit
-
-## 🎯 Verwendung
-
-### Event-Konfiguration
 Events werden in `data/events.json` konfiguriert:
 
 ```json
@@ -133,7 +18,7 @@ Events werden in `data/events.json` konfiguriert:
     {
       "id": "morning-meeting",
       "title": "Morgen-Meeting",
-      "startTime": "2024-01-15T09:00:00",
+      "startTime": "2025-08-27T09:00:00",
       "duration": 1800,
       "icon": "ti ti-users",
       "background": "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1920&h=1080&fit=crop",
@@ -143,8 +28,31 @@ Events werden in `data/events.json` konfiguriert:
 }
 ```
 
-### App-Einstellungen
-Globale Einstellungen werden in `data/settings.json` konfiguriert:
+### Event-Felder
+
+| Feld | Typ | Beschreibung | Beispiel |
+|------|-----|--------------|----------|
+| `id` | string | Eindeutige Event-ID | `"morning-meeting"` |
+| `title` | string | Event-Titel | `"Morgen-Meeting"` |
+| `startTime` | string | Start-Zeit (ISO 8601) | `"2025-08-27T09:00:00"` |
+| `duration` | number | Dauer in Sekunden | `1800` (30 Min) |
+| `icon` | string | Tabler Icon (optional) | `"ti ti-users"` |
+| `background` | string | Hintergrundbild URL (optional) | `"https://..."` |
+| `description` | string | Beschreibung (optional) | `"Tägliches Meeting"` |
+
+### Icon-Verfügbarkeit
+
+Verwende [Tabler Icons](https://tabler-icons.io/):
+- `ti ti-users` - Benutzer/Gruppe
+- `ti ti-calendar` - Kalender
+- `ti ti-presentation` - Präsentation
+- `ti ti-coffee` - Pause
+- `ti ti-music` - Musik
+- `ti ti-video` - Video
+
+## ⚙️ App-Einstellungen
+
+Globale Einstellungen in `data/settings.json`:
 
 ```json
 {
@@ -166,176 +74,69 @@ Globale Einstellungen werden in `data/settings.json` konfiguriert:
 }
 ```
 
-### Tastatur-Shortcuts
-- **Leertaste**: Timer starten/pausieren
-- **R**: Timer zurücksetzen
-- **F**: Vollbild-Modus umschalten
-- **Escape**: Vollbild verlassen / Zurück zur Event-Auswahl
+### Einstellungs-Felder
 
-## 🏗️ Projektstruktur
+| Feld | Typ | Standard | Beschreibung |
+|------|-----|----------|--------------|
+| `theme.primary` | string | `"#3b82f6"` | Hauptfarbe |
+| `theme.secondary` | string | `"#1e40af"` | Sekundärfarbe |
+| `theme.accent` | string | `"#60a5fa"` | Akzentfarbe |
+| `app.name` | string | `"Event Timer"` | App-Name |
+| `app.shortName` | string | `"Timer"` | Kurzer App-Name |
+| `audioEnabled` | boolean | `true` | Audio aktiviert |
+| `speechEnabled` | boolean | `true` | Sprachausgabe aktiviert |
+| `fullscreenByDefault` | boolean | `false` | Standardmäßig Vollbild |
+| `autoStart` | boolean | `true` | Timer automatisch starten |
+| `autoSwitchSeconds` | number | `30` | Auto-Wechsel X Sekunden vor Start |
 
-```
-event-timer/
-├── .github/workflows/   # GitHub Actions
-│   ├── deploy.yml       # Deployment Workflow
-│   └── ci.yml          # CI/CD Pipeline
-├── src/
-│   ├── main.ts          # Hauptanwendungslogik
-│   ├── timer.ts         # Timer-Klasse
-│   ├── audio.ts         # Audio-Management
-│   ├── events.ts        # Event-Management
-│   ├── settings.ts      # Settings-Management
-│   ├── favicon.ts       # Favicon-Generator
-│   └── types.ts         # TypeScript-Typen
-├── tests/
-│   ├── setup.ts         # Jest Setup & Mocks
-│   ├── audio.test.ts    # AudioManager Tests
-│   ├── timer.test.ts    # Timer Tests
-│   ├── events.test.ts   # EventsManager Tests
-│   ├── settings.test.ts # SettingsManager Tests
-│   └── favicon.test.ts  # FaviconGenerator Tests
-├── data/
-│   └── events.json      # Event-Konfiguration
-├── public/
-│   └── icons/           # PWA-Icons
-├── index.html           # Haupt-HTML
-├── manifest.json        # PWA-Manifest
-├── sw.js               # Service Worker
-├── package.json        # Abhängigkeiten
-├── pnpm-workspace.yaml # pnpm Workspace
-├── .eslintrc.json      # ESLint Konfiguration
-├── .prettierrc         # Prettier Konfiguration
-├── jest.config.js      # Jest Konfiguration
-└── .cursorrules        # Cursor IDE Regeln
-```
+## 🎵 Audio-Features
 
-## 🚀 Deployment
-
-### Automatisches GitHub Pages Deployment
-Das Projekt verwendet GitHub Actions für automatisches Deployment:
-
-1. **Push auf main Branch** → Automatisches Deployment
-2. **Pull Request** → CI/CD Pipeline läuft
-3. **Deployment** → Automatisch auf GitHub Pages verfügbar
-
-### Manuelles Deployment
-```bash
-# Build erstellen
-pnpm build
-
-# Auf GitHub Pages deployen
-pnpm deploy
-```
-
-### Manuelles Deployment
-1. `npm run build` ausführen
-2. `dist/` Ordner auf Webserver hochladen
-3. HTTPS erforderlich für PWA-Features
-
-### Docker (Optional)
-```dockerfile
-FROM nginx:alpine
-COPY dist/ /usr/share/nginx/html/
-EXPOSE 80
-```
-
-## 🔧 Konfiguration
-
-### PWA-Einstellungen
-- `manifest.json`: App-Name, Icons, Theme-Farben
-- `sw.js`: Caching-Strategien, Offline-Verhalten
+### Automatische Sounds
+- **Event-Start**: Lauter, dramatischer Sound
+- **1-Minute-Warnung**: 800Hz Ton mit Blinken
+- **Letzte 10 Sekunden**: Sprachausgabe "10, 9, 8..."
+- **Event-Ende**: 3x Pieptöne
 
 ### Audio-Einstellungen
-- Warnungston: `sounds/warning.mp3` oder `sounds/warning.wav`
-- End-Ton: `sounds/end.mp3` oder `sounds/end.wav`
-- Speech API: Deutsche Sprache (`de-DE`)
+- `audioEnabled: true` - Alle Sounds aktiviert
+- `speechEnabled: true` - Sprachausgabe aktiviert
 
-### Theme-Konfiguration
-Jedes Event kann eigene Farben haben:
-- `primary`: Hauptfarbe
-- `secondary`: Sekundärfarbe  
-- `accent`: Akzentfarbe
+## 🔄 Auto-Switch Feature
 
-## 🎨 Customization
+Die App wechselt automatisch zur Event-Detailseite:
+- **Standard**: 30 Sekunden vor Event-Start
+- **Konfigurierbar**: `autoSwitchSeconds` in settings.json
+- **Intelligent**: Nur bei zukünftigen Events
 
-### Neue Events hinzufügen
-1. Event in `data/events.json` definieren
-2. Optional: Logo und Hintergrundbild hinzufügen
-3. Theme-Farben anpassen
+## 📱 PWA-Features
 
-### Audio-Dateien ersetzen
-- `sounds/warning.mp3` für Warnungston
-- `sounds/end.mp3` für End-Ton
-- Unterstützte Formate: MP3, WAV
+- **Installierbar**: Als native App installieren
+- **Offline**: Funktioniert ohne Internet
+- **Vollbild**: Optimiert für Präsentationen
+- **Responsive**: Desktop, Tablet, Mobile
 
-### Icons anpassen
-- Verschiedene Größen in `public/icons/`
-- Mindestens: 192x192, 512x512
-- Format: PNG mit Transparenz
+## 🎨 Design-Features
 
-## 🔍 Browser-Support
+- **Dark/Light Mode**: Automatische Anpassung
+- **Timeline**: Visuelle Event-Zeitplanung
+- **Status-Anzeige**: Geplant, Läuft, Beendet
+- **Nächstes Event**: Farbliche Hervorhebung
+- **QR-Code**: Event-Sharing
 
-### Vollständige Unterstützung
-- Chrome 80+
-- Firefox 76+
-- Safari 13+
-- Edge 80+
+## 📊 Event-Status
 
-### Teilweise Unterstützung
-- Ältere Browser: Basis-Timer-Funktionalität
-- Keine PWA-Features
-- Keine Speech API
+| Status | Beschreibung | Farbe |
+|--------|--------------|-------|
+| **Geplant** | Event startet in der Zukunft | Blau |
+| **Läuft** | Event ist aktuell aktiv | Grün |
+| **Beendet** | Event ist vorbei | Grau |
 
-## 🐛 Troubleshooting
+## 🔧 Entwicklung
 
-### Timer läuft ungenau
-- Browser im Hintergrund kann Timer verlangsamen
-- `requestAnimationFrame` für bessere Präzision
-
-### Audio funktioniert nicht
-- Browser-Blockierung für Autoplay
-- Nutzerinteraktion erforderlich
-- HTTPS erforderlich
-
-### PWA installiert sich nicht
-- HTTPS erforderlich
-- Manifest.json korrekt konfiguriert
-- Service Worker registriert
-
-### Bilder laden nicht
-- Relative Pfade verwenden
-- CORS-Einstellungen prüfen
-- Dateigröße optimieren
-
-## 📝 Changelog
-
-### v1.0.0
-- Initiale Version
-- PWA-Funktionalität
-- Glassmorphism Design
-- Audio & Speech API
-- Vollbild-Modus
-
-## 🤝 Contributing
-
-1. Fork erstellen
-2. Feature-Branch: `git checkout -b feature/neue-funktion`
-3. Commit: `git commit -am 'Neue Funktion hinzugefügt'`
-4. Push: `git push origin feature/neue-funktion`
-5. Pull Request erstellen
+Für Entwickler und Beiträge siehe:
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Entwicklungsrichtlinien
+- [docs/](docs/) - Technische Dokumentation
 
 ## 📄 Lizenz
 
 MIT License - siehe [LICENSE](LICENSE) Datei.
-
-## 🙏 Credits
-
-- **Design**: Moderne UI mit Tailwind CSS
-- **Schriftart**: Montserrat von Google Fonts
-- **Icons**: Tabler Icons für moderne Icon-Darstellung
-- **Audio**: Eigene Töne oder lizenzfreie Sounds
-- **Package Manager**: pnpm für bessere Performance
-
----
-
-Entwickelt mit ❤️ von [VergissBerlin](https://github.com/vergissberlin)

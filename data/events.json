@@ -10,19 +10,19 @@
       "description": "Tägliches Morgen-Meeting"
     },
     {
-      "id": "current-session",
-      "title": "Aktuelle Session",
-      "startTime": "2025-08-27T14:00:00",
-      "duration": 3600,
-      "icon": "ti ti-play",
+      "id": "chaire-session",
+      "title": "Stuhlkreis",
+      "startTime": "2025-08-27T15:30:00",
+      "duration": 1200,
+      "icon": "ti ti-chair-director",
       "background": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop",
-      "description": "Aktuell laufende Session"
+      "description": "Wir sitzen im Kreis und sprechen über die nächsten Schritte"
     },
     {
       "id": "presentation",
       "title": "Produkt-Präsentation",
       "startTime": "2025-08-27T16:12:00",
-      "duration": 1200,
+      "duration": 200,
       "icon": "ti ti-presentation",
       "background": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=1080&fit=crop",
       "description": "Neue Produktfeatures vorstellen"

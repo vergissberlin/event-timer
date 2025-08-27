@@ -231,13 +231,24 @@ class EventTimerApp {
     const status = this.eventsManager.getEventStatus(event);
     const dateTime = this.eventsManager.formatDateTime(event.startTime);
     
+    // Check if this is the next upcoming event
+    const events = this.eventsManager.getEvents();
+    const nextEvent = this.eventsManager.getNextEvent(events);
+    const isNextEvent = nextEvent && nextEvent.id === event.id;
+    
     let statusClass = '';
     let statusText = '';
+    let rowBackgroundClass = '';
+    let buttonDisabled = false;
+    let buttonClass = 'px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors';
     
     switch (status) {
       case 'upcoming':
         statusClass = 'text-blue-400';
         statusText = 'Geplant';
+        if (isNextEvent) {
+          rowBackgroundClass = 'bg-blue-50 dark:bg-blue-900/20';
+        }
         break;
       case 'running':
         statusClass = 'text-green-400';
@@ -246,8 +257,12 @@ class EventTimerApp {
       case 'finished':
         statusClass = 'text-gray-500';
         statusText = 'Beendet';
+        buttonDisabled = true;
+        buttonClass = 'px-3 py-1 text-sm bg-gray-400 text-gray-200 rounded cursor-not-allowed';
         break;
     }
+    
+    row.className = `border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer ${rowBackgroundClass}`;
     
     row.innerHTML = `
       <td class="px-4 py-3">
@@ -267,7 +282,7 @@ class EventTimerApp {
         </span>
       </td>
       <td class="px-4 py-3">
-        <button class="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors">
+        <button class="${buttonClass}" ${buttonDisabled ? 'disabled' : ''}>
           Starten
         </button>
       </td>
@@ -277,7 +292,10 @@ class EventTimerApp {
     row.addEventListener('mouseenter', () => this.highlightTimelineSlot(event.id));
     row.addEventListener('mouseleave', () => this.unhighlightTimelineSlot(event.id));
     
-    row.addEventListener('click', () => this.selectEvent(event));
+    // Only allow clicking if event is not finished
+    if (!buttonDisabled) {
+      row.addEventListener('click', () => this.selectEvent(event));
+    }
     
     return row;
   }
