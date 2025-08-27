@@ -2,52 +2,29 @@
 
 ## Overview
 
-This document describes the GitHub Actions workflows used in the Event Timer PWA project for continuous integration, testing, and deployment.
+This document describes the GitHub Actions workflow used in the Event Timer PWA project for continuous integration, testing, and deployment.
 
-## Workflows
+## Workflow
 
-### 1. Deploy Workflow (`.github/workflows/deploy.yml`)
+### CI/CD Pipeline (`.github/workflows/ci.yml`)
 
-**Purpose**: Build and deploy the application to GitHub Pages
+**Purpose**: Complete CI/CD pipeline that runs tests, linting, and deploys to GitHub Pages
 
 **Triggers**:
 - Push to `main` branch
+- Push to `develop` branch
 - Pull requests to `main` branch
 - Manual workflow dispatch
 
 **Concurrency**:
-- Group: `pages-deploy-${{ github.ref }}`
-- Prevents concurrent deployments on the same branch
-- Does not cancel in-progress deployments
+- Group: `ci-${{ github.ref }}`
+- Cancels in-progress runs when new commits are pushed
+- Prevents concurrent runs on the same branch
 
 **Jobs**:
-1. **build-and-deploy**: Builds the application and deploys to GitHub Pages
 
-**Steps**:
-- Checkout code
-- Setup Node.js 22
-- Setup pnpm 8
-- Install dependencies
-- Type check
-- Build application
-- Setup Pages
-- Upload artifact
-- Deploy to GitHub Pages (only on main branch)
-
-### 2. Test Workflow (`.github/workflows/test.yml`)
-
-**Purpose**: Run tests, linting, and code quality checks
-
-**Triggers**:
-- Push to `develop` branch
-- Pull requests to `main` branch
-
-**Concurrency**:
-- Group: `tests-${{ github.ref }}`
-- Cancels in-progress test runs when new commits are pushed
-
-**Jobs**:
-1. **test**: Runs tests on multiple Node.js versions
+#### 1. Test Job
+**Purpose**: Run quality checks and tests on multiple Node.js versions
 
 **Matrix Strategy**:
 - Node.js versions: 18.x, 20.x
@@ -62,8 +39,26 @@ This document describes the GitHub Actions workflows used in the Event Timer PWA
 - Format check
 - Run tests
 - Upload coverage to Codecov
-- Upload coverage artifact
+- Upload coverage artifact (with matrix version suffix)
 - Comment PR with coverage (if PR)
+
+#### 2. Build and Deploy Job
+**Purpose**: Build and deploy the application to GitHub Pages
+
+**Dependencies**: Requires successful completion of test job
+**Conditions**: Only runs on `main` branch pushes
+
+**Steps**:
+- Checkout code
+- Setup Node.js 22
+- Setup pnpm 8
+- Install dependencies
+- Type check
+- Lint
+- Build application
+- Setup Pages
+- Upload artifact
+- Deploy to GitHub Pages
 
 ## Concurrency Management
 
@@ -71,100 +66,78 @@ This document describes the GitHub Actions workflows used in the Event Timer PWA
 
 The original configuration had multiple deadlock issues:
 
-1. **Workflow vs Workflow**: Both workflows were competing for the same concurrency group
-2. **Workflow vs Job**: The deploy workflow had concurrency defined at both workflow and job level
-3. **Branch Conflicts**: Test workflow ran on both `main` and `develop`, conflicting with deploy workflow
+1. **Artifact Conflicts**: Multiple workflows trying to create artifacts with the same name
+2. **Concurrency Deadlocks**: Multiple workflows competing for the same concurrency groups
+3. **Branch Conflicts**: Separate workflows running on overlapping branches
 
 ### Solution
 
-1. **Separate Concurrency Groups**: Each workflow now has its own concurrency group
-2. **Single Concurrency Definition**: Concurrency is defined only at workflow level, not at job level
-3. **Branch-Specific Groups**: Concurrency groups include the branch reference to prevent conflicts
-4. **Different Triggers**: Test workflow only runs on `develop` pushes, deploy workflow on `main` pushes
+1. **Single Workflow**: Combined all CI/CD activities into one workflow
+2. **Unique Artifact Names**: Added matrix version suffix to prevent conflicts
+3. **Sequential Jobs**: Deploy job only runs after successful test completion
+4. **Branch-Specific Concurrency**: Single concurrency group per branch
 
 ### Concurrency Rules
 
-#### Correct Configuration (Current)
+#### Current Configuration
 ```yaml
-# Deploy Workflow - Only at workflow level
+# Single workflow with sequential jobs
 concurrency:
-  group: "pages-deploy-${{ github.ref }}"
-  cancel-in-progress: false
-
-jobs:
-  build-and-deploy:
-    # No concurrency at job level
-    runs-on: ubuntu-latest
-```
-
-#### Test Workflow
-```yaml
-# Test Workflow - Only at workflow level
-concurrency:
-  group: "tests-${{ github.ref }}"
+  group: "ci-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:
   test:
-    # No concurrency at job level
-    runs-on: ubuntu-latest
-```
-
-#### ❌ Incorrect Configuration (Causes Deadlock)
-```yaml
-# DON'T DO THIS - Concurrency at both levels
-concurrency:
-  group: "pages-deploy"
-  cancel-in-progress: false
-
-jobs:
+    # Runs on all triggers
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
   build-and-deploy:
-    concurrency:  # This causes deadlock!
-      group: "pages-deploy"
-      cancel-in-progress: false
+    needs: test  # Only runs after test job succeeds
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 ```
 
-#### Concurrency Behavior
-
-##### Deploy Workflow
-- **Group**: Unique per branch (`pages-deploy-refs/heads/main`)
-- **Behavior**: Queues new deployments, doesn't cancel running ones
-- **Reason**: Production deployments should complete even if new commits arrive
-
-##### Test Workflow
-- **Group**: Unique per branch (`tests-refs/heads/develop`)
-- **Behavior**: Cancels in-progress tests when new commits arrive
-- **Reason**: Tests should always run on the latest code
+#### Artifact Naming
+```yaml
+# Unique names prevent conflicts
+- name: Upload coverage to GitHub
+  uses: actions/upload-artifact@v4
+  with:
+    name: coverage-report-${{ matrix.node-version }}  # Unique per matrix
+    path: coverage/
+```
 
 ## Branch Strategy
 
 ### Main Branch (`main`)
-- **Deploy Workflow**: Builds and deploys to GitHub Pages
-- **Test Workflow**: Runs on pull requests only
-- **Purpose**: Production deployment
+- **Test Job**: Runs on every push and pull request
+- **Deploy Job**: Runs only after successful tests
+- **Purpose**: Production deployment with quality gates
 
 ### Develop Branch (`develop`)
-- **Deploy Workflow**: Does not run
-- **Test Workflow**: Runs on every push
+- **Test Job**: Runs on every push
+- **Deploy Job**: Does not run
 - **Purpose**: Development and testing
 
 ### Feature Branches
-- **Deploy Workflow**: Does not run
-- **Test Workflow**: Runs on pull requests to main
+- **Test Job**: Runs on pull requests to main
+- **Deploy Job**: Does not run
 - **Purpose**: Feature development and testing
 
 ## Quality Gates
 
-### Required Checks
+### Required Checks (Test Job)
 - ✅ TypeScript compilation
 - ✅ ESLint passes
 - ✅ Prettier formatting
 - ✅ All tests pass
 - ✅ Minimum 80% test coverage
 
-### Deployment Requirements
-- ✅ All quality gates pass
+### Deployment Requirements (Build Job)
+- ✅ All quality gates pass (test job succeeded)
 - ✅ Only deploys from `main` branch
+- ✅ Only deploys on push events (not pull requests)
 - ✅ Manual approval not required (automatic deployment)
 
 ## Artifacts
@@ -173,6 +146,7 @@ jobs:
 - **Location**: `./coverage/`
 - **Format**: LCOV
 - **Upload**: Codecov and GitHub Artifacts
+- **Naming**: `coverage-report-{node-version}` (prevents conflicts)
 - **Retention**: 30 days
 
 ### Build Artifacts
@@ -195,30 +169,36 @@ jobs:
 
 ### Common Issues
 
-#### 1. Concurrency Deadlock
-**Symptoms**: "Canceling since a deadlock was detected for concurrency group"
-**Causes**:
-- Multiple workflows using the same concurrency group
-- Concurrency defined at both workflow and job level
-- Branch conflicts between workflows
+#### 1. Artifact Conflicts
+**Symptoms**: "Failed to CreateArtifact: Received non-retryable error: Failed request: (409) Conflict: an artifact with this name already exists"
+**Causes**: Multiple matrix runs trying to create artifacts with the same name
 
 **Solutions**:
-- Use unique concurrency groups per workflow: `pages-deploy-${{ github.ref }}` vs `tests-${{ github.ref }}`
-- Define concurrency only at workflow level, not at job level
-- Separate workflow triggers to avoid conflicts
+- Use unique artifact names with matrix version suffix
+- Ensure only one workflow creates artifacts
+- Use sequential job execution
 
-#### 2. Build Failures
+#### 2. Concurrency Deadlock
+**Symptoms**: "Canceling since a deadlock was detected for concurrency group"
+**Causes**: Multiple workflows using the same concurrency group
+
+**Solutions**:
+- Use single workflow with sequential jobs
+- Use branch-specific concurrency groups
+- Define concurrency only at workflow level
+
+#### 3. Build Failures
 **Symptoms**: TypeScript compilation errors
 **Solution**: Run `pnpm type-check` locally before pushing
 
-#### 3. Test Failures
+#### 4. Test Failures
 **Symptoms**: Tests failing in CI but passing locally
 **Solution**: 
 - Check Node.js version compatibility
 - Ensure all dependencies are installed
 - Run `pnpm test:ci` locally
 
-#### 4. Deployment Failures
+#### 5. Deployment Failures
 **Symptoms**: Build succeeds but deployment fails
 **Solution**:
 - Check GitHub Pages settings
@@ -254,14 +234,16 @@ pnpm test:ci
 ## Best Practices
 
 ### 1. Workflow Design
-- Keep workflows focused and single-purpose
-- Use matrix strategies for multiple environments
-- Implement proper concurrency controls
+- Single workflow for all CI/CD activities
+- Sequential job execution for dependencies
+- Matrix strategies for multiple environments
+- Proper concurrency controls
 
 ### 2. Performance
 - Cache dependencies and build artifacts
 - Use pnpm for faster installs
-- Parallelize jobs where possible
+- Parallelize matrix runs where possible
+- Avoid redundant installations
 
 ### 3. Security
 - Use minimal required permissions
@@ -272,6 +254,7 @@ pnpm test:ci
 - Implement proper error handling
 - Use retry mechanisms for flaky operations
 - Monitor workflow success rates
+- Ensure artifacts have unique names
 
 ## Future Improvements
 
@@ -294,3 +277,4 @@ pnpm test:ci
 - [GitHub Pages Deployment](https://docs.github.com/en/pages)
 - [Concurrency in GitHub Actions](https://docs.github.com/en/actions/using-jobs/using-concurrency)
 - [Matrix Strategy](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs)
+- [Job Dependencies](https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow#defining-prerequisite-jobs)
