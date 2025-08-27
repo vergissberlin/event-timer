@@ -253,7 +253,20 @@ const isProduction = window.location.hostname === 'vergissberlin.github.io';
 this.settingsUrl = isProduction ? '/event-timer/data/settings.json' : '/data/settings.json';
 ```
 
-### 10. Missing PWA Manifest
+### 10. Event Display Issues
+
+**Problem:**
+```
+Events are loaded but not displayed in UI
+```
+
+**Solution:**
+- Ensure events have future dates relative to current time
+- Check event timestamps are in correct format (ISO 8601)
+- Verify events are chronologically sorted
+- Test with current date: `2025-08-27T15:00:00`
+
+### 11. Missing PWA Manifest
 
 **Problem:**
 ```

@@ -1232,7 +1232,9 @@ class EventTimerApp {
       metaDescription.setAttribute('content', appConfig.description);
     }
     
-          // Update manifest dynamically
+          // Update manifest dynamically only in production
+    const isProduction = window.location.hostname === 'vergissberlin.github.io';
+    if (isProduction) {
       const manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement;
       if (manifestLink) {
         // Create a new manifest with updated values
@@ -1257,20 +1259,20 @@ class EventTimerApp {
               src: "/event-timer/icons/icon-32x32.svg",
               sizes: "32x32",
               type: "image/svg+xml"
-            },
-
+            }
           ],
           categories: ["productivity", "utilities"],
           screenshots: []
-      };
-      
-      // Create blob and update manifest link
-      const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      manifestLink.href = url;
-      
-      // Clean up URL after a delay
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+        };
+        
+        // Create blob and update manifest link
+        const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        manifestLink.href = url;
+        
+        // Clean up URL after a delay
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
     }
   }
 
