@@ -202,7 +202,36 @@ Failed to load settings: SyntaxError: Unexpected token '<'
 </script>
 ```
 
-### 8. Missing PWA Manifest
+### 8. Build Script Issues
+
+**Problem:**
+```
+Failed to load resource: /src/main.ts (404)
+Production site tries to load TypeScript files instead of compiled JavaScript
+```
+
+**Solution:**
+- Use `scripts/build-production.js` to post-process the build
+- Script automatically finds compiled JavaScript in `dist/assets/`
+- Replaces `/src/main.ts` with actual compiled file path
+- Updates Tailwind CSS from CDN to local file
+
+**Implementation:**
+```javascript
+// scripts/build-production.js
+// Find the compiled JavaScript file in dist/assets
+const jsFiles = fs.readdirSync(distAssetsPath).filter(file => file.endsWith('.js'));
+const jsFile = jsFiles[0];
+const jsPath = `/event-timer/assets/${jsFile}`;
+
+// Replace the TypeScript script tag with the compiled JavaScript
+html = html.replace(
+  '<script type="module" src="/src/main.ts"></script>',
+  `<script type="module" src="${jsPath}"></script>`
+);
+```
+
+### 9. Missing PWA Manifest
 
 **Problem:**
 ```
@@ -279,10 +308,24 @@ export default defineConfig(({ command }) => {
 ```json
 {
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/build-production.js",
     "deploy": "npm run build && gh-pages -d dist"
   }
 }
+```
+
+### Build Script (`scripts/build-production.js`)
+The build script performs post-processing after Vite build:
+
+1. **Finds compiled JavaScript**: Locates the compiled JS file in `dist/assets/`
+2. **Replaces script tag**: Updates `index.html` to use compiled JS instead of TypeScript
+3. **Updates CSS**: Replaces Tailwind CDN with local CSS file
+4. **Production paths**: Ensures all paths use `/event-timer/` prefix
+
+**Example output:**
+```
+✅ Production HTML updated with local CSS and compiled JavaScript
+📦 Using JavaScript file: main-DpVTr0a7.js
 ```
 
 ## Deployment Checklist
