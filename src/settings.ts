@@ -5,13 +5,12 @@ export class SettingsManager {
   private settingsUrl: string;
 
   constructor(settingsUrl?: string) {
-    // Auto-detect environment and set correct path
+    // Basis-URL aus <base> Tag ermitteln, um lokal und auf GitHub Pages zu funktionieren
     if (settingsUrl) {
       this.settingsUrl = settingsUrl;
     } else {
-      // Check if we're in production (GitHub Pages)
-      const isProduction = window.location.hostname === 'vergissberlin.github.io';
-      this.settingsUrl = isProduction ? '/event-timer/data/settings.json' : '/data/settings.json';
+      const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+      this.settingsUrl = `${baseHref}/data/settings.json`;
     }
     this.settings = this.getDefaultSettings();
   }

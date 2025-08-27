@@ -1,28 +1,28 @@
 # Theme Management
 
-Die Event Timer PWA unterstützt automatisches Theme-Management mit localStorage-Persistierung und Betriebssystem-Integration.
+The Event Timer web app supports automatic theme management with localStorage persistence and operating system integration.
 
 ## Features
 
-### 1. **localStorage Persistierung**
-- Das ausgewählte Theme wird im `localStorage` unter dem Schlüssel `'theme'` gespeichert
-- Werte: `'light'`, `'dark'` oder `null` (für System-Theme)
-- Persistiert über Browser-Sessions hinweg
+### 1. localStorage Persistence
+- The selected theme is stored in `localStorage` under the key `theme`
+- Values: `light`, `dark`, or `null` (to use system theme)
+- Persists across browser sessions
 
-### 2. **Betriebssystem-Integration**
-- **Standard**: Wenn kein Theme im localStorage gespeichert ist, wird das Betriebssystem-Theme verwendet
-- **Automatische Anpassung**: Änderungen des Betriebssystem-Themes werden automatisch erkannt (nur wenn kein Theme gespeichert ist)
-- **Media Query**: Verwendet `window.matchMedia('(prefers-color-scheme: dark)')`
+### 2. Operating System Integration
+- Default: If no theme is stored in localStorage, the system theme is used
+- Automatic adaptation: Changes to the system theme are applied automatically (only if no theme is stored)
+- Media Query: Uses `window.matchMedia('(prefers-color-scheme: dark)')`
 
-### 3. **Manueller Toggle**
-- Theme-Toggle-Button in der oberen rechten Ecke
-- Wechselt zwischen Light und Dark Mode
-- Speichert die Auswahl automatisch im localStorage
-- Aktualisiert die Button-Icons entsprechend
+### 3. Manual Toggle
+- Theme toggle button in the top-right corner
+- Switches between light and dark mode
+- Automatically saves the selection in localStorage
+- Updates button icons accordingly
 
-## Implementierung
+## Implementation
 
-### Theme-Initialisierung
+### Theme Initialization
 
 ```typescript
 private initializeTheme(): void {
@@ -56,7 +56,7 @@ private initializeTheme(): void {
 }
 ```
 
-### Theme-Toggle
+### Theme Toggle
 
 ```typescript
 private toggleTheme(): void {
@@ -75,7 +75,7 @@ private toggleTheme(): void {
 }
 ```
 
-### Button-Status-Update
+### Button State Update
 
 ```typescript
 private updateThemeButtonState(): void {
@@ -95,10 +95,10 @@ private updateThemeButtonState(): void {
 }
 ```
 
-## CSS-Klassen
+## CSS Classes
 
-### Dark Mode Klassen
-Die Anwendung verwendet Tailwind CSS Dark Mode Klassen:
+### Dark Mode Classes
+The application uses Tailwind CSS dark mode classes:
 
 ```css
 /* Dark mode visibility classes */
@@ -125,25 +125,25 @@ Die Anwendung verwendet Tailwind CSS Dark Mode Klassen:
 .dark .hover\:bg-slate-600:hover { background-color: #475569 !important; }
 ```
 
-## Verhalten
+## Behavior
 
-### Prioritätsreihenfolge
-1. **Gespeichertes Theme** (localStorage) - höchste Priorität
-2. **Betriebssystem-Theme** - Standard, wenn nichts gespeichert ist
-3. **Light Mode** - Fallback
+### Priority Order
+1. **Stored theme** (localStorage) - highest priority
+2. **System theme** - default if nothing is stored
+3. **Light mode** - fallback
 
-### System-Theme-Änderungen
-- **Mit gespeichertem Theme**: Keine automatische Anpassung
-- **Ohne gespeichertes Theme**: Automatische Anpassung an Betriebssystem-Änderungen
+### System Theme Changes
+- **With stored theme**: No automatic adaptation
+- **Without stored theme**: Automatically adapts to system changes
 
-### Button-Verhalten
-- **Sonne-Icon**: Angezeigt im Dark Mode (klicken für Light Mode)
-- **Mond-Icon**: Angezeigt im Light Mode (klicken für Dark Mode)
-- **Automatische Aktualisierung**: Bei Theme-Änderungen und System-Änderungen
+### Button Behavior
+- **Sun icon**: Shown in dark mode (click to switch to light mode)
+- **Moon icon**: Shown in light mode (click to switch to dark mode)
+- **Automatic update**: On theme changes and system changes
 
 ## Testing
 
-Die Theme-Funktionalität wird durch umfassende Tests abgedeckt:
+The theme functionality is covered by comprehensive tests:
 
 ```typescript
 describe('Theme Management', () => {
@@ -166,22 +166,22 @@ describe('Theme Management', () => {
 });
 ```
 
-## Browser-Kompatibilität
+## Browser Compatibility
 
-- **localStorage**: Alle modernen Browser
-- **matchMedia**: Alle modernen Browser
+- **localStorage**: All modern browsers
+- **matchMedia**: All modern browsers
 - **prefers-color-scheme**: Chrome 76+, Firefox 67+, Safari 12.1+, Edge 79+
 
-## Fehlerbehandlung
+## Error Handling
 
-- **localStorage nicht verfügbar**: Fallback auf System-Theme
-- **matchMedia nicht unterstützt**: Fallback auf Light Mode
-- **CSS-Klassen nicht verfügbar**: Graceful Degradation
+- **localStorage unavailable**: Fallback to system theme
+- **matchMedia unsupported**: Fallback to light mode
+- **Missing CSS classes**: Graceful degradation
 
 ## Best Practices
 
-1. **Konsistenz**: Theme-Status wird immer im localStorage gespeichert
-2. **Performance**: Event-Listener werden nur einmal registriert
-3. **UX**: Sofortige visuelle Rückmeldung bei Theme-Änderungen
-4. **Accessibility**: Klare visuelle Unterscheidung zwischen Light und Dark Mode
-5. **Maintainability**: Zentrale Theme-Management-Logik in einer Klasse
+1. **Consistency**: Theme status is always stored in localStorage
+2. **Performance**: Event listeners are registered only once
+3. **UX**: Immediate visual feedback on theme changes
+4. **Accessibility**: Clear visual distinction between light and dark mode
+5. **Maintainability**: Centralized theme management logic in a single class

@@ -1,0 +1,80 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = 'Event Timer' } = Astro.props as Props;
+---
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content="Web-Anwendung für Event-Timer mit automatischem Wechseln und Audio-Feedback" />
+    <base href="/event-timer/" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
+    <link rel="stylesheet" href="tailwind.css" />
+    <link rel="icon" href="favicon.ico" />
+    <!-- manifest removed per request -->
+
+    <style>
+      .timer-warning { animation: blink 0.5s infinite; text-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+      @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+      .bg-overlay { background: #000000; }
+      #timerScreen { background: #000000; }
+      #timer { text-shadow: 0 4px 8px rgba(0,0,0,0.5); line-height: 1; }
+    </style>
+  </head>
+  <body class="bg-slate-900 dark:bg-slate-900 bg-gray-50 min-h-screen text-white dark:text-white text-gray-900 font-sans">
+    <div id="loading" style="display: none;"></div>
+    <slot />
+
+    <div id="qrModal" class="fixed inset-0 z-[9999] hidden">
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-lg p-6 max-w-sm w-full shadow-xl border border-gray-200 dark:border-gray-700">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Teilen</h3>
+            <button id="closeQrModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <i class="ti ti-x text-xl"></i>
+            </button>
+          </div>
+          <div class="text-center">
+            <div id="qrCode" class="mx-auto mb-4 p-4 bg-white rounded-lg"></div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Scanne den QR-Code um diese Seite zu öffnen</p>
+            <div class="flex gap-2">
+              <button id="copyUrlBtn" class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"><i class="ti ti-copy mr-2"></i>URL kopieren</button>
+              <button id="downloadQrBtn" class="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"><i class="ti ti-download mr-2"></i>Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-black bg-opacity-10 backdrop-blur-sm border-t border-white border-opacity-10 z-10 pointer-events-none">
+      <div class="container mx-auto px-4 py-1">
+        <div class="flex justify-center items-center text-white text-opacity-60 text-xs">
+          <a href="https://github.com/vergissberlin/event-timer" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-opacity-80 transition-colors pointer-events-auto">
+            <i class="ti ti-brand-github text-xs"></i>
+            <span>Made with AI and ❤️</span>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <audio id="warningSound" preload="auto"></audio>
+    <audio id="endSound" preload="auto"></audio>
+    <audio id="startSound" preload="auto"></audio>
+
+    <script type="module">
+      import '/src/main.ts';
+    </script>
+  </body>
+  
+</html>
+
+

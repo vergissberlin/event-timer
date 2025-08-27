@@ -1,41 +1,41 @@
-# API-Dokumentation
+# API Documentation
 
-## Übersicht
+## Overview
 
-Die Event Timer PWA bietet verschiedene APIs für Timer-Management, Audio-Kontrolle und Event-Handling.
+The Event Timer web application provides APIs for timer management, audio control, event handling, and settings management.
 
 ## Timer API
 
-### Timer-Klasse
+### Timer Class
 
 ```typescript
 class Timer {
   constructor(totalTime: number, callbacks: TimerCallbacks, audio: AudioManager);
   
-  // Timer-Kontrolle
+  // Timer controls
   start(): void;
   pause(): void;
   stop(): void;
   reset(): void;
   
-  // Timer-Status
+  // Timer status
   isRunning(): boolean;
   isPaused(): boolean;
   isFinished(): boolean;
   
-  // Timer-Daten
+  // Timer data
   getTimeRemaining(): number;
   getTotalTime(): number;
   getProgress(): number;
   getState(): TimerState;
   getStatus(): TimerStatus;
   
-  // Zeit-Manipulation
+  // Time manipulation
   setTimeRemaining(seconds: number): void;
   addTime(seconds: number): void;
   subtractTime(seconds: number): void;
   
-  // Formatierung
+  // Formatting
   formatTime(seconds: number): string;
 }
 ```
@@ -71,51 +71,51 @@ interface TimerState {
 type TimerStatus = 'ready' | 'running' | 'paused' | 'warning' | 'finished';
 ```
 
-### Beispiele
+### Examples
 
 ```typescript
-// Timer erstellen
+// Create timer
 const timer = new Timer(3600, {
-  onTick: (time) => console.log(`Verbleibend: ${time}s`),
-  onWarning: () => console.log('1 Minute verbleibend!'),
-  onEnd: () => console.log('Timer beendet!'),
-  onEventStart: () => console.log('Event gestartet!'),
-  onPause: () => console.log('Timer pausiert'),
-  onResume: () => console.log('Timer fortgesetzt'),
-  onReset: () => console.log('Timer zurückgesetzt')
+  onTick: (time) => console.log(`Remaining: ${time}s`),
+  onWarning: () => console.log('1 minute remaining!'),
+  onEnd: () => console.log('Timer finished!'),
+  onEventStart: () => console.log('Event started!'),
+  onPause: () => console.log('Timer paused'),
+  onResume: () => console.log('Timer resumed'),
+  onReset: () => console.log('Timer reset')
 }, audioManager);
 
-// Timer starten
+// Start timer
 timer.start();
 
-// Timer pausieren
+// Pause timer
 timer.pause();
 
-// Zeit hinzufügen
-timer.addTime(300); // 5 Minuten
+// Add time (5 minutes)
+timer.addTime(300);
 
-// Fortschritt abrufen
+// Get progress
 const progress = timer.getProgress(); // 0-100
 ```
 
 ## Audio API
 
-### AudioManager-Klasse
+### AudioManager Class
 
 ```typescript
 class AudioManager {
   constructor();
   
-  // Audio-Kontrolle
+  // Audio controls
   setAudioEnabled(enabled: boolean): void;
   setSpeechEnabled(enabled: boolean): void;
   resumeAudioContext(): void;
   
-  // Audio-Status
+  // Audio status
   isAudioSupported(): boolean;
   isSpeechSupported(): boolean;
   
-  // Sound-Playback
+  // Sound playback
   playWarning(): void;
   playEnd(): void;
   playStart(): void;
@@ -123,26 +123,26 @@ class AudioManager {
 }
 ```
 
-### Beispiele
+### Examples
 
 ```typescript
-// AudioManager erstellen
+// Create AudioManager
 const audio = new AudioManager();
 
-// Audio aktivieren
+// Enable audio
 audio.setAudioEnabled(true);
 audio.setSpeechEnabled(true);
 
-// Sounds abspielen
-audio.playWarning(); // 800Hz Warnungston
-audio.playEnd();     // 3x Pieptöne
-audio.playStart();   // Dramatischer Start-Sound
+// Play sounds
+audio.playWarning(); // 800Hz warning tone
+audio.playEnd();     // 3x beeps
+audio.playStart();   // dramatic start sound
 
-// Sprachausgabe
-audio.speakCountdown(10); // "Zehn"
-audio.speakCountdown(5);  // "Fünf"
+// Speech output
+audio.speakCountdown(10); // "Ten"
+audio.speakCountdown(5);  // "Five"
 
-// AudioContext aktivieren (für Autoplay-Policy)
+// Resume AudioContext (browser autoplay policy)
 document.addEventListener('click', () => {
   audio.resumeAudioContext();
 }, { once: true });
@@ -150,38 +150,38 @@ document.addEventListener('click', () => {
 
 ## Events API
 
-### EventsManager-Klasse
+### EventsManager Class
 
-**Important**: No default events are provided. All events must be configured in the JSON file. Events are automatically sorted chronologically by start time.
+Important: No default events are provided. All events must be configured in the JSON file. Events are automatically sorted chronologically by start time.
 
 ```typescript
 class EventsManager {
   constructor();
   
-  // Event-Loading
+  // Event loading
   loadEvents(): Promise<Event[]>;
-  preloadImages(events: Event[]): Promise<void>;
+  preloadImages(): Promise<void>;
   
-  // Event-Validierung
+  // Event validation
   validateEvent(event: any): Event;
   
-  // Event-Status
+  // Event status
   getEventStatus(event: Event): 'upcoming' | 'running' | 'finished';
   getTimeUntilStart(event: Event): number;
   getTimeRemaining(event: Event): number;
   
-  // Event-Filtering
+  // Event filtering
   getNextEvent(events: Event[]): Event | null;
   getCurrentEvent(events: Event[]): Event | null;
   getEventsByCategory(category: string): Event[];
   getEventsByDuration(minDuration?: number, maxDuration?: number): Event[];
   
-  // Formatierung
+  // Formatting
   formatDuration(seconds: number): string;
   formatDateTime(dateTime: string): string;
   getDurationDescription(seconds: number): string;
   
-  // Event-Zugriff
+  // Event access
   getEvents(): Event[];
 }
 ```
@@ -193,64 +193,57 @@ interface Event {
   id: string;
   title: string;
   startTime: string; // ISO 8601
-  duration: number;  // Sekunden
+  duration: number;  // seconds
   description?: string;
-  icon?: string;     // Tabler Icon
+  icon?: string;       // Tabler icon
   background?: string; // URL
 }
 ```
 
-### Beispiele
+### Examples
 
 ```typescript
-// EventsManager erstellen
+// Create EventsManager
 const eventsManager = new EventsManager();
 
-// Events laden
+// Load events
 const events = await eventsManager.loadEvents();
 
-// Event-Status prüfen
+// Check event status
 const event = events[0];
 const status = eventsManager.getEventStatus(event);
 const timeUntilStart = eventsManager.getTimeUntilStart(event);
 const timeRemaining = eventsManager.getTimeRemaining(event);
 
-// Nächstes Event finden
+// Find next event
 const nextEvent = eventsManager.getNextEvent(events);
 
-// Events filtern
+// Filter events
 const longEvents = eventsManager.getEventsByDuration(3600); // > 1h
 const meetingEvents = eventsManager.getEventsByCategory('meeting');
 
-// Formatierung
+// Formatting
 const duration = eventsManager.formatDuration(3661); // "1h 1min"
 const dateTime = eventsManager.formatDateTime('2025-08-27T14:30:00');
 ```
 
 ## Settings API
 
-### SettingsManager-Klasse
+### SettingsManager Class
 
 ```typescript
 class SettingsManager {
   constructor();
   
-  // Settings-Loading
+  // Settings loading
   loadSettings(): Promise<AppSettings>;
   
-  // Settings-Validierung
+  // Settings validation
   validateSettings(data: any): AppSettings;
-  validateTheme(theme: any): AppTheme;
-  validateAppConfig(app: any): AppConfig;
-  validateFaviconTheme(favicon: any): FaviconTheme;
   
-  // Settings-Zugriff
+  // Settings access
   getSettings(): AppSettings;
-  getTheme(): AppTheme;
   getAppConfig(): AppConfig;
-  
-  // Favicon
-  updateFavicon(): void;
 }
 ```
 
@@ -258,100 +251,33 @@ class SettingsManager {
 
 ```typescript
 interface AppSettings {
-  theme: AppTheme;
   app: AppConfig;
   audioEnabled: boolean;
   speechEnabled: boolean;
-  fullscreenByDefault: boolean;
   autoStart: boolean;
   autoSwitchSeconds: number;
-}
-
-interface AppTheme {
-  primary: string;
-  secondary: string;
-  accent: string;
-  success: string;
-  warning: string;
-  error: string;
-  info: string;
+  showBreakTimes: boolean;
 }
 
 interface AppConfig {
   name: string;
   shortName: string;
   description: string;
-  favicon: FaviconTheme;
-}
-
-interface FaviconTheme {
-  primary: string;
-  secondary: string;
-  accent: string;
 }
 ```
 
-### Beispiele
+### Examples
 
 ```typescript
-// SettingsManager erstellen
+// Create SettingsManager
 const settingsManager = new SettingsManager();
 
-// Settings laden
+// Load settings
 const settings = await settingsManager.loadSettings();
 
-// Theme abrufen
-const theme = settingsManager.getTheme();
-const primaryColor = theme.primary; // "#3b82f6"
-
-// App-Konfiguration
+// App config
 const appConfig = settingsManager.getAppConfig();
 const appName = appConfig.name; // "Event Timer"
-
-// Favicon aktualisieren
-settingsManager.updateFavicon();
-```
-
-## Favicon API
-
-### FaviconGenerator-Klasse
-
-```typescript
-class FaviconGenerator {
-  // SVG-Generierung
-  static generateSVG(theme: FaviconTheme): string;
-  
-  // PNG-Generierung
-  static generatePNG(theme: FaviconTheme): string;
-  
-  // Favicon-Update
-  static updateFavicon(theme?: FaviconTheme): void;
-}
-```
-
-### Beispiele
-
-```typescript
-// SVG-Favicon generieren
-const svg = FaviconGenerator.generateSVG({
-  primary: '#3b82f6',
-  secondary: '#1e40af',
-  accent: '#60a5fa'
-});
-
-// PNG-Favicon generieren
-const pngDataUrl = FaviconGenerator.generatePNG({
-  primary: '#ff0000',
-  secondary: '#00ff00',
-  accent: '#0000ff'
-});
-
-// Favicon aktualisieren
-FaviconGenerator.updateFavicon({
-  primary: '#3b82f6',
-  secondary: '#1e40af',
-  accent: '#60a5fa'
-});
 ```
 
 ## Browser APIs
@@ -359,22 +285,22 @@ FaviconGenerator.updateFavicon({
 ### Web Audio API
 
 ```typescript
-// AudioContext erstellen
+// Create AudioContext
 const audioContext = new AudioContext();
 
-// Oscillator erstellen
+// Create oscillator
 const oscillator = audioContext.createOscillator();
 const gainNode = audioContext.createGain();
 
-// Verbinden
+// Connect
 oscillator.connect(gainNode);
 gainNode.connect(audioContext.destination);
 
-// Konfigurieren
+// Configure
 oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
 oscillator.type = 'sine';
 
-// Abspielen
+// Play
 oscillator.start(audioContext.currentTime);
 oscillator.stop(audioContext.currentTime + 0.5);
 ```
@@ -382,10 +308,10 @@ oscillator.stop(audioContext.currentTime + 0.5);
 ### Speech Synthesis API
 
 ```typescript
-// Speech Synthesis verfügbar prüfen
+// Check availability of Speech Synthesis
 if ('speechSynthesis' in window) {
-  const utterance = new SpeechSynthesisUtterance('Zehn');
-  utterance.lang = 'de-DE';
+  const utterance = new SpeechSynthesisUtterance('Ten');
+  utterance.lang = 'en-US';
   utterance.rate = 1.0;
   utterance.pitch = 1.0;
   utterance.volume = 0.8;
@@ -397,33 +323,18 @@ if ('speechSynthesis' in window) {
 ### Fullscreen API
 
 ```typescript
-// Vollbild aktivieren
+// Enter fullscreen
 if (document.documentElement.requestFullscreen) {
   document.documentElement.requestFullscreen();
 }
 
-// Vollbild verlassen
+// Exit fullscreen
 if (document.exitFullscreen) {
   document.exitFullscreen();
 }
 
-// Vollbild-Status prüfen
+// Check fullscreen state
 const isFullscreen = !!document.fullscreenElement;
-```
-
-### Service Worker API
-
-```typescript
-// Service Worker registrieren
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-    .then(registration => {
-      console.log('SW registered:', registration);
-    })
-    .catch(error => {
-      console.log('SW registration failed:', error);
-    });
-}
 ```
 
 ## Error Handling
@@ -433,10 +344,10 @@ if ('serviceWorker' in navigator) {
 ```typescript
 try {
   const audioContext = new AudioContext();
-  // Audio-Operationen
+  // Audio operations
 } catch (error) {
   console.warn('Audio API not supported:', error);
-  // Fallback-Verhalten
+  // Fallback behavior
 }
 ```
 
@@ -451,7 +362,7 @@ try {
   const data = await response.json();
 } catch (error) {
   console.error('Failed to load events:', error);
-  // Fallback-Daten verwenden
+  // Use fallback data
 }
 ```
 
@@ -462,7 +373,7 @@ try {
   timer.start();
 } catch (error) {
   console.error('Timer start failed:', error);
-  // Fallback zu setInterval
+  // Fallback to setInterval
 }
 ```
 
@@ -474,32 +385,32 @@ try {
 let animationId: number;
 
 function animate() {
-  // Animation-Logik
+  // Animation logic
   updateTimer();
   
-  animationId = requestAnimationFrame(animate);
+  animationId = requestAnimationFrame(() => animate());
 }
 
-// Animation starten
+// Start animation
 animate();
 
-// Animation stoppen
+// Stop animation
 cancelAnimationFrame(animationId);
 ```
 
 ### Performance API
 
 ```typescript
-// Performance-Markierung
+// Performance marks
 performance.mark('timer-start');
 
-// Timer-Logik
+// Timer logic
 updateTimer();
 
 performance.mark('timer-end');
 performance.measure('timer-update', 'timer-start', 'timer-end');
 
-// Performance-Daten abrufen
+// Read performance data
 const measure = performance.getEntriesByName('timer-update')[0];
 console.log(`Timer update took ${measure.duration}ms`);
 ```
@@ -507,17 +418,17 @@ console.log(`Timer update took ${measure.duration}ms`);
 ## Local Storage API
 
 ```typescript
-// Daten speichern
+// Store data
 localStorage.setItem('theme', 'dark');
 localStorage.setItem('audioEnabled', 'true');
 
-// Daten abrufen
+// Read data
 const theme = localStorage.getItem('theme');
 const audioEnabled = localStorage.getItem('audioEnabled') === 'true';
 
-// Daten entfernen
+// Remove data
 localStorage.removeItem('theme');
 
-// Alle Daten löschen
+// Clear all data
 localStorage.clear();
 ```

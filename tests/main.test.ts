@@ -36,7 +36,8 @@ describe('Theme Management', () => {
     Object.defineProperty(window, 'matchMedia', {
       value: jest.fn(() => ({
         matches: false,
-        addEventListener: jest.fn()
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn()
       })),
       writable: true
     });

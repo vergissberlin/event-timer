@@ -5,13 +5,12 @@ export class EventsManager {
   private dataUrl: string;
 
   constructor(dataUrl?: string) {
-    // Auto-detect environment and set correct path
+    // Basis-URL aus <base> Tag ermitteln, um lokal und auf GitHub Pages zu funktionieren
     if (dataUrl) {
       this.dataUrl = dataUrl;
     } else {
-      // Check if we're in production (GitHub Pages)
-      const isProduction = window.location.hostname === 'vergissberlin.github.io';
-      this.dataUrl = isProduction ? '/event-timer/data/events.json' : '/data/events.json';
+      const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+      this.dataUrl = `${baseHref}/data/events.json`;
     }
   }
 

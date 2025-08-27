@@ -95,17 +95,17 @@ After deployment, you can:
 - ✅ **Timeline View** - Visual event scheduling
 - ✅ **Break Time Display** - Shows pauses between events
 
-📖 **For detailed template instructions, see [TEMPLATE.md](TEMPLATE.md)**
+📖 For detailed template instructions, see `TEMPLATE.md`
 
 ## 🚀 Quick Start (Local Development)
 
 1. **Configure Events**: Edit `data/events.json`
 2. **Adjust Settings**: Edit `data/settings.json`
-3. **Start App**: Run `pnpm dev` or open directly in browser
+3. **Start App**: Run `pnpm dev` and open `http://localhost:3000/event-timer/`
 
 ## 📝 Event Configuration
 
-**Important**: The app only displays events from `data/events.json`. No default events are provided - you must configure your own events. Events are automatically sorted chronologically by start time. If no events are configured, a helpful message will be displayed with instructions on how to add events.
+Important: The app only displays events from `data/events.json`. No default events are provided — you must configure your own events. Events are automatically sorted chronologically by start time. If no events are configured, a helpful message will be displayed with instructions on how to add events.
 
 Events are configured in `data/events.json`:
 
@@ -161,13 +161,13 @@ Global settings in `data/settings.json`:
   "app": {
     "name": "Event Timer",
     "shortName": "Timer",
-    "description": "Progressive Web App for Event Timers"
+    "description": "Web application for event timers"
   },
   "audioEnabled": true,
   "speechEnabled": true,
-  "fullscreenByDefault": false,
   "autoStart": true,
-  "autoSwitchSeconds": 30
+  "autoSwitchSeconds": 30,
+  "showBreakTimes": true
 }
 ```
 
@@ -180,18 +180,18 @@ Global settings in `data/settings.json`:
 | `theme.accent` | string | `"#60a5fa"` | Accent color |
 | `app.name` | string | `"Event Timer"` | App name |
 | `app.shortName` | string | `"Timer"` | Short app name |
-| `audioEnabled` | boolean | `true` | Audio enabled |
-| `speechEnabled` | boolean | `true` | Speech synthesis enabled |
-| `fullscreenByDefault` | boolean | `false` | Fullscreen by default |
+| `audioEnabled` | boolean | `true` | Enable audio |
+| `speechEnabled` | boolean | `true` | Enable speech synthesis |
 | `autoStart` | boolean | `true` | Auto-start timers |
 | `autoSwitchSeconds` | number | `30` | Auto-switch X seconds before start |
+| `showBreakTimes` | boolean | `true` | Show/hide break times |
 
 ## 🎵 Audio Features
 
 ### Automatic Sounds
 - **Event Start**: Loud, dramatic sound sequence
 - **1-Minute Warning**: 800Hz tone with blinking
-- **Last 10 Seconds**: EKG-like beeps with speech announcement "Noch 10 Sekunden"
+- **Last 10 Seconds**: EKG-like beeps with "Ten seconds left" speech
 - **Event End**: Long alarm tone (3 seconds) followed by warm, gentle 3-tone sequence
 
 ### Audio Settings
@@ -200,7 +200,7 @@ Global settings in `data/settings.json`:
 
 ## 🔄 Auto-Switch Feature
 
-The app automatically switches to event detail page:
+The app automatically switches to the event detail page:
 - **Default**: 30 seconds before event start
 - **Configurable**: `autoSwitchSeconds` in settings.json
 - **Smart**: Only for upcoming events
@@ -216,8 +216,8 @@ The app automatically switches to event detail page:
 - **Dark/Light Mode**: Automatic adaptation
 - **Timeline**: Visual event scheduling
 - **Status Display**: Planned, Running, Finished
-- **Next Event**: Color highlighting
-- **QR Code**: Event sharing
+- **Next Event**: Highlighting in list and timeline
+- **QR Code**: Easy event sharing
 
 ## 📊 Event Status
 
@@ -229,87 +229,18 @@ The app automatically switches to event detail page:
 
 ## 🧪 Testing & Code Coverage
 
-### Automated Testing
-- **Unit Tests**: Comprehensive test suite with Jest
-- **Code Coverage**: Automated coverage reporting
-- **CI/CD Integration**: GitHub Actions with coverage comments
-- **Pull Request Coverage**: Automatic coverage reports on PRs
-
-### Test Commands
-```bash
-pnpm test          # Run all tests
-pnpm test:watch    # Watch mode
-pnpm test:coverage # Coverage report
-pnpm test:ci       # CI/CD mode
-```
-
-For detailed testing information see [docs/testing.md](docs/testing.md).
+See `docs/testing.md` for details.
 
 ## 🚀 CI/CD & Deployment
 
-The project uses GitHub Actions for continuous integration and deployment:
-
-- **Tests**: Run on every push to `develop` and pull requests to `main`
-- **Deployment**: Automatic deployment to GitHub Pages on push to `main`
-- **Coverage**: Code coverage reports and PR comments
-
-See [docs/github-actions.md](docs/github-actions.md) for detailed CI/CD configuration.
+The project uses GitHub Actions for CI/CD and deployment to GitHub Pages. See `docs/github-pages-deployment.md`.
 
 ## 🔧 Development
 
 For developers and contributors see:
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Development guidelines
-- [docs/](docs/) - Technical documentation
-
-## 🔧 For Repository Owners
-
-### Making This a GitHub Template
-
-To make this repository available as a GitHub Template:
-
-1. **Enable Template Repository**
-   - Go to repository Settings → General
-   - Scroll down to "Template repository"
-   - Check "Template repository"
-   - Click "Save"
-
-2. **Update Repository Description**
-   - Add: "🚀 GitHub Template for Event Timer PWA"
-   - Add relevant topics: `template`, `pwa`, `event-timer`, `github-pages`
-
-3. **Create Template Documentation**
-   - This README already includes template usage instructions
-   - Consider adding a `TEMPLATE.md` file for additional guidance
-
-### Template Features
-
-- ✅ **Zero Configuration**: Works out of the box
-- ✅ **Automatic Deployment**: GitHub Actions ready
-- ✅ **Customizable**: Easy to modify for different use cases
-- ✅ **Well Documented**: Comprehensive setup instructions
-- ✅ **Production Ready**: Optimized for real-world usage
-- ✅ **No PWA Dependencies**: Simple web application
+- `CONTRIBUTING.md` - Development guidelines
+- `docs/` - Technical documentation
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file.
-
-## Features
-
-### 🎨 **Theme Management**
-- **Automatisches Dark/Light Mode**: Erkennt das Betriebssystem-Theme automatisch
-- **Persistierung**: Speichert Theme-Auswahl im localStorage
-- **Manueller Toggle**: Button zum Umschalten zwischen Light und Dark Mode
-- **System-Integration**: Reagiert auf Änderungen des Betriebssystem-Themes (wenn kein Theme gespeichert ist)
-
-### ⏰ **Timer-Funktionalität**
-- **Vollbild-Timer**: Sekundengenaue Anzeige im Format HH:MM:SS
-- **Automatische Events**: Events starten automatisch basierend auf ihrer Startzeit
-- **Countdown-Modus**: Zeigt Countdown bis zum Event-Start an
-- **Auto-Switch**: Automatisches Wechseln zur Detailseite 30 Sekunden vor Event-Start (konfigurierbar)
-
-### 📊 **Pausenzeiten-Anzeige**
-- **Automatische Berechnung**: Zeigt Pausenzeiten zwischen Events an
-- **Ein-/Ausblenden**: Toggle-Button zum Verstecken der Pausenzeiten
-- **Visuelle Darstellung**: Blaue Hintergrundfarbe für Pausenzeiten-Zeilen
-- **Benutzerfreundlich**: Format wie "1h 30min Pause" mit Zeitraum
+MIT License - see `LICENSE`.

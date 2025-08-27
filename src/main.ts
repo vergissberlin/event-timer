@@ -202,9 +202,10 @@ class EventTimerApp {
       // Start auto-switch timer
       this.startAutoSwitchTimer();
       
-      // Show app
-      this.loadingElement.classList.add('hidden');
+      // Show app (no overlay)
+      this.loadingElement.remove();
       this.appElement.classList.remove('hidden');
+      this.appElement.style.display = 'block';
       
       console.log('Event Timer App initialized successfully');
       
@@ -405,9 +406,8 @@ class EventTimerApp {
   }
 
   private navigateToEvent(eventId: string): void {
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const basePath = isDevelopment ? '' : '/event-timer';
-    const url = `${basePath}/event/${eventId}`;
+    const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+    const url = `${baseHref}/event/${eventId}`;
     window.history.pushState({ eventId }, '', url);
     this.showTimerScreen();
     this.initializeTimer();
@@ -440,9 +440,8 @@ class EventTimerApp {
     this.startAutoSwitchTimer();
     
     // Update URL to root (with subdirectory for production)
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const basePath = isDevelopment ? '/' : '/event-timer/';
-    window.history.pushState({}, '', basePath);
+    const baseHref = document.querySelector('base')?.getAttribute('href') || '/';
+    window.history.pushState({}, '', baseHref);
   }
 
   private updateTimerScreen(): void {
@@ -794,11 +793,9 @@ class EventTimerApp {
       let targetUrl: string;
       
       if (this.currentEvent) {
-        // On detail page, generate QR code for the specific event
-        const eventUrl = `${window.location.origin}/event/${this.currentEvent.id}`;
-        targetUrl = eventUrl;
+        const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+        targetUrl = `${window.location.origin}${baseHref}/event/${this.currentEvent.id}`;
       } else {
-        // On overview page, generate QR code for the overview
         targetUrl = window.location.href;
       }
       
@@ -824,11 +821,9 @@ class EventTimerApp {
       let targetUrl: string;
       
       if (this.currentEvent) {
-        // On detail page, copy the specific event URL
-        const eventUrl = `${window.location.origin}/event/${this.currentEvent.id}`;
-        targetUrl = eventUrl;
+        const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+        targetUrl = `${window.location.origin}${baseHref}/event/${this.currentEvent.id}`;
       } else {
-        // On overview page, copy the current URL
         targetUrl = window.location.href;
       }
       
@@ -852,11 +847,9 @@ class EventTimerApp {
       let targetUrl: string;
       
       if (this.currentEvent) {
-        // On detail page, generate QR code for the specific event
-        const eventUrl = `${window.location.origin}/event/${this.currentEvent.id}`;
-        targetUrl = eventUrl;
+        const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+        targetUrl = `${window.location.origin}${baseHref}/event/${this.currentEvent.id}`;
       } else {
-        // On overview page, generate QR code for the overview
         targetUrl = window.location.href;
       }
       
@@ -885,7 +878,8 @@ class EventTimerApp {
   }
 
   private initializeRouting(events: Event[]): void {
-    const path = window.location.pathname;
+    const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+    const path = window.location.pathname.replace(baseHref, '') || '/';
     const eventMatch = path.match(/^\/event\/(.+)$/);
     
     if (eventMatch) {
@@ -912,10 +906,9 @@ class EventTimerApp {
   }
 
   private handleRouteChange(): void {
-    const path = window.location.pathname;
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const eventPattern = isDevelopment ? /^\/event\/(.+)$/ : /^\/event-timer\/event\/(.+)$/;
-    const eventMatch = path.match(eventPattern);
+    const baseHref = (document.querySelector('base')?.getAttribute('href') || '/').replace(/\/$/, '');
+    const path = window.location.pathname.replace(baseHref, '') || '/';
+    const eventMatch = path.match(/^\/event\/(.+)$/);
     
     if (eventMatch) {
       const eventId = eventMatch[1];
@@ -1281,10 +1274,18 @@ class EventTimerApp {
   }
 }
 
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  window.eventTimerApp = new EventTimerApp();
-});
+// Initialize app when DOM is ready (supports late-loaded module script)
+const initApp = () => {
+  if (!window.eventTimerApp) {
+    window.eventTimerApp = new EventTimerApp();
+  }
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 
 // Export for testing
 export { EventTimerApp };
@@ -1296,7 +1297,4 @@ document.addEventListener('click', () => {
   }
 }, { once: true });
 
-// Request notification permission
-if ('Notification' in window) {
-  Notification.requestPermission();
-}
+// Notifications & SW entfernt: keine automatische Permission-Anfrage mehr

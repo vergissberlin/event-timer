@@ -1,0 +1,49 @@
+<div id="timerScreen" class="fixed inset-0 z-40 hidden bg-black">
+  <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" id="timerBackground">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+  </div>
+  
+  <div class="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
+    <div class="text-center mb-8">
+      <h2 id="eventTitle" class="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg"></h2>
+      <div id="eventDescription" class="hidden text-lg md:text-xl text-white text-opacity-80 mb-4"></div>
+    </div>
+    <div class="text-center mb-8">
+      <div id="timer" class="text-8xl md:text-9xl font-bold text-white drop-shadow-lg font-mono">00:00:00</div>
+      <div id="countdown" class="text-2xl md:text-3xl text-white text-opacity-80 mt-4 hidden">Startet in: <span id="countdownTime">00:00:00</span></div>
+    </div>
+    <div id="eventStatusInfo" class="text-center mb-8 hidden">
+      <div id="eventEndedMessage" class="hidden">
+        <div class="text-3xl md:text-4xl font-bold text-red-400 mb-4">Event beendet</div>
+        <div id="eventEndedCountdown" class="text-xl text-white text-opacity-60"></div>
+      </div>
+      <div id="nextEventInfo" class="hidden">
+        <div class="text-xl text-white text-opacity-80 mb-2">Nächstes Event:</div>
+        <div id="nextEventTitle" class="text-2xl font-bold text-blue-400 mb-2"></div>
+        <div class="text-lg text-white text-opacity-60">Startet in: <span id="nextEventCountdown"></span></div>
+        <button id="nextEventBtn" class="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors">Weiter</button>
+      </div>
+    </div>
+  </div>
+  <div class="absolute top-8 right-8 flex gap-2">
+    <button id="closeBtn" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Schließen">
+      <i class="ti ti-x text-xl"></i>
+    </button>
+    <button id="fullscreenBtn" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Vollbild">
+      <i class="ti ti-maximize text-xl"></i>
+    </button>
+    <button id="shareBtnTimer" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="QR Code">
+      <i class="ti ti-qrcode text-xl"></i>
+    </button>
+  </div>
+  <div class="absolute bottom-8 left-8 opacity-0 hover:opacity-100 transition-opacity duration-300">
+    <button id="backBtn" class="text-white text-lg font-semibold hover:text-gray-300 transition-colors">← Zurück</button>
+  </div>
+  <div class="hidden">
+    <button id="startBtn">Start</button>
+    <button id="pauseBtn">Pause</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+</div>
+
+

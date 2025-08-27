@@ -1,27 +1,27 @@
-# Pausenzeiten-Funktionalität
+# Break Times Feature
 
-Die Event Timer PWA zeigt automatisch Pausenzeiten zwischen Events an und ermöglicht es Benutzern, diese ein- und auszublenden.
+The Event Timer web app automatically displays break times between events and allows users to toggle their visibility.
 
 ## Features
 
-### 1. **Automatische Pausenzeiten-Berechnung**
-- Berechnet automatisch die Zeit zwischen dem Ende eines Events und dem Start des nächsten Events
-- Zeigt Pausenzeiten in benutzerfreundlichem Format an (z.B. "1h 30min Pause")
-- Berücksichtigt die tatsächliche Dauer der Events
+### 1. Automatic Break Time Calculation
+- Automatically calculates the time between the end of one event and the start of the next
+- Displays break times in a user-friendly format (e.g., "1h 30min break")
+- Respects each event's actual duration
 
-### 2. **Ein-/Ausblenden von Pausenzeiten**
-- Toggle-Button in der oberen rechten Ecke der Übersicht
-- Einstellung wird im localStorage gespeichert
-- Sofortige visuelle Rückmeldung beim Umschalten
+### 2. Show/Hide Break Times
+- Toggle button in the top-right corner of the overview
+- Setting is persisted in localStorage
+- Immediate visual feedback when toggled
 
-### 3. **Visuelle Darstellung**
-- Blaue Hintergrundfarbe für Pausenzeiten-Zeilen
-- Zentrierte Darstellung über die gesamte Tabellenbreite
-- Icon und Zeitangabe mit Start- und Endzeit
+### 3. Visual Representation
+- Blue background color for break time rows
+- Centered across the full table width
+- Icon and time with start and end timestamps
 
-## Implementierung
+## Implementation
 
-### Pausenzeiten-Berechnung
+### Break Time Calculation
 
 ```typescript
 public getBreakTimeBetweenEvents(event1: Event, event2: Event): number {
@@ -35,20 +35,20 @@ public getBreakTimeBetweenEvents(event1: Event, event2: Event): number {
 }
 
 public formatBreakTime(seconds: number): string {
-  if (seconds === 0) return 'Keine Pause';
+  if (seconds === 0) return 'No break';
   
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   
   if (hours > 0) {
-    return `${hours}h ${minutes}min Pause`;
+    return `${hours}h ${minutes}min break`;
   } else {
-    return `${minutes}min Pause`;
+    return `${minutes}min break`;
   }
 }
 ```
 
-### Toggle-Funktionalität
+### Toggle Functionality
 
 ```typescript
 private toggleBreakTimes(): void {
@@ -67,7 +67,7 @@ private toggleBreakTimes(): void {
 }
 ```
 
-### Pausenzeiten-Zeile erstellen
+### Create Break Time Row
 
 ```typescript
 private createBreakTimeRow(currentEvent: Event, nextEvent: Event): HTMLElement {
@@ -100,12 +100,12 @@ private createBreakTimeRow(currentEvent: Event, nextEvent: Event): HTMLElement {
 }
 ```
 
-## Einstellungen
+## Settings
 
 ### showBreakTimes
-- **Typ**: `boolean`
-- **Standard**: `true`
-- **Beschreibung**: Steuert, ob Pausenzeiten in der Übersicht angezeigt werden
+- **Type**: `boolean`
+- **Default**: `true`
+- **Description**: Controls whether break times are shown in the overview
 
 ```json
 {
@@ -115,38 +115,38 @@ private createBreakTimeRow(currentEvent: Event, nextEvent: Event): HTMLElement {
 }
 ```
 
-## UI-Elemente
+## UI Elements
 
-### Toggle-Button
-- **Position**: Obere rechte Ecke der Übersicht
-- **Icon**: `ti ti-clock-pause` (aktiviert) / `ti ti-clock-off` (deaktiviert)
-- **Tooltip**: "Pausenzeiten anzeigen/verstecken"
+### Toggle Button
+- **Position**: Top-right corner of the overview
+- **Icon**: `ti ti-clock-pause` (enabled) / `ti ti-clock-off` (disabled)
+- **Tooltip**: "Show/hide break times"
 
-### Pausenzeiten-Zeile
-- **Hintergrund**: Blaue Farbe (`bg-blue-50` / `dark:bg-blue-900/20`)
-- **Layout**: Zentriert über alle 6 Spalten
-- **Inhalt**: Icon, Pausenzeit, Zeitraum
+### Break Time Row
+- **Background**: Blue (`bg-blue-50` / `dark:bg-blue-900/20`)
+- **Layout**: Centered across all 6 columns
+- **Content**: Icon, break time, time range
 
-## Verhalten
+## Behavior
 
-### Anzeige-Logik
-1. **Pausenzeiten aktiviert**: Zeigt Pausenzeiten zwischen allen Events an
-2. **Pausenzeiten deaktiviert**: Versteckt alle Pausenzeiten-Zeilen
-3. **Letztes Event**: Keine Pausenzeit nach dem letzten Event
+### Display Logic
+1. **Break times enabled**: Show break times between all events
+2. **Break times disabled**: Hide all break time rows
+3. **Last event**: No break time after the last event
 
-### Formatierung
-- **0 Sekunden**: "Keine Pause"
-- **Weniger als 1 Stunde**: "Xmin Pause"
-- **1 Stunde oder mehr**: "Xh Ymin Pause"
+### Formatting
+- **0 seconds**: "No break"
+- **Less than 1 hour**: "Xmin break"
+- **1 hour or more**: "Xh Ymin break"
 
-### Persistierung
-- Einstellung wird im localStorage gespeichert
-- Bleibt auch nach Browser-Neustart erhalten
-- Wird beim Laden der Anwendung wiederhergestellt
+### Persistence
+- Setting is stored in localStorage
+- Persists across browser sessions
+- Restored on app load
 
-## CSS-Klassen
+## CSS Classes
 
-### Pausenzeiten-Zeile
+### Break Time Row
 ```css
 .bg-blue-50 { background-color: #eff6ff !important; }
 .dark .bg-blue-900\/20 { background-color: rgba(30, 58, 138, 0.2) !important; }
@@ -156,29 +156,29 @@ private createBreakTimeRow(currentEvent: Event, nextEvent: Event): HTMLElement {
 
 ## Testing
 
-Die Pausenzeiten-Funktionalität wird durch die bestehenden Tests abgedeckt:
+The break times feature is covered by existing tests:
 
-- **EventsManager**: Tests für `getBreakTimeBetweenEvents` und `formatBreakTime`
-- **SettingsManager**: Tests für `showBreakTimes` Einstellung
-- **UI**: Integrationstests für Toggle-Funktionalität
+- **EventsManager**: Tests for `getBreakTimeBetweenEvents` and `formatBreakTime`
+- **SettingsManager**: Tests for `showBreakTimes` setting
+- **UI**: Integration tests for toggle functionality
 
 ## Best Practices
 
-1. **Performance**: Pausenzeiten werden nur bei Bedarf berechnet
-2. **UX**: Sofortige visuelle Rückmeldung beim Toggle
-3. **Accessibility**: Klare visuelle Unterscheidung durch Farbe und Icon
-4. **Maintainability**: Zentrale Logik in EventsManager
-5. **Flexibility**: Einfache Ein-/Ausblendung ohne Datenverlust
+1. **Performance**: Break times are calculated only when needed
+2. **UX**: Immediate visual feedback when toggled
+3. **Accessibility**: Clear visual distinction with color and icon
+4. **Maintainability**: Central logic in `EventsManager`
+5. **Flexibility**: Easy show/hide without data loss
 
-## Browser-Kompatibilität
+## Browser Compatibility
 
-- **localStorage**: Alle modernen Browser
-- **Date-API**: Alle modernen Browser
-- **CSS Grid**: Alle modernen Browser (für `colspan`)
+- **localStorage**: All modern browsers
+- **Date API**: All modern browsers
+- **CSS Grid**: All modern browsers (for `colspan`)
 
-## Fehlerbehandlung
+## Error Handling
 
-- **Negative Pausenzeiten**: Werden auf 0 gesetzt
-- **Fehlende Events**: Keine Pausenzeit angezeigt
-- **Ungültige Daten**: Graceful Degradation
+- **Negative break times**: Clamped to 0
+- **Missing events**: No break time shown
+- **Invalid data**: Graceful degradation
 
