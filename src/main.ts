@@ -39,7 +39,7 @@ class EventTimerApp {
   private themeToggleBtn!: HTMLButtonElement;
   private breakTimesToggleBtn!: HTMLButtonElement;
   private fullscreenBtnOverview!: HTMLButtonElement;
-  private shareBtn!: HTMLButtonElement;
+  private shareBtn: HTMLButtonElement | null = null;
   private shareBtnTimer!: HTMLButtonElement;
   private qrModal!: HTMLElement;
   private closeQrModal!: HTMLButtonElement;
@@ -75,20 +75,20 @@ class EventTimerApp {
     this.appElement = document.getElementById('app')!;
     this.eventSelectionElement = document.getElementById('eventSelection')!;
     this.timerScreenElement = document.getElementById('timerScreen')!;
-    this.eventTableBody = document.getElementById('eventTableBody')!;
+    this.eventTableBody = document.getElementById('eventGrid')!;
     this.timerElement = document.getElementById('timer')!;
     this.timerBackgroundElement = document.getElementById('timerBackground')!;
     this.eventTitleElement = document.getElementById('eventTitle')!;
     this.eventDescriptionElement = document.getElementById('eventDescription')!;
-    this.countdownTimerElement = document.getElementById('countdownTimer')!;
-    this.timelineBarElement = document.getElementById('timelineBar')!;
-    this.currentTimeMarkerElement = document.getElementById('currentTimeMarker')!;
-    this.currentTimeDisplayElement = document.getElementById('currentTimeDisplay')!;
-    this.hourMarkersElement = document.getElementById('hourMarkers')!;
-    this.themeToggleBtn = document.getElementById('themeToggle') as HTMLButtonElement;
+    this.countdownTimerElement = document.getElementById('countdown')!;
+    this.timelineBarElement = document.getElementById('timeline')!;
+    this.currentTimeMarkerElement = document.getElementById('currentTimeIndicator')!;
+    this.currentTimeDisplayElement = document.getElementById('currentTime')!;
+    this.hourMarkersElement = document.getElementById('timelineEvents')!;
+    this.themeToggleBtn = document.getElementById('themeToggleBtn') as HTMLButtonElement;
     this.breakTimesToggleBtn = document.getElementById('breakTimesToggle') as HTMLButtonElement;
     this.fullscreenBtnOverview = document.getElementById('fullscreenBtnOverview') as HTMLButtonElement;
-    this.shareBtn = document.getElementById('shareBtn') as HTMLButtonElement;
+    this.shareBtn = null;
     this.shareBtnTimer = document.getElementById('shareBtnTimer') as HTMLButtonElement;
     this.qrModal = document.getElementById('qrModal')!;
     this.closeQrModal = document.getElementById('closeQrModal') as HTMLButtonElement;
@@ -107,7 +107,7 @@ class EventTimerApp {
     this.nextEventInfo = document.getElementById('nextEventInfo')!;
     this.nextEventTitle = document.getElementById('nextEventTitle')!;
     this.nextEventCountdown = document.getElementById('nextEventCountdown')!;
-    this.goToNextEventBtn = document.getElementById('goToNextEventBtn') as HTMLButtonElement;
+    this.goToNextEventBtn = document.getElementById('nextEventBtn') as HTMLButtonElement;
   }
 
   private bindEventListeners(): void {
@@ -121,7 +121,9 @@ class EventTimerApp {
     this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
     this.breakTimesToggleBtn.addEventListener('click', () => this.toggleBreakTimes());
     this.fullscreenBtnOverview.addEventListener('click', () => this.toggleFullscreen());
-    this.shareBtn.addEventListener('click', () => this.showQrModal());
+    if (this.shareBtn) {
+      this.shareBtn.addEventListener('click', () => this.showQrModal());
+    }
     this.shareBtnTimer.addEventListener('click', () => this.showQrModal());
     this.closeQrModal.addEventListener('click', () => this.hideQrModal());
     this.copyUrlBtn.addEventListener('click', () => this.copyUrl());
