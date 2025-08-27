@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
 
+# Allow only one concurrent test run per branch
+concurrency:
+  group: "tests-${{ github.ref }}"
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest

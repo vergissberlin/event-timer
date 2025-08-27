@@ -149,6 +149,16 @@ pnpm test:ci       # CI/CD mode
 
 For detailed testing information see [docs/testing.md](docs/testing.md).
 
+## 🚀 CI/CD & Deployment
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+- **Tests**: Run on every push to `develop` and pull requests to `main`
+- **Deployment**: Automatic deployment to GitHub Pages on push to `main`
+- **Coverage**: Code coverage reports and PR comments
+
+See [docs/github-actions.md](docs/github-actions.md) for detailed CI/CD configuration.
+
 ## 🔧 Development
 
 For developers and contributors see:
