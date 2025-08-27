@@ -94,8 +94,8 @@ Global settings in `data/settings.json`:
 ### Automatic Sounds
 - **Event Start**: Loud, dramatic sound sequence
 - **1-Minute Warning**: 800Hz tone with blinking
-- **Last 10 Seconds**: Speech announcement "Noch 10 Sekunden"
-- **Event End**: Warm, gentle 3-tone sequence (300-400Hz)
+- **Last 10 Seconds**: EKG-like beeps with speech announcement "Noch 10 Sekunden"
+- **Event End**: Long alarm tone (3 seconds) followed by warm, gentle 3-tone sequence
 
 ### Audio Settings
 - `audioEnabled: true` - All sounds enabled

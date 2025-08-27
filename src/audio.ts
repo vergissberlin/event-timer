@@ -222,6 +222,81 @@ export class AudioManager implements AudioManagerInterface {
     }
   }
 
+  // EKG-ähnliche Beeps für die letzten 10 Sekunden
+  public playEKGBeep(seconds: number): void {
+    if (!this.isAudioEnabled) return;
+    
+    try {
+      // EKG-ähnliche Beep-Sequenz basierend auf der verbleibenden Zeit
+      if (seconds <= 10 && seconds > 0) {
+        this.generateEKGBeep(seconds);
+      }
+    } catch (error) {
+      console.warn('Fehler beim Generieren des EKG-Beeps:', error);
+    }
+  }
+
+  private generateEKGBeep(seconds: number): void {
+    try {
+      // EKG-ähnliche Frequenz (typisch für Herzmonitore)
+      const frequency = 800 + (10 - seconds) * 50; // Frequenz steigt mit abnehmender Zeit
+      const duration = 0.1; // Kurzer Beep
+      const volume = 0.4; // Lauter für Aufmerksamkeit
+      
+      // Doppelter Beep für EKG-Effekt
+      this.generateTone(frequency, duration, 'square', volume);
+      
+      // Zweiter Beep nach kurzer Pause (EKG-Charakteristik)
+      setTimeout(() => {
+        this.generateTone(frequency, duration, 'square', volume * 0.8);
+      }, 150);
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren des EKG-Beeps:', error);
+    }
+  }
+
+  // Langer Ton bei null Sekunden
+  public playZeroTone(): void {
+    if (!this.isAudioEnabled) return;
+    
+    try {
+      // Langer, eindringlicher Ton bei null
+      this.generateLongZeroTone();
+    } catch (error) {
+      console.warn('Fehler beim Generieren des Null-Tons:', error);
+    }
+  }
+
+  private generateLongZeroTone(): void {
+    try {
+      const audioContext = this.getAudioContext();
+      
+      // Langer Ton mit fallender Frequenz (Alarm-Charakteristik)
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Frequenz von hoch nach tief (Alarm-Effekt)
+      oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 3.0);
+      
+      oscillator.type = 'sawtooth'; // Eindringlicher Klang
+      
+      // Lauter Start, dann leiser werdend
+      gainNode.gain.setValueAtTime(0.6, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 3.0);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 3.0);
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren des langen Null-Tons:', error);
+    }
+  }
+
   // Speech API für Countdown
   public speakCountdown(seconds: number): void {
     if (!this.isSpeechEnabled) return;

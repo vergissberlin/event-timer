@@ -63,6 +63,8 @@ export interface AudioManager {
   playWarning: () => void;
   playEnd: () => void;
   playStart: () => void;
+  playEKGBeep: (seconds: number) => void;
+  playZeroTone: () => void;
   speakCountdown: (seconds: number) => void;
   isSpeechSupported: () => boolean;
   isAudioSupported: () => boolean;

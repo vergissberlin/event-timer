@@ -145,14 +145,17 @@ export class Timer {
       this.callbacks.onWarning();
     }
     
-    // Blinking and speech countdown for last 10 seconds
+    // EKG-Beeps and speech countdown for last 10 seconds
     if (this.state.timeRemaining <= 10 && this.state.timeRemaining > 0 && !this.speechTriggered) {
       this.speechTriggered = true;
       this.status = 'warning';
     }
     
     if (this.speechTriggered && this.state.timeRemaining <= 10 && this.state.timeRemaining > 0) {
-              this.audio.speakCountdown(this.state.timeRemaining);
+      // EKG-ähnliche Beeps für jede Sekunde
+      this.audio.playEKGBeep(this.state.timeRemaining);
+      // Speech nur bei 10 Sekunden
+      this.audio.speakCountdown(this.state.timeRemaining);
     }
   }
   
@@ -164,7 +167,12 @@ export class Timer {
 
   private handleTimerEnd(): void {
     this.stop();
-    this.audio.playEnd();
+    // Langer Ton bei null Sekunden
+    this.audio.playZeroTone();
+    // Dann der normale End-Ton
+    setTimeout(() => {
+      this.audio.playEnd();
+    }, 3000); // Nach dem langen Ton (3 Sekunden)
     this.callbacks.onEnd();
   }
 
