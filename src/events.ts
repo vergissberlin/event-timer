@@ -141,7 +141,9 @@ export class EventsManager {
         return `${hours}h`;
       }
     } else {
-      return `${minutes}min`;
+      // For durations less than 1 hour, show at least 1 minute if there are any seconds
+      const displayMinutes = seconds > 0 ? Math.max(1, minutes) : 0;
+      return `${displayMinutes}min`;
     }
   }
 

@@ -171,6 +171,7 @@ class EventTimerApp {
       // Load settings and update app title
       const settings = await this.settingsManager.loadSettings();
       this.updateAppTitle(settings.app.name);
+      this.updateManifest(settings.app);
       
       // Load events
       const events = await this.eventsManager.loadEvents();
@@ -1078,6 +1079,107 @@ class EventTimerApp {
     }
     // Also update document title
     document.title = title;
+  }
+
+  private updateManifest(appConfig: { name: string; shortName: string; description: string }): void {
+    // Update document title and meta description
+    document.title = appConfig.name;
+    
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', appConfig.description);
+    }
+    
+    // Update manifest dynamically
+    const manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement;
+    if (manifestLink) {
+      // Create a new manifest with updated values
+      const manifest = {
+        name: appConfig.name,
+        short_name: appConfig.shortName,
+        description: appConfig.description,
+        start_url: "/",
+        display: "standalone",
+        background_color: "#1e293b",
+        theme_color: "#1e293b",
+        orientation: "portrait-primary",
+        scope: "/",
+        lang: "de",
+        icons: [
+          {
+            src: "/icons/icon-72x72.png",
+            sizes: "72x72",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-96x96.png",
+            sizes: "96x96",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-128x128.png",
+            sizes: "128x128",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-144x144.png",
+            sizes: "144x144",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-152x152.png",
+            sizes: "152x152",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-384x384.png",
+            sizes: "384x384",
+            type: "image/png",
+            purpose: "maskable any"
+          },
+          {
+            src: "/icons/icon-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable any"
+          }
+        ],
+        categories: ["productivity", "utilities"],
+        screenshots: [
+          {
+            src: "/screenshots/desktop.png",
+            sizes: "1280x720",
+            type: "image/png",
+            form_factor: "wide"
+          },
+          {
+            src: "/screenshots/mobile.png",
+            sizes: "390x844",
+            type: "image/png",
+            form_factor: "narrow"
+          }
+        ]
+      };
+      
+      // Create blob and update manifest link
+      const blob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      manifestLink.href = url;
+      
+      // Clean up URL after a delay
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
   }
 
   private showError(message: string): void {

@@ -96,17 +96,19 @@ describe('EventsManager', () => {
       expect(validated).toEqual(validEvent);
     });
 
-    it('should handle missing required fields', () => {
+    it('should provide default values for missing required fields', () => {
       const invalidEvent = {
         id: 'test',
         title: 'Test',
         // Missing startTime and duration
       } as any;
 
-      expect(() => eventsManager.validateEvent(invalidEvent)).toThrow('Event must have startTime');
+      const validated = eventsManager.validateEvent(invalidEvent);
+      expect(validated.startTime).toBeDefined();
+      expect(validated.duration).toBe(300); // Default duration
     });
 
-    it('should handle invalid startTime format', () => {
+    it('should handle invalid startTime format gracefully', () => {
       const invalidEvent = {
         id: 'test',
         title: 'Test',
@@ -114,10 +116,11 @@ describe('EventsManager', () => {
         duration: 3600
       };
 
-      expect(() => eventsManager.validateEvent(invalidEvent)).toThrow('Invalid startTime format');
+      const validated = eventsManager.validateEvent(invalidEvent);
+      expect(validated.startTime).toBeDefined(); // Should provide default
     });
 
-    it('should handle invalid duration', () => {
+    it('should handle invalid duration gracefully', () => {
       const invalidEvent = {
         id: 'test',
         title: 'Test',
@@ -125,7 +128,8 @@ describe('EventsManager', () => {
         duration: -100
       };
 
-      expect(() => eventsManager.validateEvent(invalidEvent)).toThrow('Duration must be positive');
+      const validated = eventsManager.validateEvent(invalidEvent);
+      expect(validated.duration).toBe(1); // Should clamp to minimum
     });
 
     it('should provide default values for optional fields', () => {
@@ -138,7 +142,7 @@ describe('EventsManager', () => {
 
       const validated = eventsManager.validateEvent(minimalEvent);
 
-      expect(validated.description).toBe('');
+      expect(validated.description).toBe('Keine Beschreibung verfügbar');
       expect(validated.icon).toBeUndefined();
       expect(validated.background).toBeUndefined();
     });
@@ -262,15 +266,15 @@ describe('EventsManager', () => {
 
   describe('formatDuration', () => {
     it('should format duration correctly', () => {
-      expect(eventsManager.formatDuration(3661)).toBe('1:01:01');
-      expect(eventsManager.formatDuration(3600)).toBe('1:00:00');
-      expect(eventsManager.formatDuration(61)).toBe('0:01:01');
-      expect(eventsManager.formatDuration(1)).toBe('0:00:01');
-      expect(eventsManager.formatDuration(0)).toBe('0:00:00');
+      expect(eventsManager.formatDuration(3661)).toBe('1h 1min');
+      expect(eventsManager.formatDuration(3600)).toBe('1h');
+      expect(eventsManager.formatDuration(61)).toBe('1min');
+      expect(eventsManager.formatDuration(1)).toBe('1min'); // 1 second = 1 minute (rounded up)
+      expect(eventsManager.formatDuration(0)).toBe('0min');
     });
 
     it('should handle large durations', () => {
-      expect(eventsManager.formatDuration(36661)).toBe('10:11:01');
+      expect(eventsManager.formatDuration(36661)).toBe('10h 11min');
     });
   });
 

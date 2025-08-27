@@ -92,10 +92,10 @@ Global settings in `data/settings.json`:
 ## 🎵 Audio Features
 
 ### Automatic Sounds
-- **Event Start**: Loud, dramatic sound
+- **Event Start**: Loud, dramatic sound sequence
 - **1-Minute Warning**: 800Hz tone with blinking
-- **Last 10 Seconds**: Speech countdown "10, 9, 8..."
-- **Event End**: 3x beep tones
+- **Last 10 Seconds**: Speech announcement "Noch 10 Sekunden"
+- **Event End**: Warm, gentle 3-tone sequence (300-400Hz)
 
 ### Audio Settings
 - `audioEnabled: true` - All sounds enabled
@@ -130,6 +130,24 @@ The app automatically switches to event detail page:
 | **Planned** | Event starts in the future | Blue |
 | **Running** | Event is currently active | Green |
 | **Finished** | Event is over | Gray |
+
+## 🧪 Testing & Code Coverage
+
+### Automated Testing
+- **Unit Tests**: Comprehensive test suite with Jest
+- **Code Coverage**: Automated coverage reporting
+- **CI/CD Integration**: GitHub Actions with coverage comments
+- **Pull Request Coverage**: Automatic coverage reports on PRs
+
+### Test Commands
+```bash
+pnpm test          # Run all tests
+pnpm test:watch    # Watch mode
+pnpm test:coverage # Coverage report
+pnpm test:ci       # CI/CD mode
+```
+
+For detailed testing information see [docs/testing.md](docs/testing.md).
 
 ## 🔧 Development
 

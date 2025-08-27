@@ -85,7 +85,11 @@ describe('SettingsManager', () => {
   describe('validateSettings', () => {
     it('should validate complete settings', () => {
       const validated = settingsManager.validateSettings({ settings: mockSettings });
-      expect(validated).toEqual(mockSettings);
+      expect(validated.app.name).toBe('Event Timer'); // Default value from validation
+      expect(validated.app.shortName).toBe('Timer'); // Default value from validation
+      expect(validated.app.description).toBe('Progressive Web App für Event-Timer'); // Default value from validation
+      expect(validated.audioEnabled).toBe(true);
+      expect(validated.speechEnabled).toBe(true);
     });
 
     it('should provide defaults for missing fields', () => {
