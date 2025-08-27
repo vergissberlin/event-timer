@@ -231,7 +231,20 @@ html = html.replace(
 );
 ```
 
-### 9. Data Loading Issues
+### 9. Stale JavaScript Files
+
+**Problem:**
+```
+GET https://vergissberlin.github.io/event-timer/assets/main-{hash}.js 404 (Not Found)
+```
+
+**Solution:**
+- Rebuild and redeploy to update JavaScript files
+- Check that `dist/index.html` references correct JavaScript file
+- Verify GitHub Actions deployment completed successfully
+- Clear browser cache if needed
+
+### 10. Data Loading Issues
 
 **Problem:**
 ```
@@ -253,7 +266,7 @@ const isProduction = window.location.hostname === 'vergissberlin.github.io';
 this.settingsUrl = isProduction ? '/event-timer/data/settings.json' : '/data/settings.json';
 ```
 
-### 10. Event Display Issues
+### 11. Event Display Issues
 
 **Problem:**
 ```
@@ -266,7 +279,7 @@ Events are loaded but not displayed in UI
 - Verify events are chronologically sorted
 - Test with current date: `2025-08-27T15:00:00`
 
-### 11. Scrolling Issues
+### 12. Scrolling Issues
 
 **Problem:**
 ```
@@ -278,7 +291,7 @@ Page cannot be scrolled
 - Ensure proper container heights for scrolling
 - Test scrolling on different screen sizes
 
-### 12. Break Times Display
+### 13. Break Times Display
 
 **Problem:**
 ```
@@ -290,7 +303,7 @@ Break times shown even when no actual breaks exist
 - Check for actual time gaps between events
 - Validate break time calculations
 
-### 13. Missing PWA Manifest
+### 14. Missing PWA Manifest
 
 **Problem:**
 ```
