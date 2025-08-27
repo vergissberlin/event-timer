@@ -161,6 +161,14 @@ jobs:
 - `GITHUB_TOKEN`: Automatically provided by GitHub
 - No additional secrets required for basic functionality
 
+### Required Permissions
+The workflow requires the following permissions:
+- `contents: read`: Read repository contents
+- `pages: write`: Deploy to GitHub Pages
+- `id-token: write`: GitHub Pages authentication
+- `issues: write`: Comment on issues (for coverage reports)
+- `pull-requests: write`: Comment on pull requests (for coverage reports)
+
 ### Optional Secrets
 - `CODECOV_TOKEN`: For enhanced Codecov integration
 - `NPM_TOKEN`: For publishing to npm (if needed)
@@ -204,6 +212,16 @@ jobs:
 - Check GitHub Pages settings
 - Verify repository permissions
 - Check for large files in build output
+
+#### 6. Permission Errors
+**Symptoms**: "Resource not accessible by integration" or "403 Forbidden"
+**Causes**: Missing required permissions for GitHub Actions
+
+**Solutions**:
+- Ensure workflow has required permissions defined
+- Check repository settings for Actions permissions
+- Verify `GITHUB_TOKEN` has sufficient scope
+- For coverage comments: Ensure `issues: write` and `pull-requests: write` permissions
 
 ### Debugging
 
