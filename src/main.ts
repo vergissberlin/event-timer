@@ -311,7 +311,7 @@ class EventTimerApp {
   }
 
   private navigateToEvent(eventId: string): void {
-    const url = `/event/${eventId}`;
+    const url = `/event-timer/event/${eventId}`;
     window.history.pushState({ eventId }, '', url);
     this.showTimerScreen();
     this.initializeTimer();
@@ -343,8 +343,8 @@ class EventTimerApp {
     // Restart auto-switch timer for overview
     this.startAutoSwitchTimer();
     
-    // Update URL to root
-    window.history.pushState({}, '', '/');
+    // Update URL to root (with subdirectory)
+    window.history.pushState({}, '', '/event-timer/');
   }
 
   private updateTimerScreen(): void {
@@ -769,7 +769,7 @@ class EventTimerApp {
 
   private handleRouteChange(): void {
     const path = window.location.pathname;
-    const eventMatch = path.match(/^\/event\/(.+)$/);
+    const eventMatch = path.match(/^\/event-timer\/event\/(.+)$/);
     
     if (eventMatch) {
       const eventId = eventMatch[1];
@@ -1091,76 +1091,76 @@ class EventTimerApp {
       metaDescription.setAttribute('content', appConfig.description);
     }
     
-    // Update manifest dynamically
-    const manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement;
-    if (manifestLink) {
-      // Create a new manifest with updated values
-      const manifest = {
-        name: appConfig.name,
-        short_name: appConfig.shortName,
-        description: appConfig.description,
-        start_url: "/",
-        display: "standalone",
-        background_color: "#1e293b",
-        theme_color: "#1e293b",
-        orientation: "portrait-primary",
-        scope: "/",
-        lang: "de",
-        icons: [
-          {
-            src: "/icons/icon-72x72.png",
-            sizes: "72x72",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-96x96.png",
-            sizes: "96x96",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-128x128.png",
-            sizes: "128x128",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-144x144.png",
-            sizes: "144x144",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-152x152.png",
-            sizes: "152x152",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-384x384.png",
-            sizes: "384x384",
-            type: "image/png",
-            purpose: "maskable any"
-          },
-          {
-            src: "/icons/icon-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable any"
-          }
-        ],
-        categories: ["productivity", "utilities"],
-        screenshots: [
-          {
-            src: "/screenshots/desktop.png",
-            sizes: "1280x720",
+          // Update manifest dynamically
+      const manifestLink = document.querySelector('link[rel="manifest"]') as HTMLLinkElement;
+      if (manifestLink) {
+        // Create a new manifest with updated values
+        const manifest = {
+          name: appConfig.name,
+          short_name: appConfig.shortName,
+          description: appConfig.description,
+          start_url: "/event-timer/",
+          display: "standalone",
+          background_color: "#1e293b",
+          theme_color: "#1e293b",
+          orientation: "portrait-primary",
+          scope: "/event-timer/",
+          lang: "de",
+          icons: [
+            {
+              src: "/event-timer/icons/icon-72x72.png",
+              sizes: "72x72",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-96x96.png",
+              sizes: "96x96",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-128x128.png",
+              sizes: "128x128",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-144x144.png",
+              sizes: "144x144",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-152x152.png",
+              sizes: "152x152",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-192x192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-384x384.png",
+              sizes: "384x384",
+              type: "image/png",
+              purpose: "maskable any"
+            },
+            {
+              src: "/event-timer/icons/icon-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "maskable any"
+            }
+          ],
+          categories: ["productivity", "utilities"],
+          screenshots: [
+            {
+              src: "/event-timer/screenshots/desktop.png",
+              sizes: "1280x720",
             type: "image/png",
             form_factor: "wide"
           },

@@ -143,7 +143,41 @@ export default defineConfig({
 });
 ```
 
-### 6. Missing PWA Manifest
+### 6. URL Routing Issues
+
+**Problem:**
+```
+Navigation to wrong URLs (e.g., /event/default-presentation instead of /event-timer/event/default-presentation)
+```
+
+**Solution:**
+- Update all navigation URLs to include subdirectory prefix
+- Modify route handling to match subdirectory paths
+- Update manifest URLs for subdirectory deployment
+
+**Implementation:**
+```typescript
+// src/main.ts
+private navigateToEvent(eventId: string): void {
+  const url = `/event-timer/event/${eventId}`;
+  window.history.pushState({ eventId }, '', url);
+  this.showTimerScreen();
+  this.initializeTimer();
+}
+
+private showEventSelection(): void {
+  // ... other code ...
+  window.history.pushState({}, '', '/event-timer/');
+}
+
+private handleRouteChange(): void {
+  const path = window.location.pathname;
+  const eventMatch = path.match(/^\/event-timer\/event\/(.+)$/);
+  // ... rest of logic
+}
+```
+
+### 7. Missing PWA Manifest
 
 **Problem:**
 ```
