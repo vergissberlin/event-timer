@@ -227,10 +227,13 @@ class EventTimerApp {
       const eventRow = this.createEventRow(event);
       this.eventTableBody.appendChild(eventRow);
       
-      // Add break time row after each event (except the last one)
+      // Add break time row after each event (except the last one) only if there's actually a break
       if (settings.showBreakTimes && index < events.length - 1) {
-        const breakTimeRow = this.createBreakTimeRow(event, events[index + 1]);
-        this.eventTableBody.appendChild(breakTimeRow);
+        const breakTimeSeconds = this.eventsManager.getBreakTimeBetweenEvents(event, events[index + 1]);
+        if (breakTimeSeconds > 0) {
+          const breakTimeRow = this.createBreakTimeRow(event, events[index + 1]);
+          this.eventTableBody.appendChild(breakTimeRow);
+        }
       }
     });
     

@@ -266,7 +266,31 @@ Events are loaded but not displayed in UI
 - Verify events are chronologically sorted
 - Test with current date: `2025-08-27T15:00:00`
 
-### 11. Missing PWA Manifest
+### 11. Scrolling Issues
+
+**Problem:**
+```
+Page cannot be scrolled
+```
+
+**Solution:**
+- Remove `overflow-hidden` from body element
+- Ensure proper container heights for scrolling
+- Test scrolling on different screen sizes
+
+### 12. Break Times Display
+
+**Problem:**
+```
+Break times shown even when no actual breaks exist
+```
+
+**Solution:**
+- Only show break times when `breakTimeSeconds > 0`
+- Check for actual time gaps between events
+- Validate break time calculations
+
+### 13. Missing PWA Manifest
 
 **Problem:**
 ```
