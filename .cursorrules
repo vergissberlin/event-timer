@@ -1,26 +1,31 @@
 # Cursor Rules for Event Timer PWA
 
 ## Project Overview
+
 This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind CSS and automatic GitHub Pages deployment.
 
 ## Code Style & Conventions
 
 ### Package Manager
+
 - Use **pnpm** as package manager
 - Replace all npm commands with pnpm
 - Commit pnpm-lock.yaml
 
 ### Font
+
 - Use **Montserrat** as primary font
 - Fallback: Sans-serif
 - Include Google Fonts CDN for Montserrat
 
 ### TypeScript
+
 - Use strict typing
 - Interface-based development
 - No any types without explicit justification
 
 ### CSS/Tailwind
+
 - Tailwind CSS for styling
 - Custom CSS only when necessary
 - Prioritize responsive design
@@ -29,18 +34,21 @@ This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind C
 ## Testing
 
 ### Test-Framework
+
 - **Jest** als Test-Runner
 - **jsdom** für DOM-Tests
 - **ts-jest** für TypeScript-Support
 - **@testing-library/jest-dom** für DOM-Assertions
 
 ### Test Conventions
+
 - Unit tests for all classes and functions
 - Mock external dependencies (fetch, Audio API, etc.)
 - Test coverage minimum 80%
 - Descriptive test names in English
 
 ### Test Structure
+
 ```
 tests/
 ├── setup.ts              # Jest setup & mocks
@@ -52,6 +60,7 @@ tests/
 ```
 
 ### Test Commands
+
 - `pnpm test` - Run all tests
 - `pnpm test:watch` - Tests in watch mode
 - `pnpm test:coverage` - Tests with coverage report
@@ -60,12 +69,14 @@ tests/
 ## GitHub Actions
 
 ### Deployment
+
 - Automatisches Deployment auf GitHub Pages
 - Build bei Push auf main Branch
 - PWA-Manifest und Service Worker korrekt konfiguriert
 - HTTPS für PWA-Features erforderlich
 
 ### CI/CD Pipeline
+
 - **Type Check**: TypeScript-Kompilierung
 - **Lint**: ESLint mit TypeScript-Regeln
 - **Format**: Prettier Code-Formatierung
@@ -73,6 +84,7 @@ tests/
 - **Build**: Vite Production Build
 
 ### Workflow Rules
+
 - Use Node.js 18+
 - pnpm install and build
 - gh-pages branch for deployment
@@ -81,16 +93,19 @@ tests/
 ## PWA-specific
 
 ### Manifest
+
 - Correct icons in various sizes
 - Theme colors configured
 - Display: standalone
 
 ### Service Worker
+
 - Offline functionality
 - Cache strategies defined
 - Update handling
 
 ### Audio
+
 - Web Audio API for dynamic sound generation
 - Fallback to HTML Audio
 - Speech API for countdown
@@ -99,6 +114,7 @@ tests/
 ## Versioning & Commits
 
 ### Semantic Versioning
+
 - Follow **Semantic Versioning (SemVer)** format: `MAJOR.MINOR.PATCH`
 - **MAJOR**: Breaking changes, incompatible API changes
 - **MINOR**: New features, backward compatible
@@ -107,6 +123,7 @@ tests/
 - Use `pnpm version` commands for versioning
 
 ### Conventional Commits
+
 - Use **Conventional Commits** format: `<type>[optional scope]: <description>`
 - **Types**:
   - `feat`: New features
@@ -127,6 +144,7 @@ tests/
 - **Footer** (optional): Breaking changes, issue references
 
 ### Commit Examples
+
 ```
 feat: add auto-switch feature for events
 feat(audio): implement Web Audio API for dynamic sounds
@@ -141,6 +159,7 @@ revert: revert breaking change in timer logic
 ```
 
 ### Version Management
+
 - Use `pnpm version patch` for bug fixes
 - Use `pnpm version minor` for new features
 - Use `pnpm version major` for breaking changes
@@ -148,6 +167,7 @@ revert: revert breaking change in timer logic
 - Push tags with `git push --tags`
 
 ### Migration to New Standards
+
 - **Current Version**: 1.0.0 (Semantic Versioning compliant)
 - **Next Commits**: Use Conventional Commits format
 - **Breaking Changes**: Document in commit body with `BREAKING CHANGE:`
@@ -155,6 +175,7 @@ revert: revert breaking change in timer logic
 - **Release Notes**: Generate from Conventional Commits for GitHub releases
 
 ## File Structure
+
 ```
 event-timer/
 ├── .github/workflows/     # GitHub Actions
@@ -166,12 +187,14 @@ event-timer/
 ```
 
 ## Performance
+
 - Lazy loading for images
 - Minification for production
 - Service Worker caching
 - Optimized bundle size
 
 ## Browser Compatibility
+
 - Chrome/Chromium (Web Audio API)
 - Firefox (Web Audio API)
 - Safari (WebkitAudioContext)
@@ -179,12 +202,14 @@ event-timer/
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
 ## Auto-Switch Feature
+
 - Automatic switching to events (configurable)
 - Default: 30 seconds before event start
 - Global configuration in settings.json
 - Intelligent navigation (overview ↔ detail)
 
 ## Audio Features
+
 - Warning Sound: 800Hz Sine-Wave, 0.5s
 - End Sound: 3x 600Hz Square-Wave beeps
 - Start Sound: Dramatic sequence (Sweep + Chord)
@@ -192,13 +217,59 @@ event-timer/
 - Activate AudioContext for user interaction
 
 ## Error Handling
+
 - Graceful degradation for missing APIs
 - Implement fallback mechanisms
 - User-friendly error messages
 - Console logging for debugging
 
 ## Security
+
 - HTTPS for PWA features
 - Content Security Policy
 - Sanitize user input
 - Secure Audio Context usage
+
+## Development Workflow
+
+### Feature Development
+
+- **Documentation First**: Update documentation before implementing features
+- **Test-Driven Development**: Write tests before implementing features
+- **Complete Coverage**: Every new feature must include:
+  - Unit tests for all new functions/classes
+  - Integration tests for feature workflows
+  - Documentation updates (README, API docs, etc.)
+  - TypeScript type definitions
+  - Error handling and edge cases
+
+### Code Quality Standards
+
+- **Documentation Updates**: Always update relevant documentation when adding/modifying features
+  - README.md for user-facing changes
+  - CONTRIBUTING.md for development process changes
+  - docs/ directory for technical documentation
+  - API documentation for new public interfaces
+- **Test Coverage**: Maintain minimum 80% test coverage
+  - New features must have comprehensive test coverage
+  - Bug fixes must include regression tests
+  - Refactoring must preserve existing test coverage
+- **Type Safety**: All new code must be fully typed
+  - No `any` types without explicit justification
+  - Interface definitions for all data structures
+  - Proper error handling with typed exceptions
+
+### Feature Checklist
+
+Before committing any feature:
+
+- [ ] Feature implementation complete
+- [ ] Unit tests written and passing
+- [ ] Integration tests written and passing
+- [ ] Documentation updated (README, API docs, etc.)
+- [ ] TypeScript types defined
+- [ ] Error handling implemented
+- [ ] Edge cases covered
+- [ ] Code reviewed and linted
+- [ ] Build passes successfully
+- [ ] All tests pass
