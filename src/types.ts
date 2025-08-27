@@ -58,13 +58,16 @@ export interface TimerState {
 }
 
 export interface AudioManager {
-  warningSound: HTMLAudioElement;
-  endSound: HTMLAudioElement;
-  speechSynthesis: SpeechSynthesis;
+  startSound: HTMLAudioElement;
   playWarning: () => void;
   playEnd: () => void;
-  speak: (text: string) => void;
-  stopSpeech: () => void;
+  playStart: () => void;
+  speakCountdown: (seconds: number) => void;
+  isSpeechSupported: () => boolean;
+  isAudioSupported: () => boolean;
+  setAudioEnabled: (enabled: boolean) => void;
+  setSpeechEnabled: (enabled: boolean) => void;
+  resumeAudioContext: () => void;
 }
 
 export interface TimerCallbacks {

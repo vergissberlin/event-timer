@@ -1,14 +1,21 @@
 import { Timer } from './timer';
-import { AudioController } from './audio';
+import { AudioManager } from './audio';
 import { EventsManager } from './events';
 import { SettingsManager } from './settings';
 import QRCode from 'qrcode';
 import { Event, TimerCallbacks } from './types';
 
+// Global type declaration
+declare global {
+  interface Window {
+    eventTimerApp?: EventTimerApp;
+  }
+}
+
 class EventTimerApp {
   private eventsManager: EventsManager;
   private settingsManager: SettingsManager;
-  private audioController: AudioController;
+  public audioManager: AudioManager;
   private currentTimer: Timer | null = null;
   private currentEvent: Event | null = null;
   private isFullscreen: boolean = false;
@@ -53,7 +60,7 @@ class EventTimerApp {
   constructor() {
     this.eventsManager = new EventsManager();
     this.settingsManager = new SettingsManager();
-    this.audioController = new AudioController();
+    this.audioManager = new AudioManager();
     
     this.initializeDOMElements();
     this.bindEventListeners();
@@ -351,7 +358,7 @@ class EventTimerApp {
     
     if (timeUntilStart > 0) {
       // Event hasn't started yet, show countdown to start
-      this.currentTimer = new Timer(timeUntilStart, callbacks, this.audioController);
+              this.currentTimer = new Timer(timeUntilStart, callbacks, this.audioManager);
       
       // Show event duration in main timer, countdown in small timer
       this.timerElement.textContent = this.currentTimer.formatTime(this.currentEvent.duration);
@@ -367,7 +374,7 @@ class EventTimerApp {
       
     } else {
       // Event is running or finished
-      this.currentTimer = new Timer(timeRemaining, callbacks, this.audioController);
+      this.currentTimer = new Timer(timeRemaining, callbacks, this.audioManager);
       this.updateTimerDisplay(timeRemaining);
       
       // Hide countdown UI
@@ -823,7 +830,7 @@ class EventTimerApp {
   private handleEventStart(): void {
     // Flash effect and audio notification
     this.timerElement.style.animation = 'flash 0.5s ease-in-out';
-    this.audioController.playStart();
+    this.audioManager.playStart();
     
     // Remove flash animation after it completes
     setTimeout(() => {
@@ -851,7 +858,7 @@ class EventTimerApp {
         onReset: () => this.updateTimerStatus('Bereit zum Starten')
       };
       
-      this.currentTimer = new Timer(timeRemaining, callbacks, this.audioController);
+      this.currentTimer = new Timer(timeRemaining, callbacks, this.audioManager);
       this.updateTimerDisplay(timeRemaining);
       
       // Auto-start event timer
@@ -1025,8 +1032,15 @@ class EventTimerApp {
 
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new EventTimerApp();
+  window.eventTimerApp = new EventTimerApp();
 });
+
+// AudioContext bei Benutzerinteraktion aktivieren
+document.addEventListener('click', () => {
+  if (window.eventTimerApp?.audioManager) {
+    window.eventTimerApp.audioManager.resumeAudioContext();
+  }
+}, { once: true });
 
 // Request notification permission
 if ('Notification' in window) {

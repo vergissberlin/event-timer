@@ -21,6 +21,7 @@ Eine moderne Progressive Web App (PWA) für Event-Timer mit Glassmorphism Design
 - **Speech API**: Letzte 10 Sekunden werden runtergezählt
 - **3-Sekunden Piepton**: Bei Timer-Ende
 - **Push-Benachrichtigungen**: Desktop-Benachrichtigungen bei Timer-Ende
+- **Freesound.org Integration**: Professionelle Sounds von [Freesound.org](https://freesound.org/)
 
 ### Design & UX
 - **Timeline-Visualisierung**: Horizontale Zeitslot-Anzeige von 0-24 Uhr
@@ -74,6 +75,44 @@ pnpm lint        # ESLint
 pnpm format      # Prettier Formatierung
 ```
 
+## 🎵 Audio-Sounds
+
+Die App verwendet **Web Audio API** für dynamische Sound-Generierung und bietet Fallback zu WAV-Dateien:
+
+### 🌐 Web Audio API (Standard)
+- **Warning Sound**: 800Hz Sine-Wave, 0.5s Dauer
+- **End Sound**: 3x 600Hz Square-Wave Pieptöne mit Pausen
+- **Start Sound**: Aufsteigender Ton 400Hz-800Hz, 1s Dauer
+
+**Vorteile:**
+- ✅ Keine externen Dateien erforderlich
+- ✅ Dynamisch generiert
+- ✅ Optimierte Qualität
+- ✅ Sofort einsatzbereit
+
+### 📁 Fallback-System
+Falls Web Audio API nicht unterstützt wird, wird eine Warnung in der Konsole ausgegeben.
+
+**Browser-Unterstützung:**
+- ✅ Chrome/Chromium (Web Audio API)
+- ✅ Firefox (Web Audio API)  
+- ✅ Safari (WebkitAudioContext)
+- ✅ Edge (Web Audio API)
+- ✅ Mobile Browser (iOS Safari, Chrome Mobile)
+
+### 🎵 Sound-Design
+
+**Technische Spezifikationen:**
+- **Warning Sound**: 800Hz Sine-Wave, 0.5s Dauer mit Fade in/out
+- **End Sound**: 3x 600Hz Square-Wave Pieptöne mit 0.7s Pausen
+- **Start Sound**: Aufsteigender Ton von 400Hz-800Hz, 1s Dauer
+
+**Audio-Qualität:**
+- 🎵 **44.1kHz Sample Rate**: CD-Qualität
+- 🎵 **16-bit Auflösung**: Klare, rauschfreie Töne
+- 🎵 **Fade in/out**: Weiche Übergänge ohne Klicks
+- 🎵 **Optimierte Lautstärke**: 30% für angenehme Wiedergabe
+
 ## 🎯 Verwendung
 
 ### Event-Konfiguration
@@ -125,9 +164,7 @@ event-timer/
 ├── data/
 │   └── events.json      # Event-Konfiguration
 ├── public/
-│   ├── icons/           # PWA-Icons
-│   ├── images/          # Event-Bilder
-│   └── sounds/          # Audio-Dateien
+│   └── icons/           # PWA-Icons
 ├── index.html           # Haupt-HTML
 ├── manifest.json        # PWA-Manifest
 ├── sw.js               # Service Worker

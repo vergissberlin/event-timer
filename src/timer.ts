@@ -1,10 +1,10 @@
 import { TimerState, TimerCallbacks, TimerStatus } from './types';
-import { AudioController } from './audio';
+import { AudioManager } from './audio';
 
 export class Timer {
   private state: TimerState;
   private callbacks: TimerCallbacks;
-  private audio: AudioController;
+  private audio: AudioManager;
   private intervalId: number | null = null;
   private animationFrameId: number | null = null;
   private lastUpdateTime: number = 0;
@@ -12,7 +12,7 @@ export class Timer {
   private warningTriggered: boolean = false;
   private speechTriggered: boolean = false;
 
-  constructor(totalTime: number, callbacks: TimerCallbacks, audio: AudioController) {
+  constructor(totalTime: number, callbacks: TimerCallbacks, audio: AudioManager) {
     this.state = {
       isRunning: false,
       isPaused: false,
@@ -152,7 +152,7 @@ export class Timer {
     }
     
     if (this.speechTriggered && this.state.timeRemaining <= 10 && this.state.timeRemaining > 0) {
-      this.audio.countdownSpeech(this.state.timeRemaining);
+              this.audio.speakCountdown(this.state.timeRemaining);
     }
   }
   

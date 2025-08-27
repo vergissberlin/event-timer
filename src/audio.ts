@@ -1,158 +1,198 @@
-import { AudioManager } from './types';
+import { AudioManager as AudioManagerInterface } from './types';
 
-export class AudioController implements AudioManager {
-  public warningSound: HTMLAudioElement;
-  public endSound: HTMLAudioElement;
-  public speechSynthesis: SpeechSynthesis;
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
+export class AudioManager implements AudioManagerInterface {
+  private audioContext: AudioContext | null = null;
+  public startSound: HTMLAudioElement;
+  private speechSynthesis: SpeechSynthesis;
+  private isAudioEnabled: boolean = true;
+  private isSpeechEnabled: boolean = true;
 
   constructor() {
-    this.warningSound = document.getElementById('warningSound') as HTMLAudioElement;
-    this.endSound = document.getElementById('endSound') as HTMLAudioElement;
+    this.startSound = document.getElementById('startSound') as HTMLAudioElement;
     this.speechSynthesis = window.speechSynthesis;
     
-    this.initializeAudio();
+    // Audio-Kontext initialisieren (wird erst bei Bedarf erstellt)
+    this.initializeAudioContext();
   }
 
-  private initializeAudio(): void {
-    // Set audio properties
-    this.warningSound.volume = 0.7;
-    this.endSound.volume = 0.8;
-    
-    // Preload audio files
-    this.warningSound.load();
-    this.endSound.load();
-    
-    // Handle audio loading errors
-    this.warningSound.addEventListener('error', (e) => {
-      console.warn('Warning sound failed to load:', e);
-    });
-    
-    this.endSound.addEventListener('error', (e) => {
-      console.warn('End sound failed to load:', e);
-    });
-  }
-
-  public playWarning(): void {
+  private initializeAudioContext(): void {
     try {
-      // Reset audio to beginning
-      this.warningSound.currentTime = 0;
-      this.warningSound.play().catch(e => {
-        console.warn('Failed to play warning sound:', e);
-      });
+      // AudioContext erstellen (wird erst bei erster Nutzung initialisiert)
+      this.audioContext = null;
     } catch (error) {
-      console.warn('Error playing warning sound:', error);
+      console.warn('Web Audio API nicht unterstützt:', error);
     }
+  }
+
+  private getAudioContext(): AudioContext {
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    return this.audioContext;
+  }
+
+  // Web Audio API Sound-Generierung
+  private generateTone(frequency: number, duration: number, type: OscillatorType = 'sine', volume: number = 0.3): void {
+    try {
+      const audioContext = this.getAudioContext();
+      
+      // Oscillator erstellen
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      // Verbinden
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Parameter setzen
+      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+      oscillator.type = type;
+      
+      // Fade in/out für weiche Übergänge
+      const fadeTime = 0.1;
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + fadeTime);
+      gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + duration - fadeTime);
+      gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+      
+      // Starten und stoppen
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren des Tons:', error);
+      // Fallback zu HTML Audio
+      this.playFallbackSound('warning');
+    }
+  }
+
+  private generateBeepSequence(frequencies: number[], durations: number[], pauses: number[]): void {
+    try {
+      const audioContext = this.getAudioContext();
+      let currentTime = audioContext.currentTime;
+      
+      frequencies.forEach((frequency, index) => {
+        const duration = durations[index] || 0.3;
+        const pause = pauses[index] || 0.7;
+        
+        // Beep generieren
+        this.generateTone(frequency, duration, 'square', 0.2);
+        
+        // Pause bis zum nächsten Beep
+        currentTime += duration + pause;
+      });
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren der Beep-Sequenz:', error);
+      // Fallback zu HTML Audio
+      this.playFallbackSound('end');
+    }
+  }
+
+  private generateSweepTone(startFreq: number, endFreq: number, duration: number): void {
+    try {
+      const audioContext = this.getAudioContext();
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Frequenz-Sweep
+      oscillator.frequency.setValueAtTime(startFreq, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(endFreq, audioContext.currentTime + duration);
+      
+      oscillator.type = 'sine';
+      
+      // Fade in/out
+      const fadeTime = 0.1;
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + fadeTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + duration - fadeTime);
+      gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + duration);
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren des Sweep-Tons:', error);
+      // Fallback zu HTML Audio
+      this.playFallbackSound('start');
+    }
+  }
+
+  // Fallback zu HTML Audio (nur für Browser ohne Web Audio API)
+  private playFallbackSound(type: 'warning' | 'end' | 'start'): void {
+    if (!this.isAudioEnabled) return;
+    
+    console.warn(`Web Audio API nicht verfügbar - ${type} Sound kann nicht abgespielt werden`);
+  }
+
+  // Öffentliche Methoden mit Web Audio API
+  public playWarning(): void {
+    if (!this.isAudioEnabled) return;
+    
+    // Web Audio API: 800Hz Sine-Wave, 0.5s
+    this.generateTone(800, 0.5, 'sine', 0.3);
   }
 
   public playEnd(): void {
-    try {
-      // Play 3-second beep pattern
-      this.playEndBeepPattern();
-    } catch (error) {
-      console.warn('Error playing end sound:', error);
-    }
+    if (!this.isAudioEnabled) return;
+    
+    // Web Audio API: 3 Pieptöne mit Pausen
+    this.generateBeepSequence([600, 600, 600], [0.3, 0.3, 0.3], [0.7, 0.7, 0.7]);
   }
 
   public playStart(): void {
+    if (!this.isAudioEnabled) return;
+    
+    // Web Audio API: Aufsteigender Ton 400Hz-800Hz, 1s
+    this.generateSweepTone(400, 800, 1.0);
+  }
+
+  // Speech API für Countdown
+  public speakCountdown(seconds: number): void {
+    if (!this.isSpeechEnabled) return;
+    
     try {
-      // Play start sound (same as warning for now)
-      this.warningSound.currentTime = 0;
-      this.warningSound.play().catch(e => {
-        console.warn('Failed to play start sound:', e);
-      });
+      // Bestehende Speech-Synthesen stoppen
+      this.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(seconds.toString());
+      utterance.lang = 'de-DE';
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.8;
+      
+      this.speechSynthesis.speak(utterance);
+      
     } catch (error) {
-      console.warn('Error playing start sound:', error);
+      console.warn('Speech API nicht verfügbar:', error);
     }
   }
 
-  private playEndBeepPattern(): void {
-    let beepCount = 0;
-    const maxBeeps = 3;
-    
-    const playBeep = () => {
-      if (beepCount >= maxBeeps) return;
-      
-      this.endSound.currentTime = 0;
-      this.endSound.play().then(() => {
-        beepCount++;
-        setTimeout(playBeep, 1000); // Wait 1 second between beeps
-      }).catch(e => {
-        console.warn('Failed to play end beep:', e);
-      });
-    };
-    
-    playBeep();
+  // Audio-Einstellungen
+  public setAudioEnabled(enabled: boolean): void {
+    this.isAudioEnabled = enabled;
   }
 
-  public speak(text: string): void {
-    try {
-      // Stop any current speech
-      this.stopSpeech();
-      
-      // Create new utterance
-      this.currentUtterance = new SpeechSynthesisUtterance(text);
-      this.currentUtterance.lang = 'de-DE';
-      this.currentUtterance.rate = 0.8;
-      this.currentUtterance.pitch = 1.0;
-      this.currentUtterance.volume = 0.8;
-      
-      // Speak the text
-      this.speechSynthesis.speak(this.currentUtterance);
-      
-      // Handle speech end
-      this.currentUtterance.onend = () => {
-        this.currentUtterance = null;
-      };
-      
-      this.currentUtterance.onerror = (event) => {
-        console.warn('Speech synthesis error:', event);
-        this.currentUtterance = null;
-      };
-      
-    } catch (error) {
-      console.warn('Error with speech synthesis:', error);
-    }
-  }
-
-  public stopSpeech(): void {
-    try {
-      if (this.currentUtterance) {
-        this.speechSynthesis.cancel();
-        this.currentUtterance = null;
-      }
-    } catch (error) {
-      console.warn('Error stopping speech:', error);
-    }
-  }
-
-  public countdownSpeech(seconds: number): void {
-    if (seconds <= 0 || seconds > 10) return;
-    
-    const text = seconds.toString();
-    this.speak(text);
-  }
-
-  public isSpeechSupported(): boolean {
-    return 'speechSynthesis' in window && this.speechSynthesis !== null;
+  public setSpeechEnabled(enabled: boolean): void {
+    this.isSpeechEnabled = enabled;
   }
 
   public isAudioSupported(): boolean {
-    return 'Audio' in window;
+    return !!(window.AudioContext || (window as any).webkitAudioContext);
   }
 
-  public setVolume(warningVolume: number, endVolume: number): void {
-    this.warningSound.volume = Math.max(0, Math.min(1, warningVolume));
-    this.endSound.volume = Math.max(0, Math.min(1, endVolume));
+  public isSpeechSupported(): boolean {
+    return 'speechSynthesis' in window;
   }
 
-  public mute(): void {
-    this.warningSound.volume = 0;
-    this.endSound.volume = 0;
-  }
-
-  public unmute(): void {
-    this.warningSound.volume = 0.7;
-    this.endSound.volume = 0.8;
+  // AudioContext für Benutzerinteraktion aktivieren (Browser-Requirement)
+  public resumeAudioContext(): void {
+    if (this.audioContext && this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
   }
 }
