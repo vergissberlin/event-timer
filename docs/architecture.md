@@ -1,8 +1,8 @@
-# Systemarchitektur
+# System Architecture
 
-## Übersicht
+## Overview
 
-Die Event Timer PWA ist eine moderne Single-Page-Application (SPA) mit folgender Architektur:
+The Event Timer PWA is a modern Single-Page Application (SPA) with the following architecture:
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -15,26 +15,26 @@ Die Event Timer PWA ist eine moderne Single-Page-Application (SPA) mit folgender
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## Komponenten-Architektur
+## Component Architecture
 
 ### Presentation Layer
-- **main.ts**: Hauptanwendungslogik, UI-Management
-- **index.html**: HTML-Struktur und PWA-Manifest
-- **UI Components**: Timer-Display, Event-Liste, Timeline
+- **main.ts**: Main application logic, UI management
+- **index.html**: HTML structure and PWA manifest
+- **UI Components**: Timer display, event list, timeline
 
 ### Business Logic Layer
-- **Timer**: Timer-Logik mit requestAnimationFrame
-- **AudioManager**: Web Audio API und Speech Synthesis
-- **EventsManager**: Event-Management und Validierung
-- **SettingsManager**: Konfigurations-Management
-- **FaviconGenerator**: Dynamische Favicon-Generierung
+- **Timer**: Timer logic with requestAnimationFrame
+- **AudioManager**: Web Audio API and Speech Synthesis
+- **EventsManager**: Event management and validation
+- **SettingsManager**: Configuration management
+- **FaviconGenerator**: Dynamic favicon generation
 
 ### Data Layer
-- **JSON Files**: Event- und Settings-Konfiguration
-- **localStorage**: Persistierung von Benutzereinstellungen
-- **Service Worker**: Offline-Caching
+- **JSON Files**: Event and settings configuration
+- **localStorage**: User settings persistence
+- **Service Worker**: Offline caching
 
-## Datenfluss
+## Data Flow
 
 ```mermaid
 graph TD
@@ -49,9 +49,9 @@ graph TD
     I --> J[settings.json]
 ```
 
-## Timer-Architektur
+## Timer Architecture
 
-### Präzise Zeitmessung
+### Precise Time Measurement
 ```typescript
 class Timer {
   private state: TimerState;
@@ -77,13 +77,13 @@ class Timer {
 }
 ```
 
-### Event-System
-- **onTick**: Timer-Updates
-- **onWarning**: 1-Minute-Warnung
-- **onEnd**: Timer-Ende
-- **onEventStart**: Event-Start
+### Event System
+- **onTick**: Timer updates
+- **onWarning**: 1-minute warning
+- **onEnd**: Timer end
+- **onEventStart**: Event start
 
-## Audio-Architektur
+## Audio Architecture
 
 ### Web Audio API Integration
 ```typescript
@@ -104,21 +104,21 @@ class AudioManager {
 }
 ```
 
-### Audio-Features
+### Audio Features
 - **Warning Sound**: 800Hz Sine-Wave
 - **End Sound**: 3x 600Hz Square-Wave
-- **Start Sound**: Dramatische Sequenz
-- **Speech Countdown**: Letzte 10 Sekunden
+- **Start Sound**: Dramatic sequence
+- **Speech Countdown**: Last 10 seconds
 
-## Event-Management
+## Event Management
 
-### Event-Lifecycle
-1. **Loading**: Events aus JSON laden
-2. **Validation**: Event-Daten validieren
-3. **Processing**: Status und Timing berechnen
-4. **Display**: UI aktualisieren
+### Event Lifecycle
+1. **Loading**: Load events from JSON
+2. **Validation**: Validate event data
+3. **Processing**: Calculate status and timing
+4. **Display**: Update UI
 
-### Status-Management
+### Status Management
 ```typescript
 enum EventStatus {
   UPCOMING = 'upcoming',
@@ -137,7 +137,7 @@ function getEventStatus(event: Event): EventStatus {
 }
 ```
 
-## PWA-Architektur
+## PWA Architecture
 
 ### Service Worker
 ```javascript
@@ -186,26 +186,26 @@ interface AppState {
 ```
 
 ### State Updates
-- **Event Selection**: Navigation zu Event-Detailseite
-- **Timer State**: Start, Pause, Reset
-- **UI State**: Fullscreen, Theme, Audio
+- **Event Selection**: Navigation to event detail page
+- **Timer State**: Start, pause, reset
+- **UI State**: Fullscreen, theme, audio
 
-## Performance-Optimierungen
+## Performance Optimizations
 
 ### Rendering
-- **requestAnimationFrame**: Für Timer-Updates
-- **Debouncing**: Für Resize-Events
-- **Lazy Loading**: Für Hintergrundbilder
+- **requestAnimationFrame**: For timer updates
+- **Debouncing**: For resize events
+- **Lazy Loading**: For background images
 
 ### Memory Management
-- **Event Listener Cleanup**: Automatisches Aufräumen
-- **Timer Cleanup**: Animation-Frame-Cancellation
-- **Audio Context**: Suspend/Resume Management
+- **Event Listener Cleanup**: Automatic cleanup
+- **Timer Cleanup**: Animation frame cancellation
+- **Audio Context**: Suspend/resume management
 
 ### Bundle Optimization
-- **Tree Shaking**: Unused Code entfernen
-- **Code Splitting**: Lazy Loading von Komponenten
-- **Asset Optimization**: Bilder und Icons komprimieren
+- **Tree Shaking**: Remove unused code
+- **Code Splitting**: Lazy loading of components
+- **Asset Optimization**: Compress images and icons
 
 ## Error Handling
 
@@ -213,17 +213,17 @@ interface AppState {
 ```typescript
 try {
   const audioContext = new AudioContext();
-  // Audio-Features verwenden
+  // Use audio features
 } catch (error) {
   console.warn('Audio API not supported:', error);
-  // Fallback-Verhalten
+  // Fallback behavior
 }
 ```
 
 ### Error Boundaries
-- **Network Errors**: Offline-Fallback
-- **Audio Errors**: Stumme Ausführung
-- **Timer Errors**: Fallback zu setInterval
+- **Network Errors**: Offline fallback
+- **Audio Errors**: Silent execution
+- **Timer Errors**: Fallback to setInterval
 
 ## Security
 
@@ -236,28 +236,28 @@ try {
 ```
 
 ### Data Validation
-- **Input Sanitization**: JSON-Validierung
-- **Type Safety**: TypeScript-Compiler
-- **Runtime Checks**: Event-Validierung
+- **Input Sanitization**: JSON validation
+- **Type Safety**: TypeScript compiler
+- **Runtime Checks**: Event validation
 
 ## Testing Architecture
 
-### Test-Pyramide
+### Test Pyramid
 ```
     ┌─────────────┐
-    │   E2E Tests │ ← Wenige, wichtige User-Journeys
+    │   E2E Tests │ ← Few, important user journeys
     ├─────────────┤
-    │Integration  │ ← Komponenten-Interaktion
+    │Integration  │ ← Component interaction
     │   Tests     │
     ├─────────────┤
-    │  Unit Tests │ ← Viele, isolierte Funktionen
+    │  Unit Tests │ ← Many, isolated functions
     └─────────────┘
 ```
 
-### Test-Strategien
-- **Unit Tests**: Isolierte Komponenten-Tests
-- **Integration Tests**: Komponenten-Interaktion
-- **E2E Tests**: Vollständige User-Journeys
+### Testing Strategies
+- **Unit Tests**: Isolated component tests
+- **Integration Tests**: Component interaction
+- **E2E Tests**: Complete user journeys
 
 ## Deployment Architecture
 
@@ -272,18 +272,18 @@ Push → Tests → Build → Deploy → GitHub Pages
 ```
 
 ### Environment Configuration
-- **Development**: Hot Reload, Debug-Modus
-- **Production**: Optimized Bundle, Service Worker
-- **Testing**: Mock-APIs, Test-Daten
+- **Development**: Hot reload, debug mode
+- **Production**: Optimized bundle, service worker
+- **Testing**: Mock APIs, test data
 
 ## Monitoring & Analytics
 
 ### Performance Monitoring
 - **Core Web Vitals**: LCP, FID, CLS
-- **Custom Metrics**: Timer-Genauigkeit, Audio-Latency
-- **Error Tracking**: Console-Errors, User-Reports
+- **Custom Metrics**: Timer accuracy, audio latency
+- **Error Tracking**: Console errors, user reports
 
 ### User Analytics
-- **Event Tracking**: Timer-Starts, Audio-Interaktionen
-- **Usage Patterns**: Häufig verwendete Features
-- **Performance Metrics**: Load-Times, Runtime-Performance
+- **Event Tracking**: Timer starts, audio interactions
+- **Usage Patterns**: Frequently used features
+- **Performance Metrics**: Load times, runtime performance

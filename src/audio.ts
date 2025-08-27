@@ -140,8 +140,32 @@ export class AudioManager implements AudioManagerInterface {
   public playEnd(): void {
     if (!this.isAudioEnabled) return;
     
-    // Web Audio API: 3 Pieptöne mit Pausen
-    this.generateBeepSequence([600, 600, 600], [0.3, 0.3, 0.3], [0.7, 0.7, 0.7]);
+    // Web Audio API: Wärmere, sanftere End-Töne
+    this.generateWarmEndSequence();
+  }
+
+  private generateWarmEndSequence(): void {
+    try {
+      // Erster Ton: Warme, tiefe Frequenz
+      setTimeout(() => {
+        this.generateTone(300, 0.4, 'sine', 0.25);
+      }, 0);
+      
+      // Zweiter Ton: Sanfter Übergang
+      setTimeout(() => {
+        this.generateTone(350, 0.4, 'sine', 0.25);
+      }, 1200);
+      
+      // Dritter Ton: Abschließender warmer Ton
+      setTimeout(() => {
+        this.generateTone(400, 0.5, 'sine', 0.3);
+      }, 2400);
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren der warmen End-Sequenz:', error);
+      // Fallback zu einfachen Tönen
+      this.generateBeepSequence([300, 350, 400], [0.4, 0.4, 0.5], [0.8, 0.8, 0.8]);
+    }
   }
 
   public playStart(): void {
@@ -206,13 +230,16 @@ export class AudioManager implements AudioManagerInterface {
       // Bestehende Speech-Synthesen stoppen
       this.speechSynthesis.cancel();
       
-      const utterance = new SpeechSynthesisUtterance(seconds.toString());
-      utterance.lang = 'de-DE';
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      utterance.volume = 0.8;
-      
-      this.speechSynthesis.speak(utterance);
+      // Nur bei 10 Sekunden sprechen
+      if (seconds === 10) {
+        const utterance = new SpeechSynthesisUtterance('Noch 10 Sekunden');
+        utterance.lang = 'de-DE';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 0.8;
+        
+        this.speechSynthesis.speak(utterance);
+      }
       
     } catch (error) {
       console.warn('Speech API nicht verfügbar:', error);

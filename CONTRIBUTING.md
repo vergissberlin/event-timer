@@ -1,31 +1,31 @@
 # Contributing Guide
 
-Willkommen beim Event Timer PWA Projekt! Dieser Guide hilft dir dabei, zum Projekt beizutragen.
+Welcome to the Event Timer PWA project! This guide will help you contribute to the project.
 
-## 🚀 Schnellstart
+## 🚀 Quick Start
 
-### Voraussetzungen
+### Prerequisites
 - Node.js 18+
 - pnpm 8+
 - Git
 
 ### Setup
 ```bash
-# Repository klonen
+# Clone repository
 git clone https://github.com/vergissberlin/event-timer.git
 cd event-timer
 
-# Abhängigkeiten installieren
+# Install dependencies
 pnpm install
 
-# Entwicklungsserver starten
+# Start development server
 pnpm dev
 
-# Tests ausführen
+# Run tests
 pnpm test
 ```
 
-## 🏗️ Projektstruktur
+## 🏗️ Project Structure
 
 ```
 event-timer/
@@ -34,50 +34,50 @@ event-timer/
 │   ├── ci.yml          # CI/CD Pipeline
 │   └── test.yml        # Test Workflow
 ├── src/
-│   ├── main.ts          # Hauptanwendungslogik
-│   ├── timer.ts         # Timer-Klasse
-│   ├── audio.ts         # Audio-Management
-│   ├── events.ts        # Event-Management
-│   ├── settings.ts      # Settings-Management
-│   ├── favicon.ts       # Favicon-Generator
-│   └── types.ts         # TypeScript-Typen
+│   ├── main.ts          # Main application logic
+│   ├── timer.ts         # Timer class
+│   ├── audio.ts         # Audio management
+│   ├── events.ts        # Event management
+│   ├── settings.ts      # Settings management
+│   ├── favicon.ts       # Favicon generator
+│   └── types.ts         # TypeScript types
 ├── tests/
-│   ├── setup.ts         # Jest Setup & Mocks
-│   ├── audio.test.ts    # AudioManager Tests
-│   ├── timer.test.ts    # Timer Tests
-│   ├── events.test.ts   # EventsManager Tests
-│   ├── settings.test.ts # SettingsManager Tests
-│   └── favicon.test.ts  # FaviconGenerator Tests
-├── docs/                # Technische Dokumentation
+│   ├── setup.ts         # Jest setup & mocks
+│   ├── audio.test.ts    # AudioManager tests
+│   ├── timer.test.ts    # Timer tests
+│   ├── events.test.ts   # EventsManager tests
+│   ├── settings.test.ts # SettingsManager tests
+│   └── favicon.test.ts  # FaviconGenerator tests
+├── docs/                # Technical documentation
 ├── data/
-│   ├── events.json      # Event-Konfiguration
-│   └── settings.json    # App-Einstellungen
-└── public/              # Statische Assets
+│   ├── events.json      # Event configuration
+│   └── settings.json    # App settings
+└── public/              # Static assets
 ```
 
 ## 🧪 Testing
 
-### Test-Framework
-- **Jest** als Test-Runner
-- **jsdom** für DOM-Tests
-- **ts-jest** für TypeScript-Support
-- **@testing-library/jest-dom** für DOM-Assertions
+### Test Framework
+- **Jest** as test runner
+- **jsdom** for DOM tests
+- **ts-jest** for TypeScript support
+- **@testing-library/jest-dom** for DOM assertions
 
-### Test-Befehle
+### Test Commands
 ```bash
-pnpm test              # Alle Tests ausführen
-pnpm test:watch        # Tests im Watch-Modus
-pnpm test:coverage     # Tests mit Coverage-Report
-pnpm test:ci           # Tests für CI/CD
+pnpm test              # Run all tests
+pnpm test:watch        # Tests in watch mode
+pnpm test:coverage     # Tests with coverage report
+pnpm test:ci           # Tests for CI/CD
 ```
 
-### Test-Konventionen
-- Unit Tests für alle Klassen und Funktionen
-- Mock für externe Dependencies (fetch, Audio API, etc.)
-- Test-Coverage mindestens 80%
-- Beschreibende Test-Namen auf Deutsch
+### Test Conventions
+- Unit tests for all classes and functions
+- Mock external dependencies (fetch, Audio API, etc.)
+- Test coverage minimum 80%
+- Descriptive test names in English
 
-### Test-Struktur
+### Test Structure
 ```typescript
 describe('ClassName', () => {
   describe('methodName', () => {
@@ -95,47 +95,47 @@ describe('ClassName', () => {
 });
 ```
 
-## 🔧 Entwicklung
+## 🔧 Development
 
-### Code-Stil
-- **TypeScript**: Strikte Typisierung verwenden
-- **ESLint**: Code-Qualität und Konsistenz
-- **Prettier**: Automatische Formatierung
-- **Conventional Commits**: Standardisierte Commit-Messages
+### Code Style
+- **TypeScript**: Use strict typing
+- **ESLint**: Code quality and consistency
+- **Prettier**: Automatic formatting
+- **Conventional Commits**: Standardized commit messages
 
-### Befehle
+### Commands
 ```bash
-pnpm type-check        # TypeScript Type Check
+pnpm type-check        # TypeScript type check
 pnpm lint              # ESLint
-pnpm format            # Prettier Formatierung
-pnpm build             # Production Build
+pnpm format            # Prettier formatting
+pnpm build             # Production build
 ```
 
 ### Git Workflow
-1. **Fork** das Repository
-2. **Branch** erstellen: `git checkout -b feature/neue-funktion`
-3. **Änderungen** committen: `git commit -m 'feat: neue Funktion hinzugefügt'`
-4. **Push** zum Fork: `git push origin feature/neue-funktion`
-5. **Pull Request** erstellen
+1. **Fork** the repository
+2. **Create branch**: `git checkout -b feature/new-feature`
+3. **Commit changes**: `git commit -m 'feat: add new feature'`
+4. **Push to fork**: `git push origin feature/new-feature`
+5. **Create Pull Request**
 
 ### Commit Messages
-Verwende [Conventional Commits](https://www.conventionalcommits.org/):
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 ```
-feat: neue Funktion hinzugefügt
-fix: Bug in Timer-Logik behoben
-docs: README aktualisiert
-test: Tests für AudioManager hinzugefügt
-refactor: Code-Refactoring
-style: Formatierung verbessert
+feat: add new feature
+fix: fix bug in timer logic
+docs: update README
+test: add tests for AudioManager
+refactor: refactor code
+style: improve formatting
 ```
 
-## 🎵 Audio-Entwicklung
+## 🎵 Audio Development
 
 ### Web Audio API
-Die App verwendet Web Audio API für dynamische Sound-Generierung:
+The app uses Web Audio API for dynamic sound generation:
 
 ```typescript
-// Beispiel: Ton generieren
+// Example: Generate tone
 private generateTone(frequency: number, duration: number): void {
   const audioContext = this.getAudioContext();
   const oscillator = audioContext.createOscillator();
@@ -150,80 +150,80 @@ private generateTone(frequency: number, duration: number): void {
 }
 ```
 
-### Audio-Features
+### Audio Features
 - **Warning Sound**: 800Hz Sine-Wave, 0.5s
-- **End Sound**: 3x 600Hz Square-Wave Pieptöne
-- **Start Sound**: Dramatische Sequenz (Sweep + Akkord)
-- **Speech Countdown**: Letzte 10 Sekunden
+- **End Sound**: 3x 600Hz Square-Wave beeps
+- **Start Sound**: Dramatic sequence (Sweep + Chord)
+- **Speech Countdown**: Last 10 seconds
 
-## 🎨 UI/UX-Entwicklung
+## 🎨 UI/UX Development
 
-### Design-System
-- **Tailwind CSS**: Utility-First CSS Framework
-- **Montserrat**: Primäre Schriftart
-- **Tabler Icons**: Icon-Bibliothek
-- **Dark/Light Mode**: Automatische Anpassung
+### Design System
+- **Tailwind CSS**: Utility-first CSS framework
+- **Montserrat**: Primary font
+- **Tabler Icons**: Icon library
+- **Dark/Light Mode**: Automatic adaptation
 
 ### Responsive Design
-- **Mobile First**: Mobile-optimiert
+- **Mobile First**: Mobile-optimized
 - **Breakpoints**: sm, md, lg, xl
-- **Touch-Friendly**: Große Touch-Targets
+- **Touch-Friendly**: Large touch targets
 
 ### Accessibility
-- **ARIA-Labels**: Screen Reader Support
-- **Keyboard Navigation**: Vollständige Tastatur-Unterstützung
-- **Color Contrast**: WCAG 2.1 AA Compliance
-- **Focus Management**: Klare Fokus-Indikatoren
+- **ARIA Labels**: Screen reader support
+- **Keyboard Navigation**: Full keyboard support
+- **Color Contrast**: WCAG 2.1 AA compliance
+- **Focus Management**: Clear focus indicators
 
 ## 🔄 CI/CD Pipeline
 
 ### GitHub Actions
-- **Type Check**: TypeScript-Kompilierung
-- **Lint**: ESLint mit TypeScript-Regeln
-- **Format**: Prettier Code-Formatierung
-- **Tests**: Jest Unit Tests mit Coverage
-- **Build**: Vite Production Build
-- **Deploy**: Automatisches GitHub Pages Deployment
+- **Type Check**: TypeScript compilation
+- **Lint**: ESLint with TypeScript rules
+- **Format**: Prettier code formatting
+- **Tests**: Jest unit tests with coverage
+- **Build**: Vite production build
+- **Deploy**: Automatic GitHub Pages deployment
 
 ### Quality Gates
-- ✅ Alle Tests müssen bestehen
-- ✅ Code-Coverage mindestens 80%
-- ✅ ESLint ohne Fehler
-- ✅ Prettier Formatierung korrekt
-- ✅ TypeScript ohne Fehler
+- ✅ All tests must pass
+- ✅ Code coverage minimum 80%
+- ✅ ESLint without errors
+- ✅ Prettier formatting correct
+- ✅ TypeScript without errors
 
-## 📚 Dokumentation
+## 📚 Documentation
 
-### Technische Dokumentation
-Siehe [docs/](docs/) Verzeichnis:
-- [Architecture.md](docs/architecture.md) - Systemarchitektur
-- [API.md](docs/api.md) - API-Dokumentation
-- [Testing.md](docs/testing.md) - Test-Strategien
-- [Deployment.md](docs/deployment.md) - Deployment-Guide
+### Technical Documentation
+See [docs/](docs/) directory:
+- [Architecture.md](docs/architecture.md) - System architecture
+- [API.md](docs/api.md) - API documentation
+- [Testing.md](docs/testing.md) - Testing strategies
+- [Deployment.md](docs/deployment.md) - Deployment guide
 
-### Code-Dokumentation
-- **JSDoc**: Für alle öffentlichen Methoden
-- **TypeScript**: Strikte Typisierung
-- **README**: Anwender-Dokumentation
-- **Inline Comments**: Für komplexe Logik
+### Code Documentation
+- **JSDoc**: For all public methods
+- **TypeScript**: Strict typing
+- **README**: User documentation
+- **Inline Comments**: For complex logic
 
 ## 🐛 Bug Reports
 
 ### Bug Report Template
 ```markdown
 ## Bug Description
-Kurze Beschreibung des Problems
+Brief description of the problem
 
 ## Steps to Reproduce
-1. Öffne die App
-2. Klicke auf Event X
-3. Beobachte Fehler Y
+1. Open the app
+2. Click on event X
+3. Observe error Y
 
 ## Expected Behavior
-Was sollte passieren
+What should happen
 
 ## Actual Behavior
-Was passiert tatsächlich
+What actually happens
 
 ## Environment
 - Browser: Chrome 120
@@ -231,7 +231,7 @@ Was passiert tatsächlich
 - App Version: 1.0.0
 
 ## Additional Information
-Screenshots, Console-Logs, etc.
+Screenshots, console logs, etc.
 ```
 
 ## 💡 Feature Requests
@@ -239,34 +239,34 @@ Screenshots, Console-Logs, etc.
 ### Feature Request Template
 ```markdown
 ## Feature Description
-Kurze Beschreibung der gewünschten Funktion
+Brief description of desired feature
 
 ## Use Case
-Warum wird diese Funktion benötigt
+Why this feature is needed
 
 ## Proposed Solution
-Wie könnte die Implementierung aussehen
+How the implementation could look
 
 ## Alternatives Considered
-Andere Lösungsansätze
+Other solution approaches
 
 ## Additional Information
-Mockups, Beispiele, etc.
+Mockups, examples, etc.
 ```
 
 ## 🤝 Pull Request Process
 
 ### PR Checklist
-- [ ] Tests hinzugefügt/aktualisiert
-- [ ] Dokumentation aktualisiert
-- [ ] Code-Review durchgeführt
-- [ ] CI/CD Pipeline bestanden
-- [ ] Keine Breaking Changes (oder dokumentiert)
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] Code review completed
+- [ ] CI/CD pipeline passed
+- [ ] No breaking changes (or documented)
 
 ### PR Template
 ```markdown
 ## Changes
-Beschreibung der Änderungen
+Description of changes
 
 ## Type of Change
 - [ ] Bug fix
@@ -275,10 +275,10 @@ Beschreibung der Änderungen
 - [ ] Documentation update
 
 ## Testing
-Wie wurden die Änderungen getestet
+How changes were tested
 
 ## Screenshots
-Falls UI-Änderungen
+If UI changes
 
 ## Checklist
 - [ ] Code follows style guidelines
@@ -291,7 +291,7 @@ Falls UI-Änderungen
 
 ### TypeScript
 ```typescript
-// Strikte Typisierung
+// Strict typing
 interface Event {
   id: string;
   title: string;
@@ -299,7 +299,7 @@ interface Event {
   duration: number;
 }
 
-// Keine any-Typen ohne Begründung
+// No any types without justification
 function processEvent(event: Event): void {
   // Implementation
 }
@@ -307,7 +307,7 @@ function processEvent(event: Event): void {
 
 ### Error Handling
 ```typescript
-// Graceful Degradation
+// Graceful degradation
 try {
   const result = await riskyOperation();
   return result;
@@ -318,41 +318,41 @@ try {
 ```
 
 ### Performance
-- **Lazy Loading**: Bilder und Assets
-- **Debouncing**: Event-Handler
-- **Memoization**: Expensive Calculations
-- **Bundle Optimization**: Tree Shaking
+- **Lazy Loading**: Images and assets
+- **Debouncing**: Event handlers
+- **Memoization**: Expensive calculations
+- **Bundle Optimization**: Tree shaking
 
 ## 🎯 Roadmap
 
-### Geplante Features
-- [ ] Offline-Synchronisation
-- [ ] Push-Benachrichtigungen
-- [ ] Multi-Event-Timer
-- [ ] Export/Import von Events
-- [ ] Erweiterte Audio-Optionen
+### Planned Features
+- [ ] Offline synchronization
+- [ ] Push notifications
+- [ ] Multi-event timer
+- [ ] Export/import events
+- [ ] Advanced audio options
 
-### Technische Verbesserungen
-- [ ] Performance-Optimierung
-- [ ] Accessibility-Verbesserungen
-- [ ] Test-Coverage erhöhen
-- [ ] Bundle-Größe reduzieren
+### Technical Improvements
+- [ ] Performance optimization
+- [ ] Accessibility improvements
+- [ ] Increase test coverage
+- [ ] Reduce bundle size
 
 ## 📞 Support
 
-### Fragen & Diskussion
-- **Issues**: Für Bugs und Feature Requests
-- **Discussions**: Für allgemeine Fragen
-- **Wiki**: Für detaillierte Dokumentation
+### Questions & Discussion
+- **Issues**: For bugs and feature requests
+- **Discussions**: For general questions
+- **Wiki**: For detailed documentation
 
-### Kontakt
+### Contact
 - **Maintainer**: [@vergissberlin](https://github.com/vergissberlin)
 - **Repository**: [event-timer](https://github.com/vergissberlin/event-timer)
 
-## 📄 Lizenz
+## 📄 License
 
-Durch das Beitragen zum Projekt stimmst du zu, dass deine Beiträge unter der MIT-Lizenz lizenziert werden.
+By contributing to the project, you agree that your contributions will be licensed under the MIT License.
 
 ---
 
-Vielen Dank für deine Beiträge! 🚀
+Thank you for your contributions! 🚀

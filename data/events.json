@@ -21,8 +21,8 @@
     {
       "id": "presentation",
       "title": "Produkt-Präsentation",
-      "startTime": "2025-08-27T16:12:00",
-      "duration": 200,
+      "startTime": "2025-08-27T16:28:00",
+      "duration": 180,
       "icon": "ti ti-presentation",
       "background": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=1080&fit=crop",
       "description": "Neue Produktfeatures vorstellen"
@@ -30,7 +30,7 @@
     {
       "id": "lunch-break",
       "title": "Mittagspause",
-      "startTime": "2025-08-27T17:00:00",
+      "startTime": "2025-08-27T16:37:00",
       "duration": 3600,
       "icon": "ti ti-coffee",
       "background": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&h=1080&fit=crop",

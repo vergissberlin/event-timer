@@ -1,30 +1,30 @@
-# Cursor Rules für Event Timer PWA
+# Cursor Rules for Event Timer PWA
 
-## Projekt-Übersicht
-Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwind CSS und automatischem GitHub Pages Deployment.
+## Project Overview
+This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind CSS and automatic GitHub Pages deployment.
 
-## Code-Stil & Konventionen
+## Code Style & Conventions
 
 ### Package Manager
-- Verwende **pnpm** als Package Manager
-- Alle npm-Befehle durch pnpm ersetzen
-- pnpm-lock.yaml committen
+- Use **pnpm** as package manager
+- Replace all npm commands with pnpm
+- Commit pnpm-lock.yaml
 
-### Schriftart
-- Verwende **Montserrat** als primäre Schriftart
+### Font
+- Use **Montserrat** as primary font
 - Fallback: Sans-serif
-- Google Fonts CDN für Montserrat einbinden
+- Include Google Fonts CDN for Montserrat
 
 ### TypeScript
-- Strikte Typisierung verwenden
-- Interface-basierte Entwicklung
-- Keine any-Typen ohne explizite Begründung
+- Use strict typing
+- Interface-based development
+- No any types without explicit justification
 
 ### CSS/Tailwind
-- Tailwind CSS für Styling
-- Custom CSS nur wenn nötig
-- Responsive Design priorisieren
-- Montserrat als Standard-Schriftart
+- Tailwind CSS for styling
+- Custom CSS only when necessary
+- Prioritize responsive design
+- Montserrat as default font
 
 ## Testing
 
@@ -34,28 +34,28 @@ Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwin
 - **ts-jest** für TypeScript-Support
 - **@testing-library/jest-dom** für DOM-Assertions
 
-### Test-Konventionen
-- Unit Tests für alle Klassen und Funktionen
-- Mock für externe Dependencies (fetch, Audio API, etc.)
-- Test-Coverage mindestens 80%
-- Beschreibende Test-Namen auf Deutsch
+### Test Conventions
+- Unit tests for all classes and functions
+- Mock external dependencies (fetch, Audio API, etc.)
+- Test coverage minimum 80%
+- Descriptive test names in English
 
-### Test-Struktur
+### Test Structure
 ```
 tests/
-├── setup.ts              # Jest Setup & Mocks
-├── audio.test.ts         # AudioManager Tests
-├── timer.test.ts         # Timer Tests
-├── events.test.ts        # EventsManager Tests
-├── settings.test.ts      # SettingsManager Tests
-└── favicon.test.ts       # FaviconGenerator Tests
+├── setup.ts              # Jest setup & mocks
+├── audio.test.ts         # AudioManager tests
+├── timer.test.ts         # Timer tests
+├── events.test.ts        # EventsManager tests
+├── settings.test.ts      # SettingsManager tests
+└── favicon.test.ts       # FaviconGenerator tests
 ```
 
-### Test-Befehle
-- `pnpm test` - Alle Tests ausführen
-- `pnpm test:watch` - Tests im Watch-Modus
-- `pnpm test:coverage` - Tests mit Coverage-Report
-- `pnpm test:ci` - Tests für CI/CD
+### Test Commands
+- `pnpm test` - Run all tests
+- `pnpm test:watch` - Tests in watch mode
+- `pnpm test:coverage` - Tests with coverage report
+- `pnpm test:ci` - Tests for CI/CD
 
 ## GitHub Actions
 
@@ -72,80 +72,80 @@ tests/
 - **Tests**: Jest Unit Tests mit Coverage
 - **Build**: Vite Production Build
 
-### Workflow-Regeln
-- Node.js 18+ verwenden
-- pnpm install und build
-- gh-pages Branch für Deployment
-- Cache für pnpm Dependencies
+### Workflow Rules
+- Use Node.js 18+
+- pnpm install and build
+- gh-pages branch for deployment
+- Cache for pnpm dependencies
 
-## PWA-spezifisch
+## PWA-specific
 
 ### Manifest
-- Korrekte Icons in verschiedenen Größen
-- Theme-Farben konfiguriert
+- Correct icons in various sizes
+- Theme colors configured
 - Display: standalone
 
 ### Service Worker
-- Offline-Funktionalität
-- Cache-Strategien definiert
-- Update-Handling
+- Offline functionality
+- Cache strategies defined
+- Update handling
 
 ### Audio
-- Web Audio API für dynamische Sound-Generierung
-- Fallback zu HTML Audio
-- Speech API für Countdown
-- AudioContext-Management
+- Web Audio API for dynamic sound generation
+- Fallback to HTML Audio
+- Speech API for countdown
+- AudioContext management
 
 ## Commit Messages
-- Englische Commit Messages
-- Conventional Commits Format
-- Klare, beschreibende Nachrichten
+- English commit messages
+- Conventional Commits format
+- Clear, descriptive messages
 
-## Datei-Struktur
+## File Structure
 ```
 event-timer/
 ├── .github/workflows/     # GitHub Actions
-├── src/                   # TypeScript Source
-├── tests/                 # Unit Tests
-├── data/                  # Event Configuration
-├── public/               # Static Assets
-└── dist/                 # Build Output
+├── src/                   # TypeScript source
+├── tests/                 # Unit tests
+├── data/                  # Event configuration
+├── public/               # Static assets
+└── dist/                 # Build output
 ```
 
 ## Performance
-- Lazy Loading für Bilder
-- Minifizierung für Produktion
-- Service Worker Caching
-- Optimierte Bundle-Größe
+- Lazy loading for images
+- Minification for production
+- Service Worker caching
+- Optimized bundle size
 
-## Browser-Kompatibilität
+## Browser Compatibility
 - Chrome/Chromium (Web Audio API)
 - Firefox (Web Audio API)
 - Safari (WebkitAudioContext)
 - Edge (Web Audio API)
-- Mobile Browser (iOS Safari, Chrome Mobile)
+- Mobile browsers (iOS Safari, Chrome Mobile)
 
 ## Auto-Switch Feature
-- Automatischer Wechsel zu Events (konfigurierbar)
-- Standard: 30 Sekunden vor Event-Start
-- Globale Konfiguration in settings.json
-- Intelligente Navigation (Übersicht ↔ Detail)
+- Automatic switching to events (configurable)
+- Default: 30 seconds before event start
+- Global configuration in settings.json
+- Intelligent navigation (overview ↔ detail)
 
-## Audio-Features
+## Audio Features
 - Warning Sound: 800Hz Sine-Wave, 0.5s
-- End Sound: 3x 600Hz Square-Wave Pieptöne
-- Start Sound: Dramatische Sequenz (Sweep + Akkord)
-- Speech Countdown: Letzte 10 Sekunden
-- AudioContext für Benutzerinteraktion aktivieren
+- End Sound: 3x 600Hz Square-Wave beeps
+- Start Sound: Dramatic sequence (Sweep + Chord)
+- Speech Countdown: Last 10 seconds
+- Activate AudioContext for user interaction
 
 ## Error Handling
-- Graceful Degradation bei fehlenden APIs
-- Fallback-Mechanismen implementieren
-- Benutzerfreundliche Fehlermeldungen
-- Console-Logging für Debugging
+- Graceful degradation for missing APIs
+- Implement fallback mechanisms
+- User-friendly error messages
+- Console logging for debugging
 
 ## Security
-- HTTPS für PWA-Features
+- HTTPS for PWA features
 - Content Security Policy
-- Sanitize User Input
-- Secure Audio Context Usage
+- Sanitize user input
+- Secure Audio Context usage
