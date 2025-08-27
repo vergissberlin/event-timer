@@ -5,7 +5,7 @@ export class SettingsManager {
   private settings: AppSettings;
   private settingsUrl: string;
 
-  constructor(settingsUrl: string = '/data/settings.json') {
+  constructor(settingsUrl: string = '/event-timer/data/settings.json') {
     this.settingsUrl = settingsUrl;
     this.settings = this.getDefaultSettings();
   }

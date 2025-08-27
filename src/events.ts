@@ -4,7 +4,7 @@ export class EventsManager {
   private events: Event[] = [];
   private dataUrl: string;
 
-  constructor(dataUrl: string = '/data/events.json') {
+  constructor(dataUrl: string = '/event-timer/data/events.json') {
     this.dataUrl = dataUrl;
   }
 

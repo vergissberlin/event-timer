@@ -7,13 +7,13 @@
     <meta name="description" content="Progressive Web App für Event-Timer mit Glassmorphism Design">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/event-timer/manifest.json">
     <meta name="theme-color" content="#1e293b">
     
     <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/svg+xml" sizes="32x32" href="/event-timer/icons/icon-32x32.svg">
+    <link rel="icon" type="image/svg+xml" sizes="16x16" href="/event-timer/icons/icon-16x16.svg">
+    <link rel="apple-touch-icon" href="/event-timer/icons/icon-192x192.png">
     
     <!-- Google Fonts - Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,39 +23,8 @@
     <!-- Tabler Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Montserrat', 'sans-serif'],
-                    },
-                    animation: {
-                        'blink': 'blink 1s infinite',
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out'
-                    },
-                    keyframes: {
-                        blink: {
-                            '0%, 50%': { opacity: '1' },
-                            '51%, 100%': { opacity: '0.3' }
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' }
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Local Tailwind CSS -->
+    <link rel="stylesheet" href="/event-timer/tailwind.css">
     
     <style>
         /* Solid Styles - No Transparency */
@@ -367,7 +336,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('/event-timer/sw.js')
                     .then(registration => {
                         console.log('SW registered: ', registration);
                     })

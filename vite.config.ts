@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: '.',
+  base: '/event-timer/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -12,15 +13,18 @@ export default defineConfig({
         main: './index.html'
       },
       output: {
-        manualChunks: undefined
+        manualChunks: undefined,
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js'
       }
-    }
+    },
+    copyPublicDir: true
   },
   server: {
     port: 3000,
     host: true,
     open: true,
-    historyApiFallback: true
   },
   preview: {
     port: 4173,
