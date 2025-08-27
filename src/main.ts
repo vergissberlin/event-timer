@@ -1245,27 +1245,26 @@ class EventTimerApp {
           name: appConfig.name,
           short_name: appConfig.shortName,
           description: appConfig.description,
-          start_url: "/event-timer/",
+          start_url: "./",
           display: "standalone",
           background_color: "#1e293b",
           theme_color: "#1e293b",
           orientation: "portrait-primary",
-          scope: "/event-timer/",
+          scope: "./",
           lang: "de",
           icons: [
             {
-              src: "/event-timer/icons/icon-16x16.svg",
+              src: "./icons/icon-16x16.svg",
               sizes: "16x16",
               type: "image/svg+xml"
             },
             {
-              src: "/event-timer/icons/icon-32x32.svg",
+              src: "./icons/icon-32x32.svg",
               sizes: "32x32",
               type: "image/svg+xml"
             }
           ],
-          categories: ["productivity", "utilities"],
-          screenshots: []
+          categories: ["productivity", "utilities"]
         };
         
         // Create blob and update manifest link
