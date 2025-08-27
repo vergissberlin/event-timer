@@ -1,11 +1,13 @@
 import { Timer } from './timer';
 import { AudioController } from './audio';
 import { EventsManager } from './events';
+import { SettingsManager } from './settings';
 import QRCode from 'qrcode';
 import { Event, TimerCallbacks } from './types';
 
 class EventTimerApp {
   private eventsManager: EventsManager;
+  private settingsManager: SettingsManager;
   private audioController: AudioController;
   private currentTimer: Timer | null = null;
   private currentEvent: Event | null = null;
@@ -24,9 +26,11 @@ class EventTimerApp {
   private timelineBarElement!: HTMLElement;
   private currentTimeMarkerElement!: HTMLElement;
   private currentTimeDisplayElement!: HTMLElement;
+  private hourMarkersElement!: HTMLElement;
   private themeToggleBtn!: HTMLButtonElement;
   private fullscreenBtnOverview!: HTMLButtonElement;
   private shareBtn!: HTMLButtonElement;
+  private shareBtnTimer!: HTMLButtonElement;
   private qrModal!: HTMLElement;
   private closeQrModal!: HTMLButtonElement;
   private copyUrlBtn!: HTMLButtonElement;
@@ -37,9 +41,18 @@ class EventTimerApp {
   private resetBtn!: HTMLButtonElement;
   private fullscreenBtn!: HTMLButtonElement;
   private backBtn!: HTMLButtonElement;
+  private closeBtn!: HTMLButtonElement;
+  private appTitle!: HTMLElement;
+  private eventStatusInfo!: HTMLElement;
+  private eventEndedMessage!: HTMLElement;
+  private nextEventInfo!: HTMLElement;
+  private nextEventTitle!: HTMLElement;
+  private nextEventCountdown!: HTMLElement;
+  private goToNextEventBtn!: HTMLButtonElement;
 
   constructor() {
     this.eventsManager = new EventsManager();
+    this.settingsManager = new SettingsManager();
     this.audioController = new AudioController();
     
     this.initializeDOMElements();
@@ -60,9 +73,11 @@ class EventTimerApp {
     this.timelineBarElement = document.getElementById('timelineBar')!;
     this.currentTimeMarkerElement = document.getElementById('currentTimeMarker')!;
     this.currentTimeDisplayElement = document.getElementById('currentTimeDisplay')!;
+    this.hourMarkersElement = document.getElementById('hourMarkers')!;
     this.themeToggleBtn = document.getElementById('themeToggle') as HTMLButtonElement;
     this.fullscreenBtnOverview = document.getElementById('fullscreenBtnOverview') as HTMLButtonElement;
     this.shareBtn = document.getElementById('shareBtn') as HTMLButtonElement;
+    this.shareBtnTimer = document.getElementById('shareBtnTimer') as HTMLButtonElement;
     this.qrModal = document.getElementById('qrModal')!;
     this.closeQrModal = document.getElementById('closeQrModal') as HTMLButtonElement;
     this.copyUrlBtn = document.getElementById('copyUrlBtn') as HTMLButtonElement;
@@ -73,6 +88,14 @@ class EventTimerApp {
     this.resetBtn = document.getElementById('resetBtn') as HTMLButtonElement;
     this.fullscreenBtn = document.getElementById('fullscreenBtn') as HTMLButtonElement;
     this.backBtn = document.getElementById('backBtn') as HTMLButtonElement;
+    this.closeBtn = document.getElementById('closeBtn') as HTMLButtonElement;
+    this.appTitle = document.getElementById('appTitle')!;
+    this.eventStatusInfo = document.getElementById('eventStatusInfo')!;
+    this.eventEndedMessage = document.getElementById('eventEndedMessage')!;
+    this.nextEventInfo = document.getElementById('nextEventInfo')!;
+    this.nextEventTitle = document.getElementById('nextEventTitle')!;
+    this.nextEventCountdown = document.getElementById('nextEventCountdown')!;
+    this.goToNextEventBtn = document.getElementById('goToNextEventBtn') as HTMLButtonElement;
   }
 
   private bindEventListeners(): void {
@@ -81,9 +104,12 @@ class EventTimerApp {
     this.resetBtn.addEventListener('click', () => this.resetTimer());
     this.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
     this.backBtn.addEventListener('click', () => this.showEventSelection());
+    this.closeBtn.addEventListener('click', () => this.showEventSelection());
+    this.goToNextEventBtn.addEventListener('click', () => this.goToNextEvent());
     this.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
     this.fullscreenBtnOverview.addEventListener('click', () => this.toggleFullscreen());
     this.shareBtn.addEventListener('click', () => this.showQrModal());
+    this.shareBtnTimer.addEventListener('click', () => this.showQrModal());
     this.closeQrModal.addEventListener('click', () => this.hideQrModal());
     this.copyUrlBtn.addEventListener('click', () => this.copyUrl());
     this.downloadQrBtn.addEventListener('click', () => this.downloadQrCode());
@@ -122,12 +148,21 @@ class EventTimerApp {
         this.adjustTimerFontSize();
       }
     });
+
+    // Browser back/forward navigation
+    window.addEventListener('popstate', () => {
+      this.handleRouteChange();
+    });
   }
 
   private async initializeApp(): Promise<void> {
     try {
       // Initialize theme
       this.initializeTheme();
+      
+      // Load settings and update app title
+      const settings = await this.settingsManager.loadSettings();
+      this.updateAppTitle(settings.app.name);
       
       // Load events
       const events = await this.eventsManager.loadEvents();
@@ -138,11 +173,8 @@ class EventTimerApp {
       // Render event grid
       this.renderEventGrid(events);
       
-      // Check for current event and auto-start if needed
-      const currentEvent = this.eventsManager.getCurrentEvent(events);
-      if (currentEvent && this.eventsManager.getSettings().autoStart) {
-        this.selectEvent(currentEvent);
-      }
+      // Initialize routing
+      this.initializeRouting(events);
       
       // Show app
       this.loadingElement.classList.add('hidden');
@@ -166,6 +198,9 @@ class EventTimerApp {
     
     // Render timeline
     this.renderTimeline(events);
+    
+    // Render hour markers
+    this.renderHourMarkers();
     
     // Update current time marker and display
     this.updateCurrentTimeMarker();
@@ -238,6 +273,12 @@ class EventTimerApp {
 
   private selectEvent(event: Event): void {
     this.currentEvent = event;
+    this.navigateToEvent(event.id);
+  }
+
+  private navigateToEvent(eventId: string): void {
+    const url = `/event/${eventId}`;
+    window.history.pushState({ eventId }, '', url);
     this.showTimerScreen();
     this.initializeTimer();
   }
@@ -264,6 +305,9 @@ class EventTimerApp {
     }
     
     this.currentEvent = null;
+    
+    // Update URL to root
+    window.history.pushState({}, '', '/');
   }
 
   private updateTimerScreen(): void {
@@ -281,6 +325,9 @@ class EventTimerApp {
     if (titleElement) {
       titleElement.textContent = this.currentEvent.title;
     }
+    
+    // Update event status info
+    this.updateEventStatusInfo();
   }
 
 
@@ -329,7 +376,7 @@ class EventTimerApp {
       if (timeRemaining > 0) {
         this.updateTimerStatus('Läuft');
         // Auto-start if event is currently running
-        if (this.eventsManager.getSettings().autoStart) {
+        if (this.settingsManager.getSettings().autoStart) {
           this.currentTimer.start();
         }
       } else {
@@ -344,7 +391,8 @@ class EventTimerApp {
     const formattedTime = this.currentTimer.formatTime(timeRemaining);
     
     // Check if we're in countdown mode
-    if (this.eventTitleElement && !this.eventTitleElement.classList.contains('hidden')) {
+    const countdownSection = this.eventTitleElement.querySelector('#countdownSection');
+    if (countdownSection && !countdownSection.classList.contains('hidden')) {
       // Update countdown timer, keep main timer showing event duration
       this.countdownTimerElement.textContent = formattedTime;
     } else {
@@ -352,6 +400,21 @@ class EventTimerApp {
       this.timerElement.textContent = formattedTime;
       // Adjust font size to fit container
       this.adjustTimerFontSize();
+    }
+    
+    // Check if event is finished
+    if (this.currentEvent) {
+      const status = this.eventsManager.getEventStatus(this.currentEvent);
+      if (status === 'finished') {
+        // Dim the timer for finished events
+        this.timerElement.style.color = '#6b7280'; // Gray color for finished events
+        this.timerElement.style.opacity = '0.5';
+        this.timerElement.classList.remove('timer-warning');
+        return;
+      } else {
+        // Reset timer styling for active events
+        this.timerElement.style.opacity = '1';
+      }
     }
     
     // Add warning class for last minute and last 10 seconds
@@ -406,11 +469,17 @@ class EventTimerApp {
   }
   
   private showCountdownUI(): void {
-    this.eventTitleElement.classList.remove('hidden');
+    const countdownSection = this.eventTitleElement.querySelector('#countdownSection');
+    if (countdownSection) {
+      countdownSection.classList.remove('hidden');
+    }
   }
   
   private hideCountdownUI(): void {
-    this.eventTitleElement.classList.add('hidden');
+    const countdownSection = this.eventTitleElement.querySelector('#countdownSection');
+    if (countdownSection) {
+      countdownSection.classList.add('hidden');
+    }
   }
 
   private renderTimeline(events: Event[]): void {
@@ -425,6 +494,21 @@ class EventTimerApp {
       const eventSlot = this.createEventSlot(event);
       this.timelineBarElement.appendChild(eventSlot);
     });
+  }
+
+  private renderHourMarkers(): void {
+    this.hourMarkersElement.innerHTML = '';
+    
+    // Create markers for each hour (0-24)
+    for (let hour = 0; hour <= 24; hour++) {
+      const marker = document.createElement('div');
+      const position = (hour / 24) * 100;
+      
+      marker.className = 'absolute top-0 h-full w-px bg-gray-400 dark:bg-gray-500 opacity-50';
+      marker.style.left = `${position}%`;
+      
+      this.hourMarkersElement.appendChild(marker);
+    }
   }
 
   private createEventSlot(event: Event): HTMLElement {
@@ -524,8 +608,19 @@ class EventTimerApp {
 
   private async generateQrCode(): Promise<void> {
     try {
-      const currentUrl = window.location.href;
-      const qrDataUrl = await QRCode.toDataURL(currentUrl, {
+      // Determine the correct URL based on current context
+      let targetUrl: string;
+      
+      if (this.currentEvent) {
+        // On detail page, generate QR code for the specific event
+        const eventUrl = `${window.location.origin}/event/${this.currentEvent.id}`;
+        targetUrl = eventUrl;
+      } else {
+        // On overview page, generate QR code for the overview
+        targetUrl = window.location.href;
+      }
+      
+      const qrDataUrl = await QRCode.toDataURL(targetUrl, {
         width: 200,
         margin: 2,
         color: {
@@ -543,7 +638,19 @@ class EventTimerApp {
 
   private async copyUrl(): Promise<void> {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      // Determine the correct URL based on current context
+      let targetUrl: string;
+      
+      if (this.currentEvent) {
+        // On detail page, copy the specific event URL
+        const eventUrl = `${window.location.origin}/event/${this.currentEvent.id}`;
+        targetUrl = eventUrl;
+      } else {
+        // On overview page, copy the current URL
+        targetUrl = window.location.href;
+      }
+      
+      await navigator.clipboard.writeText(targetUrl);
       this.copyUrlBtn.innerHTML = '<i class="ti ti-check mr-2"></i>Kopiert!';
       setTimeout(() => {
         this.copyUrlBtn.innerHTML = '<i class="ti ti-copy mr-2"></i>URL kopieren';
@@ -559,8 +666,19 @@ class EventTimerApp {
 
   private async downloadQrCode(): Promise<void> {
     try {
-      const currentUrl = window.location.href;
-      const qrDataUrl = await QRCode.toDataURL(currentUrl, {
+      // Determine the correct URL based on current context
+      let targetUrl: string;
+      
+      if (this.currentEvent) {
+        // On detail page, generate QR code for the specific event
+        const eventUrl = `${window.location.origin}/event/${this.currentEvent.id}`;
+        targetUrl = eventUrl;
+      } else {
+        // On overview page, generate QR code for the overview
+        targetUrl = window.location.href;
+      }
+      
+      const qrDataUrl = await QRCode.toDataURL(targetUrl, {
         width: 400,
         margin: 4,
         color: {
@@ -584,6 +702,54 @@ class EventTimerApp {
     }
   }
 
+  private initializeRouting(events: Event[]): void {
+    const path = window.location.pathname;
+    const eventMatch = path.match(/^\/event\/(.+)$/);
+    
+    if (eventMatch) {
+      const eventId = eventMatch[1];
+      const event = events.find(e => e.id === eventId);
+      
+      if (event) {
+        this.currentEvent = event;
+        this.showTimerScreen();
+        this.initializeTimer();
+      } else {
+        // Event not found, redirect to overview
+        this.showEventSelection();
+      }
+    } else {
+      // Check for current event and auto-start if needed
+      const currentEvent = this.eventsManager.getCurrentEvent(events);
+      if (currentEvent && this.settingsManager.getSettings().autoStart) {
+        this.selectEvent(currentEvent);
+      } else {
+        this.showEventSelection();
+      }
+    }
+  }
+
+  private handleRouteChange(): void {
+    const path = window.location.pathname;
+    const eventMatch = path.match(/^\/event\/(.+)$/);
+    
+    if (eventMatch) {
+      const eventId = eventMatch[1];
+      const events = this.eventsManager.getEvents();
+      const event = events.find(e => e.id === eventId);
+      
+      if (event) {
+        this.currentEvent = event;
+        this.showTimerScreen();
+        this.initializeTimer();
+      } else {
+        this.showEventSelection();
+      }
+    } else {
+      this.showEventSelection();
+    }
+  }
+
   private highlightTimelineSlot(eventId: string): void {
     // Find the timeline slot for this event
     const timelineSlot = this.timelineBarElement.querySelector(`[data-event-id="${eventId}"]`) as HTMLElement;
@@ -591,8 +757,6 @@ class EventTimerApp {
       timelineSlot.style.opacity = '1';
       timelineSlot.style.transform = 'scale(1.05)';
       timelineSlot.style.zIndex = '5';
-      timelineSlot.style.outline = '2px solid #ffffff';
-      timelineSlot.style.outlineOffset = '1px';
       timelineSlot.style.backgroundColor = '#fbbf24'; // Amber color for highlight
     }
   }
@@ -604,8 +768,6 @@ class EventTimerApp {
       timelineSlot.style.opacity = '0.8';
       timelineSlot.style.transform = 'scale(1)';
       timelineSlot.style.zIndex = 'auto';
-      timelineSlot.style.outline = 'none';
-      timelineSlot.style.outlineOffset = '0';
       // Reset to original background color based on status
       const status = timelineSlot.getAttribute('data-status');
       if (status === 'upcoming') {
@@ -622,12 +784,9 @@ class EventTimerApp {
     // Find the table row for this event
     const tableRow = this.eventTableBody.querySelector(`[data-event-id="${eventId}"]`) as HTMLElement;
     if (tableRow) {
-      const isDark = document.documentElement.classList.contains('dark');
-      tableRow.style.backgroundColor = isDark ? '#fbbf24' : '#fbbf24'; // Amber highlight for both modes
+      tableRow.style.backgroundColor = '#fbbf24'; // Amber highlight
       tableRow.style.transform = 'scale(1.01)';
       tableRow.style.transition = 'all 0.2s ease-in-out';
-      tableRow.style.outline = '2px solid #ffffff';
-      tableRow.style.outlineOffset = '1px';
     }
   }
 
@@ -638,8 +797,6 @@ class EventTimerApp {
       tableRow.style.backgroundColor = '';
       tableRow.style.transform = '';
       tableRow.style.transition = '';
-      tableRow.style.outline = '';
-      tableRow.style.outlineOffset = '';
     }
   }
 
@@ -698,7 +855,7 @@ class EventTimerApp {
       this.updateTimerDisplay(timeRemaining);
       
       // Auto-start event timer
-      if (this.eventsManager.getSettings().autoStart) {
+              if (this.settingsManager.getSettings().autoStart) {
         this.currentTimer.start();
       }
     }
@@ -783,6 +940,74 @@ class EventTimerApp {
         `;
       }
     }
+  }
+
+  private updateEventStatusInfo(): void {
+    if (!this.currentEvent) return;
+    
+    const events = this.eventsManager.getEvents();
+    const status = this.eventsManager.getEventStatus(this.currentEvent);
+    
+    // Show status info container
+    this.eventStatusInfo.classList.remove('hidden');
+    
+    if (status === 'finished') {
+      // Show event ended message
+      this.eventEndedMessage.classList.remove('hidden');
+      
+      // Find and show next event
+      const nextEvent = this.eventsManager.getNextEvent(events);
+      if (nextEvent) {
+        this.nextEventInfo.classList.remove('hidden');
+        this.nextEventTitle.textContent = nextEvent.title;
+        
+        // Calculate time until next event starts
+        const timeUntilNext = this.eventsManager.getTimeUntilStart(nextEvent);
+        this.nextEventCountdown.textContent = this.eventsManager.formatDuration(timeUntilNext);
+        
+        // Update countdown every minute
+        this.updateNextEventCountdown(nextEvent);
+      } else {
+        this.nextEventInfo.classList.add('hidden');
+      }
+    } else {
+      // Hide status info for running/upcoming events
+      this.eventEndedMessage.classList.add('hidden');
+      this.nextEventInfo.classList.add('hidden');
+    }
+  }
+
+  private updateNextEventCountdown(nextEvent: Event): void {
+    const updateCountdown = () => {
+      const timeUntilNext = this.eventsManager.getTimeUntilStart(nextEvent);
+      this.nextEventCountdown.textContent = this.eventsManager.formatDuration(timeUntilNext);
+    };
+    
+    // Update immediately
+    updateCountdown();
+    
+    // Update every second
+    setInterval(updateCountdown, 1000);
+  }
+
+  private goToNextEvent(): void {
+    const events = this.eventsManager.getEvents();
+    const nextEvent = this.eventsManager.getNextEvent(events);
+    
+    if (nextEvent) {
+      this.selectEvent(nextEvent);
+    } else {
+      // If no next event, go back to overview
+      this.showEventSelection();
+    }
+  }
+
+  private updateAppTitle(title: string): void {
+    if (this.appTitle) {
+      this.appTitle.textContent = title;
+    }
+    // Also update document title
+    document.title = title;
   }
 
   private showError(message: string): void {

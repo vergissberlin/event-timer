@@ -1,13 +1,11 @@
-import { Event, EventsData, AppSettings } from './types';
+import { Event, EventsData } from './types';
 
 export class EventsManager {
   private events: Event[] = [];
-  private settings: AppSettings;
   private dataUrl: string;
 
   constructor(dataUrl: string = '/data/events.json') {
     this.dataUrl = dataUrl;
-    this.settings = this.getDefaultSettings();
   }
 
   public async loadEvents(): Promise<Event[]> {
@@ -26,7 +24,6 @@ export class EventsManager {
       }
       
       this.events = data.events.map(event => this.validateEvent(event));
-      this.settings = { ...this.getDefaultSettings(), ...data.settings };
       
       console.log(`Loaded ${this.events.length} events`);
       return this.events;
@@ -45,7 +42,6 @@ export class EventsManager {
       title: event.title || 'Unbekanntes Event',
       startTime: event.startTime || new Date().toISOString(),
       duration: Math.max(1, event.duration || 300), // Minimum 1 second
-      theme: this.validateTheme(event.theme),
       description: event.description || 'Keine Beschreibung verfügbar'
     };
 
@@ -61,37 +57,7 @@ export class EventsManager {
     return validatedEvent;
   }
 
-  private validateTheme(theme: any): Event['theme'] {
-    const defaultTheme = {
-      primary: '#3b82f6',
-      secondary: '#1e40af',
-      accent: '#60a5fa'
-    };
 
-    if (!theme || typeof theme !== 'object') {
-      return defaultTheme;
-    }
-
-    return {
-      primary: theme.primary || defaultTheme.primary,
-      secondary: theme.secondary || defaultTheme.secondary,
-      accent: theme.accent || defaultTheme.accent
-    };
-  }
-
-  private getDefaultSettings(): AppSettings {
-    return {
-      defaultTheme: {
-        primary: '#1e293b',
-        secondary: '#334155',
-        accent: '#64748b'
-      },
-      audioEnabled: true,
-      speechEnabled: true,
-      fullscreenByDefault: false,
-      autoStart: false
-    };
-  }
 
   private getDefaultEvents(): Event[] {
     return [
@@ -100,11 +66,6 @@ export class EventsManager {
         title: 'Standard Präsentation',
         startTime: new Date().toISOString(),
         duration: 1800,
-        theme: {
-          primary: '#3b82f6',
-          secondary: '#1e40af',
-          accent: '#60a5fa'
-        },
         description: '30-minütige Standard-Präsentation'
       },
       {
@@ -112,27 +73,18 @@ export class EventsManager {
         title: 'Pause',
         startTime: new Date().toISOString(),
         duration: 900,
-        theme: {
-          primary: '#f59e0b',
-          secondary: '#d97706',
-          accent: '#fbbf24'
-        },
         description: '15-minütige Pause'
       }
     ];
   }
 
-  public getEvents(): Event[] {
-    return [...this.events];
-  }
+
 
   public getEventById(id: string): Event | undefined {
     return this.events.find(event => event.id === id);
   }
 
-  public getSettings(): AppSettings {
-    return { ...this.settings };
-  }
+
 
   public async preloadImages(): Promise<void> {
     const imagePromises: Promise<void>[] = [];
@@ -255,5 +207,9 @@ export class EventsManager {
       const endTime = new Date(startTime.getTime() + event.duration * 1000);
       return now >= startTime && now < endTime;
     }) || null;
+  }
+
+  public getEvents(): Event[] {
+    return this.events || [];
   }
 }
