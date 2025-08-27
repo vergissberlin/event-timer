@@ -26,6 +26,37 @@ Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwin
 - Responsive Design priorisieren
 - Montserrat als Standard-Schriftart
 
+## Testing
+
+### Test-Framework
+- **Jest** als Test-Runner
+- **jsdom** für DOM-Tests
+- **ts-jest** für TypeScript-Support
+- **@testing-library/jest-dom** für DOM-Assertions
+
+### Test-Konventionen
+- Unit Tests für alle Klassen und Funktionen
+- Mock für externe Dependencies (fetch, Audio API, etc.)
+- Test-Coverage mindestens 80%
+- Beschreibende Test-Namen auf Deutsch
+
+### Test-Struktur
+```
+tests/
+├── setup.ts              # Jest Setup & Mocks
+├── audio.test.ts         # AudioManager Tests
+├── timer.test.ts         # Timer Tests
+├── events.test.ts        # EventsManager Tests
+├── settings.test.ts      # SettingsManager Tests
+└── favicon.test.ts       # FaviconGenerator Tests
+```
+
+### Test-Befehle
+- `pnpm test` - Alle Tests ausführen
+- `pnpm test:watch` - Tests im Watch-Modus
+- `pnpm test:coverage` - Tests mit Coverage-Report
+- `pnpm test:ci` - Tests für CI/CD
+
 ## GitHub Actions
 
 ### Deployment
@@ -33,6 +64,13 @@ Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwin
 - Build bei Push auf main Branch
 - PWA-Manifest und Service Worker korrekt konfiguriert
 - HTTPS für PWA-Features erforderlich
+
+### CI/CD Pipeline
+- **Type Check**: TypeScript-Kompilierung
+- **Lint**: ESLint mit TypeScript-Regeln
+- **Format**: Prettier Code-Formatierung
+- **Tests**: Jest Unit Tests mit Coverage
+- **Build**: Vite Production Build
 
 ### Workflow-Regeln
 - Node.js 18+ verwenden
@@ -52,6 +90,12 @@ Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwin
 - Cache-Strategien definiert
 - Update-Handling
 
+### Audio
+- Web Audio API für dynamische Sound-Generierung
+- Fallback zu HTML Audio
+- Speech API für Countdown
+- AudioContext-Management
+
 ## Commit Messages
 - Englische Commit Messages
 - Conventional Commits Format
@@ -62,8 +106,9 @@ Dies ist eine Progressive Web App (PWA) für Event-Timer mit TypeScript, Tailwin
 event-timer/
 ├── .github/workflows/     # GitHub Actions
 ├── src/                   # TypeScript Source
+├── tests/                 # Unit Tests
+├── data/                  # Event Configuration
 ├── public/               # Static Assets
-├── data/                 # Event Configuration
 └── dist/                 # Build Output
 ```
 
@@ -72,3 +117,35 @@ event-timer/
 - Minifizierung für Produktion
 - Service Worker Caching
 - Optimierte Bundle-Größe
+
+## Browser-Kompatibilität
+- Chrome/Chromium (Web Audio API)
+- Firefox (Web Audio API)
+- Safari (WebkitAudioContext)
+- Edge (Web Audio API)
+- Mobile Browser (iOS Safari, Chrome Mobile)
+
+## Auto-Switch Feature
+- Automatischer Wechsel zu Events (konfigurierbar)
+- Standard: 30 Sekunden vor Event-Start
+- Globale Konfiguration in settings.json
+- Intelligente Navigation (Übersicht ↔ Detail)
+
+## Audio-Features
+- Warning Sound: 800Hz Sine-Wave, 0.5s
+- End Sound: 3x 600Hz Square-Wave Pieptöne
+- Start Sound: Dramatische Sequenz (Sweep + Akkord)
+- Speech Countdown: Letzte 10 Sekunden
+- AudioContext für Benutzerinteraktion aktivieren
+
+## Error Handling
+- Graceful Degradation bei fehlenden APIs
+- Fallback-Mechanismen implementieren
+- Benutzerfreundliche Fehlermeldungen
+- Console-Logging für Debugging
+
+## Security
+- HTTPS für PWA-Features
+- Content Security Policy
+- Sanitize User Input
+- Secure Audio Context Usage

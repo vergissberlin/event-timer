@@ -17,11 +17,14 @@ Eine moderne Progressive Web App (PWA) für Event-Timer mit Glassmorphism Design
 ### Audio & Benachrichtigungen
 - **Warnung bei 1 Minute**: Timer blinkt und spielt Warnungston ab
 - **Blinken bei letzten 10 Sekunden**: Zusätzliche visuelle Warnung
-- **Event-Start Hinweis**: Blitz-Effekt und Audio bei Event-Start
+- **Event-Start Hinweis**: Blitz-Effekt und lauter Audio bei Event-Start
 - **Speech API**: Letzte 10 Sekunden werden runtergezählt
 - **3-Sekunden Piepton**: Bei Timer-Ende
 - **Push-Benachrichtigungen**: Desktop-Benachrichtigungen bei Timer-Ende
-- **Freesound.org Integration**: Professionelle Sounds von [Freesound.org](https://freesound.org/)
+- **Auto-Switch**: Automatischer Wechsel zu Events (konfigurierbar, Standard: 30s)
+- **🧪 Unit Tests**: Umfassende Test-Suite mit Jest
+- **📊 Test Coverage**: Automatische Coverage-Reports
+- **🔄 CI/CD**: GitHub Actions für Tests und Deployment
 
 ### Design & UX
 - **Timeline-Visualisierung**: Horizontale Zeitslot-Anzeige von 0-24 Uhr
@@ -69,10 +72,15 @@ pnpm build
 # Preview des Builds
 pnpm preview
 
+# Tests ausführen
+pnpm test              # Alle Tests
+pnpm test:watch        # Tests im Watch-Modus
+pnpm test:coverage     # Tests mit Coverage-Report
+
 # Code-Qualität
-pnpm type-check  # TypeScript Type Check
-pnpm lint        # ESLint
-pnpm format      # Prettier Formatierung
+pnpm type-check        # TypeScript Type Check
+pnpm lint              # ESLint
+pnpm format            # Prettier Formatierung
 ```
 
 ## 🎵 Audio-Sounds
@@ -105,13 +113,14 @@ Falls Web Audio API nicht unterstützt wird, wird eine Warnung in der Konsole au
 **Technische Spezifikationen:**
 - **Warning Sound**: 800Hz Sine-Wave, 0.5s Dauer mit Fade in/out
 - **End Sound**: 3x 600Hz Square-Wave Pieptöne mit 0.7s Pausen
-- **Start Sound**: Aufsteigender Ton von 400Hz-800Hz, 1s Dauer
+- **Start Sound**: Dramatische Sequenz (200Hz-800Hz Sweep + 400/600/800Hz Akkord)
 
 **Audio-Qualität:**
 - 🎵 **44.1kHz Sample Rate**: CD-Qualität
 - 🎵 **16-bit Auflösung**: Klare, rauschfreie Töne
 - 🎵 **Fade in/out**: Weiche Übergänge ohne Klicks
 - 🎵 **Optimierte Lautstärke**: 30% für angenehme Wiedergabe
+- 🎵 **Event-Start**: Lauter, eindrucksvoller Sound für Aufmerksamkeit
 
 ## 🎯 Verwendung
 
@@ -126,19 +135,34 @@ Events werden in `data/events.json` konfiguriert:
       "title": "Morgen-Meeting",
       "startTime": "2024-01-15T09:00:00",
       "duration": 1800,
-      "theme": {
-        "primary": "#3b82f6",
-        "secondary": "#1e40af",
-        "accent": "#60a5fa"
-      },
       "icon": "ti ti-users",
       "background": "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1920&h=1080&fit=crop",
       "description": "Tägliches Morgen-Meeting"
     }
-  ],
-  "settings": {
-    "autoStart": true
-  }
+  ]
+}
+```
+
+### App-Einstellungen
+Globale Einstellungen werden in `data/settings.json` konfiguriert:
+
+```json
+{
+  "theme": {
+    "primary": "#3b82f6",
+    "secondary": "#1e40af",
+    "accent": "#60a5fa"
+  },
+  "app": {
+    "name": "Event Timer",
+    "shortName": "Timer",
+    "description": "Progressive Web App für Event-Timer"
+  },
+  "audioEnabled": true,
+  "speechEnabled": true,
+  "fullscreenByDefault": false,
+  "autoStart": true,
+  "autoSwitchSeconds": 30
 }
 ```
 
@@ -160,7 +184,16 @@ event-timer/
 │   ├── timer.ts         # Timer-Klasse
 │   ├── audio.ts         # Audio-Management
 │   ├── events.ts        # Event-Management
+│   ├── settings.ts      # Settings-Management
+│   ├── favicon.ts       # Favicon-Generator
 │   └── types.ts         # TypeScript-Typen
+├── tests/
+│   ├── setup.ts         # Jest Setup & Mocks
+│   ├── audio.test.ts    # AudioManager Tests
+│   ├── timer.test.ts    # Timer Tests
+│   ├── events.test.ts   # EventsManager Tests
+│   ├── settings.test.ts # SettingsManager Tests
+│   └── favicon.test.ts  # FaviconGenerator Tests
 ├── data/
 │   └── events.json      # Event-Konfiguration
 ├── public/
@@ -172,6 +205,7 @@ event-timer/
 ├── pnpm-workspace.yaml # pnpm Workspace
 ├── .eslintrc.json      # ESLint Konfiguration
 ├── .prettierrc         # Prettier Konfiguration
+├── jest.config.js      # Jest Konfiguration
 └── .cursorrules        # Cursor IDE Regeln
 ```
 

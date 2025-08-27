@@ -38,6 +38,7 @@ export interface AppSettings {
   speechEnabled: boolean;
   fullscreenByDefault: boolean;
   autoStart: boolean;
+  autoSwitchSeconds: number;
 }
 
 export interface EventsData {

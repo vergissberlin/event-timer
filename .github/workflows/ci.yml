@@ -49,6 +49,9 @@ jobs:
       - name: Format check
         run: pnpm format --check
         
+      - name: Run tests
+        run: pnpm test:ci
+        
       - name: Build
         run: pnpm build
         

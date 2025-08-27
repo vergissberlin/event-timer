@@ -21,5 +21,6 @@
   "audioEnabled": true,
   "speechEnabled": true,
   "fullscreenByDefault": false,
-  "autoStart": true
+  "autoStart": true,
+  "autoSwitchSeconds": 30
 }

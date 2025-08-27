@@ -53,7 +53,8 @@ export class SettingsManager {
       audioEnabled: typeof settings.audioEnabled === 'boolean' ? settings.audioEnabled : defaultSettings.audioEnabled,
       speechEnabled: typeof settings.speechEnabled === 'boolean' ? settings.speechEnabled : defaultSettings.speechEnabled,
       fullscreenByDefault: typeof settings.fullscreenByDefault === 'boolean' ? settings.fullscreenByDefault : defaultSettings.fullscreenByDefault,
-      autoStart: typeof settings.autoStart === 'boolean' ? settings.autoStart : defaultSettings.autoStart
+      autoStart: typeof settings.autoStart === 'boolean' ? settings.autoStart : defaultSettings.autoStart,
+      autoSwitchSeconds: typeof settings.autoSwitchSeconds === 'number' ? settings.autoSwitchSeconds : defaultSettings.autoSwitchSeconds
     };
   }
 
@@ -149,7 +150,8 @@ export class SettingsManager {
       audioEnabled: true,
       speechEnabled: true,
       fullscreenByDefault: false,
-      autoStart: true
+      autoStart: true,
+      autoSwitchSeconds: 30
     };
   }
 

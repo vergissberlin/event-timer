@@ -147,8 +147,55 @@ export class AudioManager implements AudioManagerInterface {
   public playStart(): void {
     if (!this.isAudioEnabled) return;
     
-    // Web Audio API: Aufsteigender Ton 400Hz-800Hz, 1s
-    this.generateSweepTone(400, 800, 1.0);
+    // Web Audio API: Lauter, dramatischer Start-Ton
+    // Mehrere Frequenzen für einen eindrucksvollen Sound
+    this.generateStartSequence();
+  }
+
+  private generateStartSequence(): void {
+    try {
+      // Erste Sequenz: Aufsteigender Ton
+      this.generateSweepTone(200, 800, 0.5);
+      
+      // Zweite Sequenz: Dramatischer Akkord nach kurzer Pause
+      setTimeout(() => {
+        this.generateChord([400, 600, 800], 0.8, 'square', 0.4);
+      }, 600);
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren des Start-Sequenz:', error);
+      this.playFallbackSound('start');
+    }
+  }
+
+  private generateChord(frequencies: number[], duration: number, type: OscillatorType = 'sine', volume: number = 0.3): void {
+    try {
+      const audioContext = this.getAudioContext();
+      
+      frequencies.forEach(frequency => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        oscillator.type = type;
+        
+        // Fade in/out
+        const fadeTime = 0.1;
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + fadeTime);
+        gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + duration - fadeTime);
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+      });
+      
+    } catch (error) {
+      console.warn('Fehler beim Generieren des Akkords:', error);
+    }
   }
 
   // Speech API für Countdown

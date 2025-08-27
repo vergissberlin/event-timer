@@ -19,6 +19,7 @@ class EventTimerApp {
   private currentTimer: Timer | null = null;
   private currentEvent: Event | null = null;
   private isFullscreen: boolean = false;
+  private autoSwitchInterval: NodeJS.Timeout | null = null;
 
   // DOM Elements
   private loadingElement!: HTMLElement;
@@ -183,6 +184,9 @@ class EventTimerApp {
       // Initialize routing
       this.initializeRouting(events);
       
+      // Start auto-switch timer
+      this.startAutoSwitchTimer();
+      
       // Show app
       this.loadingElement.classList.add('hidden');
       this.appElement.classList.remove('hidden');
@@ -280,6 +284,10 @@ class EventTimerApp {
 
   private selectEvent(event: Event): void {
     this.currentEvent = event;
+    
+    // Stop auto-switch timer when manually selecting an event
+    this.stopAutoSwitchTimer();
+    
     this.navigateToEvent(event.id);
   }
 
@@ -312,6 +320,9 @@ class EventTimerApp {
     }
     
     this.currentEvent = null;
+    
+    // Restart auto-switch timer for overview
+    this.startAutoSwitchTimer();
     
     // Update URL to root
     window.history.pushState({}, '', '/');
@@ -995,6 +1006,40 @@ class EventTimerApp {
     
     // Update every second
     setInterval(updateCountdown, 1000);
+  }
+
+  private startAutoSwitchTimer(): void {
+    const settings = this.settingsManager.getSettings();
+    const autoSwitchSeconds = settings.autoSwitchSeconds || 30;
+    
+    // Clear existing interval
+    if (this.autoSwitchInterval) {
+      clearInterval(this.autoSwitchInterval);
+    }
+    
+    // Check every second for events that should auto-switch
+    this.autoSwitchInterval = setInterval(() => {
+      const events = this.eventsManager.getEvents();
+      const now = new Date();
+      
+      events.forEach(event => {
+        const eventStart = new Date(event.startTime);
+        const timeUntilStart = (eventStart.getTime() - now.getTime()) / 1000;
+        
+        // If event starts in exactly autoSwitchSeconds, navigate to it
+        if (timeUntilStart > 0 && timeUntilStart <= autoSwitchSeconds && timeUntilStart > autoSwitchSeconds - 1) {
+          console.log(`Auto-switching to event: ${event.title} (starts in ${Math.round(timeUntilStart)}s)`);
+          this.selectEvent(event);
+        }
+      });
+    }, 1000);
+  }
+
+  private stopAutoSwitchTimer(): void {
+    if (this.autoSwitchInterval) {
+      clearInterval(this.autoSwitchInterval);
+      this.autoSwitchInterval = null;
+    }
   }
 
   private goToNextEvent(): void {
