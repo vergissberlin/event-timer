@@ -3,6 +3,9 @@
 ## Project Overview
 
 This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind CSS and automatic GitHub Pages deployment.
+Framework: Astro v4 (static output), React Islands via `@astrojs/react`.
+
+- Base-Path: The app is hosted unter `/event-timer/`. Always use `/event-timer/` for routes, assets and fetches. The base is configured in `astro.config.mjs` (`site` + `base`).
 
 ## Code Style & Conventions
 
@@ -26,10 +29,23 @@ This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind C
 
 ### CSS/Tailwind
 
-- Tailwind CSS for styling
+- Tailwind CSS for styling (via `@astrojs/tailwind`)
 - Custom CSS only when necessary
 - Prioritize responsive design
 - Montserrat as default font
+
+### Astro & Routing
+
+- Pages under `src/pages` (`index.astro`, dynamic route `event/[id].astro`)
+- Use `src/shared/Layout.astro` as base layout
+- Respect the fixed Base-Path `/event-timer/` for links, images, and data fetches
+- Prefer absolute, base-aware paths for static assets (e.g. `/event-timer/icons/icon-192x192.png`)
+
+### UI Components
+
+- Prefer headless components with Tailwind
+- shadcn/ui pattern is allowed for primitives; use Radix primitives where helpful
+- Co-locate UI components in `src/components` or `src/components/ui`
 
 ## Testing
 
@@ -74,20 +90,21 @@ tests/
 - Build bei Push auf main Branch
 - PWA-Manifest und Service Worker korrekt konfiguriert
 - HTTPS für PWA-Features erforderlich
+- Base-Path `base: '/event-timer/'` in `astro.config.mjs` muss gesetzt sein
 
 ### CI/CD Pipeline
 
-- **Type Check**: TypeScript-Kompilierung
-- **Lint**: ESLint mit TypeScript-Regeln
-- **Format**: Prettier Code-Formatierung
-- **Tests**: Jest Unit Tests mit Coverage
-- **Build**: Vite Production Build
+- **Type Check**: TypeScript-Kompilierung (`pnpm type-check`)
+- **Lint**: ESLint mit TypeScript-Regeln (`pnpm lint`)
+- **Format**: Prettier Code-Formatierung (`pnpm format`)
+- **Tests**: Jest Unit Tests mit Coverage (`pnpm test:ci`)
+- **Build**: Astro Production Build (`pnpm build`)
 
 ### Workflow Rules
 
 - Use Node.js 18+
-- pnpm install and build
-- gh-pages branch for deployment
+- pnpm install and build (use pnpm cache in CI)
+- gh-pages branch for deployment (via `gh-pages -d dist`)
 - Cache for pnpm dependencies
 
 ## PWA-specific
@@ -103,6 +120,7 @@ tests/
 - Offline functionality
 - Cache strategies defined
 - Update handling
+- Optional: Use Workbox (`workbox-window`) for update prompts
 
 ### Audio
 
@@ -180,10 +198,16 @@ revert: revert breaking change in timer logic
 event-timer/
 ├── .github/workflows/     # GitHub Actions
 ├── src/                   # TypeScript source
+│   ├── pages/             # Astro pages (index.astro, event/[id].astro)
+│   ├── shared/            # Layouts (Layout.astro)
+│   ├── components/        # UI components (incl. ui/)
+│   ├── styles/            # global.css (Tailwind base)
+│   ├── lib/               # utilities
+│   └── ...                # audio.ts, events.ts, settings.ts, timer.ts, favicon.ts, main.ts
+├── public/                # Static assets (icons, tailwind.css, data/)
+├── data/                  # Event configuration (source)
 ├── tests/                 # Unit tests
-├── data/                  # Event configuration
-├── public/               # Static assets
-└── dist/                 # Build output
+└── dist/                  # Build output
 ```
 
 ## Performance
