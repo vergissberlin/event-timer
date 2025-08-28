@@ -1,0 +1,51 @@
+---
+interface Props {
+  id?: string;
+  label?: string;
+  href?: string;
+  target?: string;
+  rel?: string;
+  title?: string;
+  ariaLabel?: string;
+  variant?: 'primary' | 'outline' | 'ghost' | 'link' | 'icon';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+  type?: 'button' | 'submit' | 'reset';
+}
+
+const props = Astro.props as Props;
+const variant = props.variant ?? 'primary';
+const size = props.size ?? 'md';
+
+const sizeClass = {
+  sm: 'px-3 py-1 text-sm',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-5 py-3 text-base'
+}[size];
+
+const base = 'inline-flex items-center justify-center gap-2 rounded-md transition-colors duration-200';
+
+const variantClass = {
+  primary: 'bg-blue-600 text-white hover:bg-blue-700 border border-transparent',
+  outline: 'bg-transparent text-blue-600 border border-blue-600 hover:bg-gray-100/40',
+  ghost: 'bg-transparent text-gray-700 dark:text-gray-200 hover:bg-gray-100/30 border border-transparent',
+  link: 'bg-transparent text-blue-600 border-0 p-0 underline hover:opacity-90',
+  icon: 'md2-btn-base md2-btn-icon'
+}[variant];
+
+const classes = [base, sizeClass, variantClass, props.class ?? ''].filter(Boolean).join(' ');
+---
+
+{props.href ? (
+  <a id={props.id} href={props.href} target={props.target} rel={props.rel} class={classes} title={props.title} aria-label={props.ariaLabel}>
+    <slot />
+    {props.label ? <span>{props.label}</span> : null}
+  </a>
+) : (
+  <button id={props.id} type={props.type ?? 'button'} class={classes} title={props.title} aria-label={props.ariaLabel}>
+    <slot />
+    {props.label ? <span>{props.label}</span> : null}
+  </button>
+)}
+
+
