@@ -3,6 +3,7 @@ interface Props {
   title?: string;
 }
 const { title = 'Event Timer' } = Astro.props as Props;
+import '../styles/global.css';
 ---
 
 <html lang="de">
@@ -17,7 +18,7 @@ const { title = 'Event Timer' } = Astro.props as Props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css" />
-    <link rel="stylesheet" href="tailwind.css" />
+    
     <link rel="icon" href="favicon.ico" />
     <!-- manifest removed per request -->
 
