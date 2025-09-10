@@ -209,6 +209,15 @@ class EventTimerApp {
     } catch (error) {
       console.error('Failed to initialize app:', error);
       this.showError('Fehler beim Laden der Events');
+    } finally {
+      // Hard fallback: Stelle sicher, dass der Loading-Screen nicht hängen bleibt
+      if (this.loadingElement) {
+        this.loadingElement.classList.add('hidden');
+        (this.loadingElement as HTMLElement).style.display = 'none';
+      }
+      if (this.appElement) {
+        this.appElement.classList.remove('hidden');
+      }
     }
   }
 
