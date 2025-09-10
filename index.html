@@ -380,6 +380,22 @@
 
     <!-- Scripts -->
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      // Fallback: verstecke den Loader sicherheitshalber nach 5s
+      (function(){
+        let done = false;
+        function hide(){
+          if (done) return; done = true;
+          const l = document.getElementById('loading');
+          const a = document.getElementById('app');
+          if (l) { l.classList.add('hidden'); l.style.display = 'none'; }
+          if (a) { a.classList.remove('hidden'); }
+        }
+        window.addEventListener('app:initialized', hide, { once: true });
+        setTimeout(hide, 5000);
+        window.addEventListener('error', hide, { once: true });
+      })();
+    </script>
     
     <!-- Service Worker explicitly disabled -->
     <script>

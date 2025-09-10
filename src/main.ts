@@ -205,6 +205,7 @@ class EventTimerApp {
       this.appElement.classList.remove('hidden');
       
       console.log('Event Timer App initialized successfully');
+      window.dispatchEvent(new Event('app:initialized'));
       
     } catch (error) {
       console.error('Failed to initialize app:', error);
