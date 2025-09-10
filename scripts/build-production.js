@@ -12,7 +12,7 @@ let html = fs.readFileSync(indexPath, 'utf8');
 // Replace Tailwind CDN with local CSS for production
 html = html.replace(
   '<script src="https://cdn.tailwindcss.com"></script>',
-  '<link rel="stylesheet" href="/event-timer/tailwind.css">'
+  '<link rel="stylesheet" href="/tailwind.css">'
 );
 
 // Find the compiled JavaScript file in dist/assets
@@ -26,7 +26,7 @@ if (jsFiles.length === 0) {
 
 // Use the first JavaScript file (should be the main bundle)
 const jsFile = jsFiles[0];
-const jsPath = `/event-timer/assets/${jsFile}`;
+const jsPath = `/assets/${jsFile}`;
 
 // Replace the TypeScript script tag with the compiled JavaScript
 html = html.replace(

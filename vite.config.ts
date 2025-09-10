@@ -5,7 +5,7 @@ export default defineConfig(({ command }) => {
   
   return {
     root: '.',
-    base: isProduction ? '/' : '/',
+    base: '/',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',

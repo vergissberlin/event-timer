@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind CSS and automatic GitHub Pages deployment.
+This is a Progressive Web App (PWA) for event timers with TypeScript, Tailwind CSS and automatic deployment to Surge.
 
 ## Code Style & Conventions
 
@@ -66,12 +66,12 @@ tests/
 - `pnpm test:coverage` - Tests with coverage report
 - `pnpm test:ci` - Tests for CI/CD
 
-## GitHub Actions
+## CI/CD
 
 ### Deployment
 
-- Automatisches Deployment auf GitHub Pages
-- Build bei Push auf main Branch
+- Automatisches Deployment auf Surge (Root-Deployment)
+- Build bei Push auf Branch `stable`
 - PWA-Manifest und Service Worker korrekt konfiguriert
 - HTTPS für PWA-Features erforderlich
 
@@ -87,7 +87,7 @@ tests/
 
 - Use Node.js 18+
 - pnpm install and build
-- gh-pages branch for deployment
+- Surge Deployment via `surge` CLI
 - Cache for pnpm dependencies
 
 ## PWA-specific

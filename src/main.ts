@@ -403,8 +403,7 @@ class EventTimerApp {
   }
 
   private navigateToEvent(eventId: string): void {
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const basePath = isDevelopment ? '' : '/';
+    const basePath = '';
     const url = `${basePath}/event/${eventId}`;
     window.history.pushState({ eventId }, '', url);
     this.showTimerScreen();
@@ -437,9 +436,8 @@ class EventTimerApp {
     // Restart auto-switch timer for overview
     this.startAutoSwitchTimer();
     
-    // Update URL to root (with subdirectory for production)
-    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const basePath = isDevelopment ? '/' : '/event-timer/';
+    // Update URL to root (Surge deployment uses root path)
+    const basePath = '/';
     window.history.pushState({}, '', basePath);
   }
 

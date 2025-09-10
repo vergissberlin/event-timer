@@ -1,8 +1,8 @@
 # Deployment Guide - Event Timer PWA
 
-## 🚀 GitHub Pages Deployment
+## 🚀 Surge Deployment
 
-### Automatisches Deployment
+### Automatisches Deployment (CI)
 
 1. **Repository Setup**
    ```bash
@@ -11,44 +11,39 @@
    cd event-timer
    
    # Abhängigkeiten installieren
-   npm install
+   pnpm install
    ```
 
 2. **Build erstellen**
    ```bash
-   npm run build
+   pnpm run build
    ```
 
-3. **Deploy auf GitHub Pages**
+3. **Deploy auf Surge**
    ```bash
-   npm run deploy
+   # Vorher: Login und Domain setzen
+   # SURGE_LOGIN und SURGE_TOKEN als Secrets in CI konfigurieren
+   # Lokal: surge login
+   pnpm run deploy
    ```
 
-### Manuelles GitHub Pages Setup
+### Manuelles Surge Setup
 
-1. **GitHub Repository erstellen**
-   - Neues Repository auf GitHub erstellen
-   - Code hochladen
-
-2. **GitHub Pages aktivieren**
-   - Repository Settings → Pages
-   - Source: "Deploy from a branch"
-   - Branch: `gh-pages` oder `main` (mit `/docs` Ordner)
-
-3. **Build und Deploy**
+1. **Surge Account/Login**
    ```bash
-   # Build erstellen
-   npm run build
-   
-   # Für gh-pages Branch
-   npx gh-pages -d dist
-   
-   # Oder für main/docs
-   cp -r dist/* docs/
-   git add docs/
-   git commit -m "Deploy to GitHub Pages"
-   git push
+   npm i -g surge
+   surge login
    ```
+
+2. **Domain wählen & Deploy**
+   ```bash
+   pnpm run build
+   surge ./dist your-domain.surge.sh
+   ```
+
+3. **CI Konfiguration**
+   - Secrets setzen: `SURGE_LOGIN`, `SURGE_TOKEN`, `SURGE_DOMAIN`
+   - Workflow `.github/workflows/ci.yml` nutzt `pnpm run deploy`
 
 ## 🌐 Andere Hosting-Optionen
 

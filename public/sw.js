@@ -1,14 +1,14 @@
 // Service Worker für Event Timer PWA
 const CACHE_NAME = 'event-timer-v1.0.0';
 const urlsToCache = [
-  '/event-timer/',
-  '/event-timer/index.html',
-  '/event-timer/manifest.json',
-  '/event-timer/tailwind.css',
-  '/event-timer/icons/icon-16x16.svg',
-  '/event-timer/icons/icon-32x32.svg',
-  '/event-timer/data/events.json',
-  '/event-timer/data/settings.json'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/tailwind.css',
+  '/icons/icon-16x16.svg',
+  '/icons/icon-32x32.svg',
+  '/data/events.json',
+  '/data/settings.json'
 ];
 
 // Install Event

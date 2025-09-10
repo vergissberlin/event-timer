@@ -9,9 +9,8 @@ export class SettingsManager {
     if (settingsUrl) {
       this.settingsUrl = settingsUrl;
     } else {
-      // Check if we're in production (GitHub Pages)
-      const isProduction = window.location.hostname === 'vergissberlin.github.io';
-      this.settingsUrl = isProduction ? '/event-timer/data/settings.json' : '/data/settings.json';
+      // Use root-based paths for all non-local environments (Surge deployment uses root)
+      this.settingsUrl = '/data/settings.json';
     }
     this.settings = this.getDefaultSettings();
   }

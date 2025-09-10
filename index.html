@@ -12,7 +12,7 @@
       if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
         const link = document.createElement('link');
         link.rel = 'manifest';
-        link.href = '/event-timer/manifest.json';
+        link.href = '/manifest.json';
         document.head.appendChild(link);
       }
     </script>
@@ -23,9 +23,9 @@
       // Only load icons in production
       if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
         const icons = [
-          { rel: 'icon', type: 'image/svg+xml', sizes: '32x32', href: '/event-timer/icons/icon-32x32.svg' },
-          { rel: 'icon', type: 'image/svg+xml', sizes: '16x16', href: '/event-timer/icons/icon-16x16.svg' },
-          { rel: 'apple-touch-icon', href: '/event-timer/icons/icon-32x32.svg' }
+          { rel: 'icon', type: 'image/svg+xml', sizes: '32x32', href: '/icons/icon-32x32.svg' },
+          { rel: 'icon', type: 'image/svg+xml', sizes: '16x16', href: '/icons/icon-16x16.svg' },
+          { rel: 'apple-touch-icon', href: '/icons/icon-32x32.svg' }
         ];
         
         icons.forEach(icon => {
@@ -385,7 +385,7 @@
         // Only register service worker in production
         if ('serviceWorker' in navigator && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/event-timer/sw.js')
+                navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
                         console.log('SW registered: ', registration);
                     })

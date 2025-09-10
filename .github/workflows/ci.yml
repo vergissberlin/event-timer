@@ -1,4 +1,4 @@
-name: Test, Lint, Deploy
+name: Test, Lint, Deploy (Surge)
 
 on:
   push:
@@ -11,7 +11,6 @@ on:
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
   id-token: write
   issues: write
   pull-requests: write
@@ -100,7 +99,6 @@ jobs:
     
     permissions:
       contents: read
-      pages: write
       id-token: write
     
     steps:
@@ -141,15 +139,15 @@ jobs:
         
       - name: Build
         run: pnpm build
-        
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './dist'
-          
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+
+      - name: Install Surge CLI
+        run: npm i -g surge
+
+      - name: Deploy to Surge
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+          SURGE_DOMAIN: ${{ secrets.SURGE_DOMAIN }}
+        run: |
+          surge --version
+          pnpm run deploy

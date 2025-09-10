@@ -9,9 +9,8 @@ export class EventsManager {
     if (dataUrl) {
       this.dataUrl = dataUrl;
     } else {
-      // Check if we're in production (GitHub Pages)
-      const isProduction = window.location.hostname === 'vergissberlin.github.io';
-      this.dataUrl = isProduction ? '/event-timer/data/events.json' : '/data/events.json';
+      // Use root-based paths for all non-local environments (Surge deployment uses root)
+      this.dataUrl = '/data/events.json';
     }
   }
 
