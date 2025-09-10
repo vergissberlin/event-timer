@@ -404,7 +404,7 @@ class EventTimerApp {
 
   private navigateToEvent(eventId: string): void {
     const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const basePath = isDevelopment ? '' : '/event-timer';
+    const basePath = isDevelopment ? '' : '/';
     const url = `${basePath}/event/${eventId}`;
     window.history.pushState({ eventId }, '', url);
     this.showTimerScreen();

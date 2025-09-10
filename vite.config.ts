@@ -5,7 +5,7 @@ export default defineConfig(({ command }) => {
   
   return {
     root: '.',
-    base: isProduction ? '/event-timer/' : '/',
+    base: isProduction ? '/' : '/',
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
