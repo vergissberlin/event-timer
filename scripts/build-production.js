@@ -55,9 +55,11 @@ try {
     minute: '2-digit'
   });
 
-  const footerInjection = `\n    <div class="container mx-auto px-4 py-1">\n      <div class=\"flex justify-center items-center text-white text-opacity-60 text-[10px]\">\n        Zuletzt aktualisiert am: ${dateString} um: ${timeString}\n      </div>\n    </div>\n  </footer>`;
-
-  const updatedHtml = builtHtml.replace('</footer>', footerInjection);
+  const stamp = `Zuletzt aktualisiert am: ${dateString} um: ${timeString}`;
+  const updatedHtml = builtHtml.replace(
+    '<span id="buildInfo" class="ml-3 text-[10px] opacity-60"> </span>',
+    `<span id="buildInfo" class="ml-3 text-[10px] opacity-60">${stamp}</span>`
+  );
   fs.writeFileSync(distPath, updatedHtml);
   console.log(`🕒 Injected build timestamp: ${dateString} ${timeString}`);
 } catch (e) {
