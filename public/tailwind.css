@@ -216,7 +216,10 @@ body {
 .drop-shadow-lg { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.1)) !important; }
 
 /* Backdrop blur */
-.backdrop-blur-sm { backdrop-filter: blur(4px) !important; }
+.backdrop-blur-sm { backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important; }
+
+/* Timer size utility */
+.timer-size { font-size: min(25vw, 25vh) !important; }
 
 /* Background opacity */
 .bg-opacity-20 { background-color: rgba(16, 185, 129, 0.2) !important; }

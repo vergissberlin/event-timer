@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Timer PWA</title>
     <meta name="description" content="Progressive Web App für Event-Timer mit Glassmorphism Design">
@@ -17,6 +17,8 @@
       }
     </script>
     <meta name="theme-color" content="#1e293b">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'">
     
     <!-- Icons -->
     <script>
@@ -65,57 +67,7 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <style>
-        /* Solid Styles - No Transparency */
-        .glass {
-            background: #ffffff;
-            border: 2px solid #e5e7eb;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        .glass-dark {
-            background: #1f2937;
-            border: 2px solid #374151;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Fullscreen styles */
-        .fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 9999;
-        }
-        
-                    /* Timer animation */
-        .timer-warning {
-            animation: blink 0.5s infinite;
-            text-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
-        }
-        
-        /* Flash animation for event start */
-        @keyframes flash {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        
-        /* Background image overlay */
-        .bg-overlay {
-            background: #000000;
-        }
-        
-        /* Timer screen specific styles */
-        #timerScreen {
-            background: #000000;
-        }
-        
-        #timer {
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            line-height: 1;
-        }
-    </style>
+    
 </head>
 <body class="bg-slate-900 dark:bg-slate-900 bg-gray-50 min-h-screen text-white dark:text-white text-gray-900 font-sans">
     <!-- Loading Screen -->
@@ -136,16 +88,16 @@
                         Event Timer
                     </h1>
                     <div class="flex gap-2">
-                        <button id="breakTimesToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Pausenzeiten anzeigen/verstecken">
+                        <button id="breakTimesToggle" aria-label="Pausenzeiten anzeigen/verstecken" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Pausenzeiten anzeigen/verstecken">
                             <i class="ti ti-clock-pause text-xl"></i>
                         </button>
-                        <button id="fullscreenBtnOverview" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Vollbild">
+                        <button id="fullscreenBtnOverview" aria-label="Vollbild" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Vollbild">
                             <i class="ti ti-maximize text-xl"></i>
                         </button>
-                        <button id="shareBtn" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Teilen">
+                        <button id="shareBtn" aria-label="Teilen" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Teilen">
                             <i class="ti ti-qrcode text-xl"></i>
                         </button>
-                        <button id="themeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Theme wechseln">
+                        <button id="themeToggle" aria-label="Theme wechseln" class="p-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors" title="Theme wechseln">
                             <i class="ti ti-sun text-xl dark:hidden"></i>
                             <i class="ti ti-moon text-xl hidden dark:inline"></i>
                         </button>
@@ -291,20 +243,20 @@
                 
                 <!-- Timer Display - Dynamische Größe für volle Breite -->
                 <div id="timerDisplay" class="w-full h-full flex items-center justify-center animate-fade-in">
-                    <div id="timer" class="font-mono font-bold text-white drop-shadow-2xl leading-none" style="font-size: min(25vw, 25vh);">
+                    <div id="timer" class="font-mono font-bold text-white drop-shadow-2xl leading-none timer-size">
                         00:00:00
                     </div>
                 </div>
                 
                 <!-- Top Right Controls -->
                 <div class="absolute top-8 right-8 flex gap-2">
-                    <button id="closeBtn" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Schließen">
+                    <button id="closeBtn" aria-label="Schließen" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Schließen">
                         <i class="ti ti-x text-xl"></i>
                     </button>
-                    <button id="fullscreenBtn" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Vollbild">
+                    <button id="fullscreenBtn" aria-label="Vollbild" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="Vollbild">
                         <i class="ti ti-maximize text-xl"></i>
                     </button>
-                    <button id="shareBtnTimer" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="QR Code">
+                    <button id="shareBtnTimer" aria-label="QR Code" class="p-2 rounded-lg bg-black bg-opacity-50 text-white hover:bg-opacity-70 transition-all duration-300" title="QR Code">
                         <i class="ti ti-qrcode text-xl"></i>
                     </button>
                 </div>

@@ -2,12 +2,12 @@
   "name": "Event Timer",
   "short_name": "Timer",
   "description": "Progressive Web App für Event-Timer mit Glassmorphism Design",
-  "start_url": "./",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#1e293b",
   "theme_color": "#1e293b",
   "orientation": "portrait-primary",
-  "scope": "./",
+  "scope": "/",
   "lang": "de",
   "icons": [
     {
