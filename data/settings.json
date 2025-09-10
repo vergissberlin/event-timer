@@ -9,9 +9,9 @@
     "info": "#06b6d4"
   },
   "app": {
-    "name": "Event Timer",
-    "shortName": "Timer",
-    "description": "Progressive Web App für Event-Timer",
+    "name": "Barcamp 25",
+    "shortName": "bcp25",
+    "description": "Thinkport Barcamp 2025",
     "favicon": {
       "primary": "#3b82f6",
       "secondary": "#1e40af",
