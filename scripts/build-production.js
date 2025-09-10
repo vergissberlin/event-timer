@@ -40,3 +40,26 @@ fs.writeFileSync(distPath, html);
 
 console.log('✅ Production HTML updated with local CSS and compiled JavaScript');
 console.log(`📦 Using JavaScript file: ${jsFile}`);
+
+// Inject build timestamp into footer
+try {
+  const builtHtml = fs.readFileSync(distPath, 'utf8');
+  const buildDate = new Date();
+  const dateString = buildDate.toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const timeString = buildDate.toLocaleTimeString('de-DE', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const footerInjection = `\n    <div class="container mx-auto px-4 py-1">\n      <div class=\"flex justify-center items-center text-white text-opacity-60 text-[10px]\">\n        Zuletzt aktualisiert am: ${dateString} um: ${timeString}\n      </div>\n    </div>\n  </footer>`;
+
+  const updatedHtml = builtHtml.replace('</footer>', footerInjection);
+  fs.writeFileSync(distPath, updatedHtml);
+  console.log(`🕒 Injected build timestamp: ${dateString} ${timeString}`);
+} catch (e) {
+  console.warn('⚠️ Could not inject build timestamp into footer:', e);
+}

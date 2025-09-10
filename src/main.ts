@@ -1277,15 +1277,31 @@ class EventTimerApp {
   }
 
   private showError(message: string): void {
-    this.loadingElement.innerHTML = `
-      <div class="text-center">
-        <div class="text-red-500 text-6xl mb-4">⚠️</div>
-        <p class="text-xl text-red-400">${message}</p>
-        <button onclick="location.reload()" class="mt-4 px-6 py-3 bg-red-600 rounded-xl hover:bg-red-700 transition-colors">
-          Erneut versuchen
-        </button>
+    // Reveal app shell so die UI nicht vom Overlay blockiert wird
+    this.appElement.classList.remove('hidden');
+    this.loadingElement.classList.add('hidden');
+    this.loadingElement.style.display = 'none';
+
+    // Zeige eine sichtbare Fehlermeldung innerhalb der App
+    const errorBanner = document.createElement('div');
+    errorBanner.className = 'm-4 p-4 rounded-lg border-2 border-red-400 bg-red-500/10 text-red-300';
+    errorBanner.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">⚠️</span>
+        <div>
+          <p class="font-semibold mb-2">${message}</p>
+          <button id="retryBtn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors">Erneut versuchen</button>
+        </div>
       </div>
     `;
+    this.appElement.prepend(errorBanner);
+
+    const retryBtn = document.getElementById('retryBtn') as HTMLButtonElement | null;
+    if (retryBtn) {
+      retryBtn.addEventListener('click', () => {
+        location.reload();
+      });
+    }
   }
 
   private toggleBreakTimes(): void {
