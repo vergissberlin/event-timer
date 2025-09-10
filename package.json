@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build && node scripts/build-production.js",
     "preview": "vite preview",
-    "deploy": "pnpm build && surge ./dist $SURGE_DOMAIN",
+    "deploy": "pnpm build && surge ./dist --domain $SURGE_DOMAIN",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src/**/*.ts",
