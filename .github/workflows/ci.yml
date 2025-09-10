@@ -70,6 +70,16 @@ jobs:
     - name: Run tests
       run: pnpm test:ci
 
+    - name: E2E tests (Playwright)
+      env:
+        E2E_NO_SERVER: '1'
+        BASE_URL: http://localhost:4173
+      run: |
+        pnpm build
+        pnpm preview &
+        npx wait-on http://localhost:4173
+        pnpm test:e2e
+
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
       with:
