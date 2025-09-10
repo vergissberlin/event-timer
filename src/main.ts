@@ -3,7 +3,7 @@ import { AudioManager } from './audio';
 import { EventsManager } from './events';
 import { SettingsManager } from './settings';
 import QRCode from 'qrcode';
-import { Event, TimerCallbacks } from './types';
+import type { Event, TimerCallbacks } from './types';
 
 // Global type declaration
 declare global {
