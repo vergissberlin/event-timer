@@ -3,7 +3,7 @@
     {
       "id": "morning-meeting",
       "title": "Morgen-Meeting",
-      "startTime": "2025-08-27T15:00:00",
+      "startTime": "2025-08-28T15:00:00",
       "duration": 1800,
       "icon": "ti ti-users",
       "background": "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1920&h=1080&fit=crop",
@@ -12,7 +12,7 @@
     {
       "id": "chaire-session",
       "title": "Stuhlkreis",
-      "startTime": "2025-08-27T15:30:00",
+      "startTime": "2025-08-28T15:30:00",
       "duration": 1200,
       "icon": "ti ti-chair-director",
       "background": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop",
@@ -21,7 +21,7 @@
     {
       "id": "presentation",
       "title": "Produkt-Präsentation",
-      "startTime": "2025-08-27T16:28:00",
+      "startTime": "2025-08-28T16:28:00",
       "duration": 180,
       "icon": "ti ti-presentation",
       "background": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=1080&fit=crop",
@@ -30,7 +30,7 @@
     {
       "id": "lunch-break",
       "title": "Mittagspause",
-      "startTime": "2025-08-27T16:37:00",
+      "startTime": "2025-08-28T16:37:00",
       "duration": 3600,
       "icon": "ti ti-coffee",
       "background": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&h=1080&fit=crop",
@@ -39,7 +39,7 @@
     {
       "id": "workshop",
       "title": "Workshop Session",
-      "startTime": "2025-08-27T18:00:00",
+      "startTime": "2025-08-28T18:00:00",
       "duration": 3600,
       "icon": "ti ti-tools",
       "background": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop",
@@ -48,7 +48,7 @@
     {
       "id": "team-review",
       "title": "Team Review",
-      "startTime": "2025-08-27T19:30:00",
+      "startTime": "2025-08-28T19:30:00",
       "duration": 1800,
       "icon": "ti ti-chart-line",
       "background": "https://images.unsplash.com/photo-1551288049-bebda4e504b3?w=1920&h=1080&fit=crop",
@@ -57,7 +57,7 @@
     {
       "id": "planning",
       "title": "Sprint Planning",
-      "startTime": "2025-08-27T21:30:00",
+      "startTime": "2025-08-28T21:30:00",
       "duration": 2400,
       "icon": "ti ti-calendar",
       "background": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop",

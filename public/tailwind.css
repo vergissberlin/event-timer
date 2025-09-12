@@ -1,13 +1,6 @@
-/* Tailwind CSS - Local Version */
-/* Base styles */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: 'Montserrat', sans-serif;
-}
+/* Hinweis: Diese Datei wird durch globale Tailwind-Direktiven ersetzt.
+   Für shadcn/ui und Tailwind v4 verwenden wir eine zentrale styles-Datei.
+*/
 
 /* Dark mode support */
 .dark {
